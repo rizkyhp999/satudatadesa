@@ -7,14 +7,76 @@ interface FormData {
   jumlahAnggota: string;
   noKK: string;
   kodeKK: string;
+  namaRT: string;
+  noUrutBangunan: string;
+  noUrutKeluarga: string;
+  alamat: string;
+  statusKependudukan: string;
+}
+
+async function writeHeadersIfNeeded(
+  sheets: sheets_v4.Sheets,
+  spreadsheetId: string
+) {
+  const readRes = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: "Sheet1!A1:A1",
+  });
+
+  if (!readRes.data.values || readRes.data.values.length === 0) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: "Sheet1!A1:K1",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [
+          [
+            "Waktu Submit",
+            "Nama Kepala Keluarga",
+            "Jumlah KK",
+            "Jumlah Anggota",
+            "No KK",
+            "Kode KK",
+            "Nama RT",
+            "No Urut Bangunan",
+            "No Urut Keluarga",
+            "Alamat",
+            "Status Kependudukan",
+          ],
+        ],
+      },
+    });
+  }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as FormData;
-    const { namaKepala, jumlahKK, jumlahAnggota, noKK, kodeKK } = body;
+    const {
+      namaKepala,
+      jumlahKK,
+      jumlahAnggota,
+      noKK,
+      kodeKK,
+      namaRT,
+      noUrutBangunan,
+      noUrutKeluarga,
+      alamat,
+      statusKependudukan,
+    } = body;
 
-    if (!namaKepala || !jumlahKK || !jumlahAnggota || !noKK || !kodeKK) {
+    if (
+      !namaKepala ||
+      !jumlahKK ||
+      !jumlahAnggota ||
+      !noKK ||
+      !kodeKK ||
+      !namaRT ||
+      !noUrutBangunan ||
+      !noUrutKeluarga ||
+      !alamat ||
+      !statusKependudukan
+    ) {
       return NextResponse.json(
         { error: "Semua field wajib diisi" },
         { status: 400 }
@@ -38,6 +100,9 @@ export async function POST(req: NextRequest) {
 
     const sheets: sheets_v4.Sheets = google.sheets({ version: "v4", auth });
 
+    // Pastikan header ada
+    await writeHeadersIfNeeded(sheets, spreadsheetId);
+
     // Append data ke Google Sheets
     await sheets.spreadsheets.values.append({
       spreadsheetId,
@@ -52,6 +117,11 @@ export async function POST(req: NextRequest) {
             jumlahAnggota,
             noKK,
             kodeKK,
+            namaRT,
+            noUrutBangunan,
+            noUrutKeluarga,
+            alamat,
+            statusKependudukan,
           ],
         ],
       },
