@@ -1,62 +1,64 @@
 "use client";
+
 import { useState } from "react";
+import Blok1 from "@/components/blok/blok1";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner"; // opsional kalau pakai toast notification
 
-export default function HomePage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+export default function Page() {
+  const [formData, setFormData] = useState({
+    namaKepala: "",
+    jumlahKK: "",
+    jumlahAnggota: "",
+    noKK: "",
+    kodeKK: "",
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    const res = await fetch("/api/submit", {
-      method: "POST",
-      body: JSON.stringify({ name, email }),
-    });
+      const data = await res.json();
 
-    const data = await res.json();
-    if (res.ok) {
-      setMessage("Data berhasil dikirim!");
-      setName("");
-      setEmail("");
-    } else {
-      setMessage(`Error: ${data.error}`);
+      if (!res.ok) {
+        toast.error(data.error || "Terjadi kesalahan");
+      } else {
+        toast.success("Data berhasil dikirim!");
+        setFormData({
+          namaKepala: "",
+          jumlahKK: "",
+          jumlahAnggota: "",
+          noKK: "",
+          kodeKK: "",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Gagal mengirim data");
     }
-    setLoading(false);
   };
 
   return (
-    <main className="p-8 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Form Input ke Google Sheets</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Nama"
-          className="border p-2 w-full"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-lg space-y-6">
+        <Blok1
+          data={formData}
+          onChange={(field, value) =>
+            setFormData((prev) => ({ ...prev, [field]: value }))
+          }
         />
-        <input
-          type="email"
-          placeholder="Email"
-          className="border p-2 w-full"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2"
-          disabled={loading}
+
+        <Button
+          className="w-full bg-black hover:bg-gray-800 text-white"
+          onClick={handleSubmit}
         >
-          {loading ? "Mengirim..." : "Kirim"}
-        </button>
-      </form>
-      {message && <p className="mt-4">{message}</p>}
-    </main>
+          Submit
+        </Button>
+      </div>
+    </div>
   );
 }
