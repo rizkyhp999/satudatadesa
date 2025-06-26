@@ -4,7 +4,7 @@ export interface DataAnggota {
   nik: string;
   keberadaan: string;
   jenisKelamin: string;
-  tanggalLahir: string;
+  tanggalLahir: string; // format dd/mm/yyyy (bisa disimpan utuh, input dibagi kotak)
   umur: string;
   statusPerkawinan: string;
   hubunganKepala: string;
@@ -12,9 +12,9 @@ export interface DataAnggota {
   usiaKehamilan?: string;
 
   // Blok tambahan lokasi jika keberadaan 3-5
-  kecDesa?: string; // ← tambahkan ini
-  provKab?: string; // ← tambahkan ini
-  negara?: string; // ← tambahkan ini
+  kecDesa?: string; // Format: Nama + 3 digit kode (bisa dipisah saat input, disatukan saat simpan)
+  provKab?: string; // Format: Nama + 2 digit kode
+  negara?: string; // Format: Nama + 2 digit kode
 
   // Blok IV - Pendidikan
   partisipasi?: string;
