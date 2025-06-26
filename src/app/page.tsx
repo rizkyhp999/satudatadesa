@@ -266,18 +266,33 @@ export default function Page() {
         <Blok9
           data={blok9Data}
           onChange={(path, value) => {
-            const keys = path.split(".");
+            const keys = path.split(".") as [keyof Blok9Data, string, string?];
             setBlok9Data((prev) => {
-              const updated = { ...prev };
+              const updated = structuredClone(prev); // Deep clone aman
               if (keys.length === 2) {
-                (updated as any)[keys[0]][keys[1]] = value;
-              } else if (keys.length === 3) {
-                (updated as any)[keys[0]][keys[1]][keys[2]] = value;
+                if (keys[0] === "asetTidakBergerak") {
+                  updated.asetTidakBergerak[
+                    keys[1] as keyof typeof updated.asetTidakBergerak
+                  ] = value;
+                } else if (keys[0] === "asetBergerak") {
+                  updated.asetBergerak[
+                    keys[1] as keyof typeof updated.asetBergerak
+                  ] = value;
+                } else if (keys[0] === "programBantuan") {
+                  updated.programBantuan[
+                    keys[1] as keyof typeof updated.programBantuan
+                  ] = value;
+                } else if (keys[0] === "bantuanPertanian") {
+                  updated.bantuanPertanian[
+                    keys[1] as keyof typeof updated.bantuanPertanian
+                  ] = value;
+                }
               }
               return updated;
             });
           }}
         />
+
         <Blok10 catatan={blok10Data} onChange={setBlok10Data} />
 
         <Button
