@@ -129,9 +129,24 @@ export function SurveyForm() {
     }
   };
 
-  const handleSave = () => {
-    console.log("Survey Data:", surveyData);
-    alert("Data survei berhasil disimpan!");
+  const handleSave = async () => {
+    try {
+      const res = await fetch("/api/survei/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(surveyData),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Gagal menyimpan");
+
+      alert("Data survei berhasil dikirim!");
+    } catch (err) {
+      alert(`Terjadi kesalahan: ${err}`);
+      console.error(err);
+    }
   };
 
   const renderCurrentBlock = () => {
