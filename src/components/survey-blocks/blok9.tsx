@@ -11,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { Coins, Home, Car, MilkIcon as Cow, Gift, Sprout } from "lucide-react";
 import type { Blok9 } from "@/types/survey";
 
@@ -56,39 +55,44 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
           <CardContent className="grid md:grid-cols-2 gap-4">
             <div>
               <Label className="text-sm font-medium text-slate-700">
-                901a. Kepemilikan Aset Lahan
+                901a. Keluarga Memiliki Aset Lahan (2 digit)
               </Label>
               <Select
                 value={data["901a_asetLahan"]?.toString()}
                 onValueChange={(value) =>
-                  handleChange("901a_asetLahan", parseInt(value))
+                  handleChange("901a_asetLahan", Number.parseInt(value))
                 }
               >
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Pilih" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">Ya</SelectItem>
-                  <SelectItem value="2">Tidak</SelectItem>
+                  <SelectItem value="1">Ya, Luas {"< 0.5 Ha"}</SelectItem>
+                  <SelectItem value="2">Ya, Luas 0.5-1 Ha</SelectItem>
+                  <SelectItem value="3">Ya, Luas {"> 1 Ha"}</SelectItem>
+                  <SelectItem value="4">Tidak</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
               <Label className="text-sm font-medium text-slate-700">
-                901b. Kepemilikan Rumah/Bangunan di Tempat Lain
+                901b. Keluarga Memiliki Aset Rumah/Bangunan di Tempat Lain (2
+                digit)
               </Label>
               <Select
                 value={data["901b_asetRumahLain"]?.toString()}
                 onValueChange={(value) =>
-                  handleChange("901b_asetRumahLain", parseInt(value))
+                  handleChange("901b_asetRumahLain", Number.parseInt(value))
                 }
               >
                 <SelectTrigger className="mt-1">
                   <SelectValue placeholder="Pilih" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1">Ya</SelectItem>
-                  <SelectItem value="2">Tidak</SelectItem>
+                  <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                  <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                  <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                  <SelectItem value="4">Tidak</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -100,7 +104,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Car className="w-5 h-5 text-slate-600" />
-              Kepemilikan Barang
+              Kepemilikan Barang (2 digit)
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
@@ -112,15 +116,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902a_tabungGas"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902a_tabungGas", parseInt(value))
+                    handleChange("902a_tabungGas", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -131,15 +137,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902b_kulkas"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902b_kulkas", parseInt(value))
+                    handleChange("902b_kulkas", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -150,15 +158,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902c_ac"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902c_ac", parseInt(value))
+                    handleChange("902c_ac", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -172,15 +182,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902d_tv"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902d_tv", parseInt(value))
+                    handleChange("902d_tv", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -191,15 +203,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902e_emas"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902e_emas", parseInt(value))
+                    handleChange("902e_emas", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, {"< 10 gram"}</SelectItem>
+                    <SelectItem value="2">Ya, 10-50 gram</SelectItem>
+                    <SelectItem value="3">Ya, {"> 50 gram"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -210,15 +224,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902f_komputer"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902f_komputer", parseInt(value))
+                    handleChange("902f_komputer", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -232,15 +248,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902g_motor"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902g_motor", parseInt(value))
+                    handleChange("902g_motor", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -251,15 +269,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902h_perahuMotor"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902h_perahuMotor", parseInt(value))
+                    handleChange("902h_perahuMotor", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -270,15 +290,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902i_mobil"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902i_mobil", parseInt(value))
+                    handleChange("902i_mobil", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -292,15 +314,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902j_sepeda"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902j_sepeda", parseInt(value))
+                    handleChange("902j_sepeda", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -311,15 +335,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902k_perahu"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902k_perahu", parseInt(value))
+                    handleChange("902k_perahu", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -330,15 +356,17 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["902l_smartphone"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("902l_smartphone", parseInt(value))
+                    handleChange("902l_smartphone", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
+                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
+                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
+                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
+                    <SelectItem value="4">Tidak</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -351,7 +379,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Cow className="w-5 h-5 text-slate-600" />
-              Kepemilikan Ternak
+              Kepemilikan Ternak (2 digit)
             </CardTitle>
           </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-4">
@@ -364,10 +392,13 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903a_sapi"] || ""}
-                onChange={(e) =>
-                  handleChange("903a_sapi", parseInt(e.target.value) || 0)
-                }
-                placeholder="0"
+                onChange={(e) => {
+                  const value = Number.parseInt(e.target.value);
+                  if (value >= 0 && value <= 99) {
+                    handleChange("903a_sapi", value || 0);
+                  }
+                }}
+                placeholder="00"
                 className="mt-1"
               />
             </div>
@@ -380,10 +411,13 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903b_kerbau"] || ""}
-                onChange={(e) =>
-                  handleChange("903b_kerbau", parseInt(e.target.value) || 0)
-                }
-                placeholder="0"
+                onChange={(e) => {
+                  const value = Number.parseInt(e.target.value);
+                  if (value >= 0 && value <= 99) {
+                    handleChange("903b_kerbau", value || 0);
+                  }
+                }}
+                placeholder="00"
                 className="mt-1"
               />
             </div>
@@ -396,10 +430,13 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903c_kuda"] || ""}
-                onChange={(e) =>
-                  handleChange("903c_kuda", parseInt(e.target.value) || 0)
-                }
-                placeholder="0"
+                onChange={(e) => {
+                  const value = Number.parseInt(e.target.value);
+                  if (value >= 0 && value <= 99) {
+                    handleChange("903c_kuda", value || 0);
+                  }
+                }}
+                placeholder="00"
                 className="mt-1"
               />
             </div>
@@ -412,10 +449,13 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903d_babi"] || ""}
-                onChange={(e) =>
-                  handleChange("903d_babi", parseInt(e.target.value) || 0)
-                }
-                placeholder="0"
+                onChange={(e) => {
+                  const value = Number.parseInt(e.target.value);
+                  if (value >= 0 && value <= 99) {
+                    handleChange("903d_babi", value || 0);
+                  }
+                }}
+                placeholder="00"
                 className="mt-1"
               />
             </div>
@@ -428,10 +468,13 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903e_kambing"] || ""}
-                onChange={(e) =>
-                  handleChange("903e_kambing", parseInt(e.target.value) || 0)
-                }
-                placeholder="0"
+                onChange={(e) => {
+                  const value = Number.parseInt(e.target.value);
+                  if (value >= 0 && value <= 99) {
+                    handleChange("903e_kambing", value || 0);
+                  }
+                }}
+                placeholder="00"
                 className="mt-1"
               />
             </div>
@@ -443,7 +486,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Gift className="w-5 h-5 text-slate-600" />
-              Bantuan Pemerintah (1 Tahun Terakhir)
+              Bantuan Pemerintah (1 Tahun Terakhir) - 1 digit
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
@@ -455,7 +498,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["904a_BPNT"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("904a_BPNT", parseInt(value))
+                    handleChange("904a_BPNT", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
@@ -474,7 +517,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["904b_PKH"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("904b_PKH", parseInt(value))
+                    handleChange("904b_PKH", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
@@ -496,7 +539,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["904c_BLTDesa"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("904c_BLTDesa", parseInt(value))
+                    handleChange("904c_BLTDesa", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
@@ -515,7 +558,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["904d_SubsidiListrik"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("904d_SubsidiListrik", parseInt(value))
+                    handleChange("904d_SubsidiListrik", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
@@ -537,7 +580,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["904e_BantuanPemda"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("904e_BantuanPemda", parseInt(value))
+                    handleChange("904e_BantuanPemda", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
@@ -556,7 +599,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["904f_SubsidiPupuk"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("904f_SubsidiPupuk", parseInt(value))
+                    handleChange("904f_SubsidiPupuk", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
@@ -578,7 +621,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["904g_BantuanDesa"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("904g_BantuanDesa", parseInt(value))
+                    handleChange("904g_BantuanDesa", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
@@ -597,7 +640,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 <Select
                   value={data["904h_BantuanLainnya"]?.toString()}
                   onValueChange={(value) =>
-                    handleChange("904h_BantuanLainnya", parseInt(value))
+                    handleChange("904h_BantuanLainnya", Number.parseInt(value))
                   }
                 >
                   <SelectTrigger className="mt-1">
@@ -625,7 +668,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
             {/* Jenis Bantuan */}
             <div>
               <h4 className="font-medium text-slate-700 mb-3">
-                Jenis Bantuan yang Diterima
+                Jenis Bantuan yang Diterima (1 digit)
               </h4>
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
@@ -635,7 +678,10 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                   <Select
                     value={data["905a_jenisBantuanSawit"]?.toString()}
                     onValueChange={(value) =>
-                      handleChange("905a_jenisBantuanSawit", parseInt(value))
+                      handleChange(
+                        "905a_jenisBantuanSawit",
+                        Number.parseInt(value)
+                      )
                     }
                   >
                     <SelectTrigger className="mt-1">
@@ -656,7 +702,10 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                   <Select
                     value={data["905b_jenisBantuanIkanLele"]?.toString()}
                     onValueChange={(value) =>
-                      handleChange("905b_jenisBantuanIkanLele", parseInt(value))
+                      handleChange(
+                        "905b_jenisBantuanIkanLele",
+                        Number.parseInt(value)
+                      )
                     }
                   >
                     <SelectTrigger className="mt-1">
@@ -679,7 +728,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                     onValueChange={(value) =>
                       handleChange(
                         "905c_jenisBantuanSayurBuah",
-                        parseInt(value)
+                        Number.parseInt(value)
                       )
                     }
                   >
@@ -702,7 +751,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
             {/* Status Penerimaan */}
             <div>
               <h4 className="font-medium text-slate-700 mb-3">
-                Status Penerimaan Bantuan
+                Status Penerimaan Bantuan (1 digit)
               </h4>
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
@@ -712,7 +761,10 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                   <Select
                     value={data["906a_terimaBantuanSawit"]?.toString()}
                     onValueChange={(value) =>
-                      handleChange("906a_terimaBantuanSawit", parseInt(value))
+                      handleChange(
+                        "906a_terimaBantuanSawit",
+                        Number.parseInt(value)
+                      )
                     }
                   >
                     <SelectTrigger className="mt-1">
@@ -733,7 +785,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                     onValueChange={(value) =>
                       handleChange(
                         "906b_terimaBantuanIkanLele",
-                        parseInt(value)
+                        Number.parseInt(value)
                       )
                     }
                   >
@@ -755,7 +807,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                     onValueChange={(value) =>
                       handleChange(
                         "906c_terimaBantuanSayurBuah",
-                        parseInt(value)
+                        Number.parseInt(value)
                       )
                     }
                   >
@@ -776,7 +828,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
             {/* Keberlanjutan */}
             <div>
               <h4 className="font-medium text-slate-700 mb-3">
-                Keberlanjutan Bantuan
+                Keberlanjutan Bantuan (1 digit)
               </h4>
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
@@ -786,7 +838,10 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                   <Select
                     value={data["907a_lanjutanBantuanSawit"]?.toString()}
                     onValueChange={(value) =>
-                      handleChange("907a_lanjutanBantuanSawit", parseInt(value))
+                      handleChange(
+                        "907a_lanjutanBantuanSawit",
+                        Number.parseInt(value)
+                      )
                     }
                   >
                     <SelectTrigger className="mt-1">
@@ -807,7 +862,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                     onValueChange={(value) =>
                       handleChange(
                         "907b_lanjutanBantuanIkanLele",
-                        parseInt(value)
+                        Number.parseInt(value)
                       )
                     }
                   >
@@ -829,7 +884,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                     onValueChange={(value) =>
                       handleChange(
                         "907c_lanjutanBantuanSayurBuah",
-                        parseInt(value)
+                        Number.parseInt(value)
                       )
                     }
                   >
@@ -850,7 +905,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
             {/* Alasan Tidak Lanjut */}
             <div>
               <h4 className="font-medium text-slate-700 mb-3">
-                Alasan Tidak Melanjutkan
+                Alasan Tidak Melanjutkan (1 huruf kapital)
               </h4>
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
@@ -912,7 +967,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
             {/* Program Dukungan */}
             <div>
               <h4 className="font-medium text-slate-700 mb-3">
-                Program Dukungan yang Diperlukan
+                Program Dukungan yang Diperlukan (1 digit)
               </h4>
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
@@ -922,7 +977,10 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                   <Select
                     value={data["909a_programDukungSawit"]?.toString()}
                     onValueChange={(value) =>
-                      handleChange("909a_programDukungSawit", parseInt(value))
+                      handleChange(
+                        "909a_programDukungSawit",
+                        Number.parseInt(value)
+                      )
                     }
                   >
                     <SelectTrigger className="mt-1">
@@ -946,7 +1004,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                     onValueChange={(value) =>
                       handleChange(
                         "909b_programDukungIkanLele",
-                        parseInt(value)
+                        Number.parseInt(value)
                       )
                     }
                   >
@@ -971,7 +1029,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                     onValueChange={(value) =>
                       handleChange(
                         "909c_programDukungSayurBuah",
-                        parseInt(value)
+                        Number.parseInt(value)
                       )
                     }
                   >

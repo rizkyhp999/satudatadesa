@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Home, Zap, Droplets, Lightbulb } from "lucide-react";
+import { Home, Droplets, Lightbulb } from "lucide-react";
 import type { Blok8 } from "@/types/survey";
 
 interface Blok8ComponentProps {

@@ -1,5 +1,5 @@
 "use client";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -309,7 +308,8 @@ function Blok3Form({
           Blok 3: Identitas Anggota Keluarga
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
+        {/* Identitas Dasar */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-sm font-medium text-slate-700">
@@ -332,7 +332,7 @@ function Blok3Form({
               onChange={(e) => {
                 const value = e.target.value;
                 if (value.length <= 16) {
-                  onChange("303_nik", parseInt(value) || 0);
+                  onChange("303_nik", Number.parseInt(value) || 0);
                 }
               }}
               placeholder="1234567890123456"
@@ -341,15 +341,75 @@ function Blok3Form({
           </div>
         </div>
 
+        {/* Keterangan Keberadaan */}
+        <div>
+          <Label className="text-sm font-medium text-slate-700">
+            304. Keterangan Keberadaan Keluarga (1 digit)
+          </Label>
+          <Select
+            value={data["304_keteranganKeberadaan"]?.toString()}
+            onValueChange={(value) =>
+              onChange("304_keteranganKeberadaan", Number.parseInt(value))
+            }
+          >
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Pilih keterangan" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">Ada</SelectItem>
+              <SelectItem value="2">Tidak Ada Sementara</SelectItem>
+              <SelectItem value="3">Tidak Ada Permanen</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Tempat Tinggal */}
+        <div className="space-y-4">
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              305. Kecamatan dan Desa Tempat Tinggal Saat Ini
+            </Label>
+            <Input
+              value={data["305_kecDesaSaatIni"]}
+              onChange={(e) => onChange("305_kecDesaSaatIni", e.target.value)}
+              placeholder="Nama Kecamatan/Desa + Kode 3 digit (contoh: Bandung 001)"
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              306. Provinsi dan Kabupaten/Kota Tempat Tinggal Saat Ini
+            </Label>
+            <Input
+              value={data["306_provKabSaatIni"]}
+              onChange={(e) => onChange("306_provKabSaatIni", e.target.value)}
+              placeholder="Nama Provinsi/Kabupaten + Kode 2 digit (contoh: Jawa Barat 32)"
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              307. Negara Tempat Tinggal Saat Ini
+            </Label>
+            <Input
+              value={data["307_negaraSaatIni"]}
+              onChange={(e) => onChange("307_negaraSaatIni", e.target.value)}
+              placeholder="Nama Negara + Kode 2 digit (contoh: Indonesia 01)"
+              className="mt-1"
+            />
+          </div>
+        </div>
+
+        {/* Data Demografis */}
         <div className="grid md:grid-cols-3 gap-4">
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              308. Jenis Kelamin
+              308. Jenis Kelamin (1 digit)
             </Label>
             <Select
               value={data["308_jenisKelamin"]?.toString()}
               onValueChange={(value) =>
-                onChange("308_jenisKelamin", parseInt(value))
+                onChange("308_jenisKelamin", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
@@ -363,7 +423,7 @@ function Blok3Form({
           </div>
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              309. Tanggal Lahir
+              309. Tanggal Lahir (dd/mm/yyyy)
             </Label>
             <Input
               type="date"
@@ -374,31 +434,35 @@ function Blok3Form({
           </div>
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              310. Umur
+              310. Umur (2 digit)
             </Label>
             <Input
               type="number"
               min="0"
               max="99"
               value={data["310_umur"] || ""}
-              onChange={(e) =>
-                onChange("310_umur", parseInt(e.target.value) || 0)
-              }
-              placeholder="0"
+              onChange={(e) => {
+                const value = Number.parseInt(e.target.value);
+                if (value >= 0 && value <= 99) {
+                  onChange("310_umur", value || 0);
+                }
+              }}
+              placeholder="00"
               className="mt-1"
             />
           </div>
         </div>
 
+        {/* Status dan Hubungan */}
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              311. Status Perkawinan
+              311. Status Perkawinan (1 digit)
             </Label>
             <Select
               value={data["311_statusPerkawinan"]?.toString()}
               onValueChange={(value) =>
-                onChange("311_statusPerkawinan", parseInt(value))
+                onChange("311_statusPerkawinan", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
@@ -414,12 +478,12 @@ function Blok3Form({
           </div>
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              312. Hubungan dengan KK
+              312. Hubungan dengan Kepala Keluarga (1 digit)
             </Label>
             <Select
               value={data["312_hubunganDenganKK"]?.toString()}
               onValueChange={(value) =>
-                onChange("312_hubunganDenganKK", parseInt(value))
+                onChange("312_hubunganDenganKK", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
@@ -437,6 +501,49 @@ function Blok3Form({
                 <SelectItem value="9">Lainnya</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+        </div>
+
+        {/* Kehamilan (khusus perempuan) */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              313. Apakah Saat Ini Sedang Hamil (1 digit)
+            </Label>
+            <Select
+              value={data["313_sedangHamil"]?.toString()}
+              onValueChange={(value) =>
+                onChange("313_sedangHamil", Number.parseInt(value))
+              }
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Pilih" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Ya</SelectItem>
+                <SelectItem value="2">Tidak</SelectItem>
+                <SelectItem value="3">Tidak Berlaku</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              314. Usia Kehamilan dalam Bulan (1 digit)
+            </Label>
+            <Input
+              type="number"
+              min="0"
+              max="9"
+              value={data["314_usiaKehamilan"] || ""}
+              onChange={(e) => {
+                const value = Number.parseInt(e.target.value);
+                if (value >= 0 && value <= 9) {
+                  onChange("314_usiaKehamilan", value || 0);
+                }
+              }}
+              placeholder="0"
+              className="mt-1"
+            />
           </div>
         </div>
       </CardContent>
@@ -464,12 +571,12 @@ function Blok4Form({
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              401. Partisipasi Sekolah
+              401. Partisipasi Sekolah (1 digit)
             </Label>
             <Select
               value={data["401_partisipasiSekolah"]?.toString()}
               onValueChange={(value) =>
-                onChange("401_partisipasiSekolah", parseInt(value))
+                onChange("401_partisipasiSekolah", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
@@ -484,12 +591,12 @@ function Blok4Form({
           </div>
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              402. Jenjang Pendidikan Tertinggi
+              402. Jenjang Pendidikan Tertinggi (2 digit)
             </Label>
             <Select
               value={data["402_jenjangPendidikan"]?.toString()}
               onValueChange={(value) =>
-                onChange("402_jenjangPendidikan", parseInt(value))
+                onChange("402_jenjangPendidikan", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
@@ -500,9 +607,59 @@ function Blok4Form({
                 <SelectItem value="2">SD/Sederajat</SelectItem>
                 <SelectItem value="3">SMP/Sederajat</SelectItem>
                 <SelectItem value="4">SMA/Sederajat</SelectItem>
-                <SelectItem value="5">Diploma</SelectItem>
-                <SelectItem value="6">Sarjana</SelectItem>
-                <SelectItem value="7">Pascasarjana</SelectItem>
+                <SelectItem value="5">Diploma I/II</SelectItem>
+                <SelectItem value="6">Diploma III</SelectItem>
+                <SelectItem value="7">Diploma IV/S1</SelectItem>
+                <SelectItem value="8">S2</SelectItem>
+                <SelectItem value="9">S3</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              403. Kelas Tertinggi yang Sedang/Pernah Diduduki (1 digit)
+            </Label>
+            <Input
+              type="number"
+              min="0"
+              max="9"
+              value={data["403_kelasTertinggi"] || ""}
+              onChange={(e) => {
+                const value = Number.parseInt(e.target.value);
+                if (value >= 0 && value <= 9) {
+                  onChange("403_kelasTertinggi", value || 0);
+                }
+              }}
+              placeholder="0"
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              404. Ijazah Tertinggi yang Dimiliki (2 digit)
+            </Label>
+            <Select
+              value={data["404_ijazahTertinggi"]?.toString()}
+              onValueChange={(value) =>
+                onChange("404_ijazahTertinggi", Number.parseInt(value))
+              }
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Pilih ijazah" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Tidak Punya Ijazah</SelectItem>
+                <SelectItem value="2">SD/Sederajat</SelectItem>
+                <SelectItem value="3">SMP/Sederajat</SelectItem>
+                <SelectItem value="4">SMA/Sederajat</SelectItem>
+                <SelectItem value="5">Diploma I/II</SelectItem>
+                <SelectItem value="6">Diploma III</SelectItem>
+                <SelectItem value="7">Diploma IV/S1</SelectItem>
+                <SelectItem value="8">S2</SelectItem>
+                <SelectItem value="9">S3</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -528,16 +685,96 @@ function Blok5Form({
           Blok 5: Ketenagakerjaan
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid md:grid-cols-2 gap-4">
+      <CardContent className="space-y-6">
+        {/* Pekerjaan Utama */}
+        <div className="space-y-4">
+          <h4 className="font-medium text-slate-700">Pekerjaan Utama</h4>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                501. Bekerja/Membantu Bekerja Seminggu Lalu (1 digit)
+              </Label>
+              <Select
+                value={data["501_bekerjaMingguLalu"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("501_bekerjaMingguLalu", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                502. Lapangan Usaha Pekerjaan Utama (string + 2 digit)
+              </Label>
+              <Input
+                value={data["502_lapanganUsahaUtama"]}
+                onChange={(e) =>
+                  onChange("502_lapanganUsahaUtama", e.target.value)
+                }
+                placeholder="Contoh: Pertanian 01, Perdagangan 47"
+                className="mt-1"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                503. Status dalam Pekerjaan Utama (1 digit)
+              </Label>
+              <Select
+                value={data["503_statusPekerjaanUtama"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("503_statusPekerjaanUtama", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Berusaha Sendiri</SelectItem>
+                  <SelectItem value="2">
+                    Berusaha Dibantu Buruh Tidak Tetap
+                  </SelectItem>
+                  <SelectItem value="3">
+                    Berusaha Dibantu Buruh Tetap
+                  </SelectItem>
+                  <SelectItem value="4">Buruh/Karyawan/Pegawai</SelectItem>
+                  <SelectItem value="5">Pekerja Bebas</SelectItem>
+                  <SelectItem value="6">Pekerja Keluarga</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                504. Pendapatan Sebulan Terakhir (string)
+              </Label>
+              <Input
+                value={data["504_pendapatanSebulanTerakhir"]}
+                onChange={(e) =>
+                  onChange("504_pendapatanSebulanTerakhir", e.target.value)
+                }
+                placeholder="Contoh: 2500000"
+                className="mt-1"
+              />
+            </div>
+          </div>
+
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              501. Bekerja Minggu Lalu
+              505. Kepemilikan NPWP (1 digit)
             </Label>
             <Select
-              value={data["501_bekerjaMingguLalu"]?.toString()}
+              value={data["505_kepemilikanNPWP"]?.toString()}
               onValueChange={(value) =>
-                onChange("501_bekerjaMingguLalu", parseInt(value))
+                onChange("505_kepemilikanNPWP", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
@@ -549,18 +786,172 @@ function Blok5Form({
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <Label className="text-sm font-medium text-slate-700">
-              502. Lapangan Usaha Utama
-            </Label>
-            <Input
-              value={data["502_lapanganUsahaUtama"]}
-              onChange={(e) =>
-                onChange("502_lapanganUsahaUtama", e.target.value)
-              }
-              placeholder="Contoh: Pertanian, Perdagangan, dll"
-              className="mt-1"
-            />
+        </div>
+
+        {/* Usaha Sendiri */}
+        <div className="space-y-4">
+          <h4 className="font-medium text-slate-700">Usaha Sendiri/Bersama</h4>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                506. Memiliki Usaha Sendiri/Bersama (1 digit)
+              </Label>
+              <Select
+                value={data["506_memilikiUsaha"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("506_memilikiUsaha", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                507. Jumlah Usaha Sendiri/Bersama (2 digit)
+              </Label>
+              <Input
+                type="number"
+                min="0"
+                max="99"
+                value={data["507_jumlahUsaha"] || ""}
+                onChange={(e) => {
+                  const value = Number.parseInt(e.target.value);
+                  if (value >= 0 && value <= 99) {
+                    onChange("507_jumlahUsaha", value || 0);
+                  }
+                }}
+                placeholder="00"
+                className="mt-1"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                508. Lapangan Usaha Utama (string + 2 digit)
+              </Label>
+              <Input
+                value={data["508_lapanganUsahaSendiri"]}
+                onChange={(e) =>
+                  onChange("508_lapanganUsahaSendiri", e.target.value)
+                }
+                placeholder="Contoh: Warung Makan 56"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                509. Status dalam Usaha Utama (1 digit)
+              </Label>
+              <Select
+                value={data["509_statusUsaha"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("509_statusUsaha", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Sendiri</SelectItem>
+                  <SelectItem value="2">Bersama</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                510. Jumlah Pekerja Tidak Dibayar (2 digit)
+              </Label>
+              <Input
+                type="number"
+                min="0"
+                max="99"
+                value={data["510_jumlahPekerjaTidakDibayar"] || ""}
+                onChange={(e) => {
+                  const value = Number.parseInt(e.target.value);
+                  if (value >= 0 && value <= 99) {
+                    onChange("510_jumlahPekerjaTidakDibayar", value || 0);
+                  }
+                }}
+                placeholder="00"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                511. Jumlah Pekerja Dibayar (2 digit)
+              </Label>
+              <Input
+                type="number"
+                min="0"
+                max="99"
+                value={data["511_jumlahPekerjaDibayar"] || ""}
+                onChange={(e) => {
+                  const value = Number.parseInt(e.target.value);
+                  if (value >= 0 && value <= 99) {
+                    onChange("511_jumlahPekerjaDibayar", value || 0);
+                  }
+                }}
+                placeholder="00"
+                className="mt-1"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                512. Kepemilikan Izin Usaha (2 digit)
+              </Label>
+              <Select
+                value={data["512_kepemilikanIzinUsaha"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("512_kepemilikanIzinUsaha", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ada, Lengkap</SelectItem>
+                  <SelectItem value="2">Ada, Tidak Lengkap</SelectItem>
+                  <SelectItem value="3">Tidak Ada</SelectItem>
+                  <SelectItem value="4">Tidak Tahu</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                513. Pendapatan Usaha Sebulan Terakhir (1 digit)
+              </Label>
+              <Select
+                value={data["513_pendapatanUsahaSebulan"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("513_pendapatanUsahaSebulan", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih range" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">{"< 1 Juta"}</SelectItem>
+                  <SelectItem value="2">1-2 Juta</SelectItem>
+                  <SelectItem value="3">2-5 Juta</SelectItem>
+                  <SelectItem value="4">5-10 Juta</SelectItem>
+                  <SelectItem value="5">{"> 10 Juta"}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </CardContent>
@@ -588,31 +979,31 @@ function Blok6Form({
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              601. Status Disabilitas
+              601. Status Disabilitas (1 digit)
             </Label>
             <Select
               value={data["601_statusDisabilitas"]?.toString()}
               onValueChange={(value) =>
-                onChange("601_statusDisabilitas", parseInt(value))
+                onChange("601_statusDisabilitas", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Pilih" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">Tidak Ada</SelectItem>
-                <SelectItem value="2">Ada</SelectItem>
+                <SelectItem value="1">Tidak Ada Kesulitan</SelectItem>
+                <SelectItem value="2">Ada Kesulitan</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              602. Kondisi Gizi
+              602. Kondisi Gizi Anak (1 digit)
             </Label>
             <Select
               value={data["602_kondisiGizi"]?.toString()}
               onValueChange={(value) =>
-                onChange("602_kondisiGizi", parseInt(value))
+                onChange("602_kondisiGizi", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
@@ -622,6 +1013,52 @@ function Blok6Form({
                 <SelectItem value="1">Baik</SelectItem>
                 <SelectItem value="2">Kurang</SelectItem>
                 <SelectItem value="3">Buruk</SelectItem>
+                <SelectItem value="4">Tidak Berlaku</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              603. Keluhan Kesehatan Kronis/Menahun (2 digit)
+            </Label>
+            <Select
+              value={data["603_keluhanKesehatanKronis"]?.toString()}
+              onValueChange={(value) =>
+                onChange("603_keluhanKesehatanKronis", Number.parseInt(value))
+              }
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Pilih" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Tidak Ada</SelectItem>
+                <SelectItem value="2">
+                  Ada, Tidak Mengganggu Aktivitas
+                </SelectItem>
+                <SelectItem value="3">Ada, Mengganggu Aktivitas</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-sm font-medium text-slate-700">
+              604. Memiliki Wali/Pengasuh (1 digit)
+            </Label>
+            <Select
+              value={data["604_memilikiWali"]?.toString()}
+              onValueChange={(value) =>
+                onChange("604_memilikiWali", Number.parseInt(value))
+              }
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Pilih" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Ya</SelectItem>
+                <SelectItem value="2">Tidak</SelectItem>
+                <SelectItem value="3">Tidak Berlaku</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -651,43 +1088,68 @@ function Blok7Form({
         <div className="grid md:grid-cols-2 gap-4">
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              701. Jaminan Kesehatan
+              701. Jaminan Kesehatan dalam Setahun Terakhir (2 digit)
             </Label>
             <Select
               value={data["701_jaminanKesehatan"]?.toString()}
               onValueChange={(value) =>
-                onChange("701_jaminanKesehatan", parseInt(value))
+                onChange("701_jaminanKesehatan", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Pilih" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">BPJS Kesehatan</SelectItem>
-                <SelectItem value="2">Asuransi Swasta</SelectItem>
-                <SelectItem value="3">Tidak Ada</SelectItem>
+                <SelectItem value="1">Tidak Punya</SelectItem>
+                <SelectItem value="2">BPJS Kesehatan PBI</SelectItem>
+                <SelectItem value="3">BPJS Kesehatan Non-PBI</SelectItem>
+                <SelectItem value="4">Asuransi Kesehatan Lainnya</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
             <Label className="text-sm font-medium text-slate-700">
-              703. Program Indonesia Pintar
+              702. Jaminan Ketenagakerjaan dalam Setahun Terakhir (2 digit)
             </Label>
             <Select
-              value={data["703_ikutProgramPIP"]?.toString()}
+              value={data["702_jaminanKetenagakerjaan"]?.toString()}
               onValueChange={(value) =>
-                onChange("703_ikutProgramPIP", parseInt(value))
+                onChange("702_jaminanKetenagakerjaan", Number.parseInt(value))
               }
             >
               <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Pilih" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">Ya</SelectItem>
-                <SelectItem value="2">Tidak</SelectItem>
+                <SelectItem value="1">Tidak Punya</SelectItem>
+                <SelectItem value="2">BPJS Ketenagakerjaan</SelectItem>
+                <SelectItem value="3">
+                  Asuransi Ketenagakerjaan Lainnya
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        <div>
+          <Label className="text-sm font-medium text-slate-700">
+            703. Program Indonesia Pintar dalam Setahun Terakhir (1 digit)
+          </Label>
+          <Select
+            value={data["703_ikutProgramPIP"]?.toString()}
+            onValueChange={(value) =>
+              onChange("703_ikutProgramPIP", Number.parseInt(value))
+            }
+          >
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Pilih" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">Ya</SelectItem>
+              <SelectItem value="2">Tidak</SelectItem>
+              <SelectItem value="3">Tidak Berlaku</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </CardContent>
     </Card>
