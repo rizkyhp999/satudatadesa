@@ -170,7 +170,7 @@ export default function SurveyDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/survei");
+        const response = await fetch("/api/survei");
         const surveyData = await response.json();
         setData(surveyData);
       } catch (error) {
