@@ -42,13 +42,13 @@ export interface Blok4 {
 
 export interface Blok5 {
   "501_bekerjaMingguLalu": number;
-  "502_lapanganUsahaUtama": string;
+  "502_lapanganUsahaUtama": number;
   "503_statusPekerjaanUtama": number;
   "504_pendapatanSebulanTerakhir": string;
   "505_kepemilikanNPWP": number;
   "506_memilikiUsaha": number;
   "507_jumlahUsaha": number;
-  "508_lapanganUsahaSendiri": string;
+  "508_lapanganUsahaSendiri": number;
   "509_statusUsaha": number;
   "510_jumlahPekerjaTidakDibayar": number;
   "511_jumlahPekerjaDibayar": number;
@@ -87,6 +87,7 @@ export interface Blok8 {
   "811_tempatBuangTinja": number;
 }
 
+// Di dalam file: types/survey.ts
 export interface Blok9 {
   "901a_asetLahan": number;
   "901b_asetRumahLain": number;
@@ -114,7 +115,9 @@ export interface Blok9 {
   "904e_BantuanPemda": number;
   "904f_SubsidiPupuk": number;
   "904g_BantuanDesa": number;
+  "904g_catatan": string; // Field baru
   "904h_BantuanLainnya": number;
+  "904h_catatan": string; // Field baru
   "905a_jenisBantuanSawit": number;
   "905b_jenisBantuanIkanLele": number;
   "905c_jenisBantuanSayurBuah": number;
@@ -124,12 +127,15 @@ export interface Blok9 {
   "907a_lanjutanBantuanSawit": number;
   "907b_lanjutanBantuanIkanLele": number;
   "907c_lanjutanBantuanSayurBuah": number;
-  "908a_alasanTidakLanjutSawit": string;
-  "908b_alasanTidakLanjutIkanLele": string;
-  "908c_alasanTidakLanjutSayurBuah": string;
-  "909a_programDukungSawit": number;
-  "909b_programDukungIkanLele": number;
-  "909c_programDukungSayurBuah": number;
+  "908a_alasanTidakLanjutSawit": string[]; // Tipe array string
+  "908b_alasanTidakLanjutIkanLele": string[]; // Tipe array string
+  "908c_alasanTidakLanjutSayurBuah": string[]; // Tipe array string
+  "909a_programDukungSawit": string[]; // Tipe array string
+  "909a_lainnya": string; // Field baru
+  "909b_programDukungIkanLele": string[]; // Tipe array string
+  "909b_lainnya": string; // Field baru
+  "909c_programDukungSayurBuah": string[]; // Tipe array string
+  "909c_lainnya": string; // Field baru
 }
 
 export interface Blok10 {

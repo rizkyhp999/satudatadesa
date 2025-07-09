@@ -1,0 +1,191 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Survei {
+  id                             String   @id @default(uuid())
+  createdAt                      DateTime @default(now())
+
+  // Blok 1
+  101_namaKepalaKeluarga         String
+  102_jumlahKK                   Int
+  103_jumlahAnggotaKeluarga     Int
+  104_nomorKK                   BigInt
+  105_kodeKK                    BigInt
+
+  // Blok 2
+  201_namaRT                     String
+  202_nomorUrutBangunan          Int
+  203_nomorUrutKeluarga          Int
+  204_alamatLengkap              String
+  205_statusKependudukan         Int
+
+  // Blok 10
+  1001_catatan                   String?
+
+  // Relasi
+  blok8                          Blok8?
+  blok9                          Blok9?
+  anggotaKeluarga               AnggotaKeluarga[]
+}
+
+model Blok8 {
+  id                             String   @id @default(uuid())
+  surveiId                       String   @unique
+  survei                         Survei   @relation(fields: [surveiId], references: [id])
+
+  801_statusKepemilikanBangunan  Int
+  802_luasLantai                 Int
+  803_jenisLantai                Int
+  804_jenisDinding               Int
+  805_jenisAtap                  Int
+  806_sumberAirMinum            Int
+  807_sumberAirMandi            Int
+  808a_sumberPenerangan         Int
+  808b_dayaTerpasang1           Int
+  808b_dayaTerpasang2           Int
+  808b_dayaTerpasang3           Int
+  809_bahanBakarMasak           Int
+  810a_kepemilikanFasilitasBAB  Int
+  810b_jenisKloset              Int
+  811_tempatBuangTinja          Int
+}
+
+model Blok9 {
+  id                             String   @id @default(uuid())
+  surveiId                       String   @unique
+  survei                         Survei   @relation(fields: [surveiId], references: [id])
+
+  901a_asetLahan                 Int
+  901b_asetRumahLain             Int
+  902a_tabungGas                 Int
+  902b_kulkas                    Int
+  902c_ac                        Int
+  902d_tv                        Int
+  902e_emas                      Int
+  902f_komputer                  Int
+  902g_motor                     Int
+  902h_perahuMotor              Int
+  902i_mobil                     Int
+  902j_sepeda                    Int
+  902k_perahu                    Int
+  902l_smartphone                Int
+  903a_sapi                      Int
+  903b_kerbau                    Int
+  903c_kuda                      Int
+  903d_babi                      Int
+  903e_kambing                   Int
+  904a_BPNT                      Int
+  904b_PKH                       Int
+  904c_BLTDesa                   Int
+  904d_SubsidiListrik            Int
+  904e_BantuanPemda              Int
+  904f_SubsidiPupuk             Int
+  904g_BantuanDesa              Int
+  904h_BantuanLainnya            Int
+  905a_jenisBantuanSawit         Int
+  905b_jenisBantuanIkanLele      Int
+  905c_jenisBantuanSayurBuah     Int
+  906a_terimaBantuanSawit        Int
+  906b_terimaBantuanIkanLele     Int
+  906c_terimaBantuanSayurBuah    Int
+  907a_lanjutanBantuanSawit      Int
+  907b_lanjutanBantuanIkanLele   Int
+  907c_lanjutanBantuanSayurBuah  Int
+  908a_alasanTidakLanjutSawit    String
+  908b_alasanTidakLanjutIkanLele String
+  908c_alasanTidakLanjutSayurBuah String
+  909a_programDukungSawit        Int
+  909b_programDukungIkanLele     Int
+  909c_programDukungSayurBuah    Int
+}
+
+model AnggotaKeluarga {
+  id        String   @id @default(uuid())
+  surveiId  String
+  survei    Survei   @relation(fields: [surveiId], references: [id], onDelete: Cascade)
+
+  blok3     Blok3?
+  blok4     Blok4?
+  blok5     Blok5?
+  blok6     Blok6?
+  blok7     Blok7?
+}
+
+model Blok3 {
+  id                           String   @id @default(uuid())
+  anggotaKeluargaId           String   @unique
+  anggotaKeluarga             AnggotaKeluarga @relation(fields: [anggotaKeluargaId], references: [id])
+
+  301_nomorUrut               Int
+  302_nama                    String
+  303_nik                     BigInt
+  304_keteranganKeberadaan    Int
+  305_kecDesaSaatIni          String
+  306_provKabSaatIni          String
+  307_negaraSaatIni           String
+  308_jenisKelamin            Int
+  309_tanggalLahir            String
+  310_umur                    Int
+  311_statusPerkawinan        Int
+  312_hubunganDenganKK        Int
+  313_sedangHamil             Int
+  314_usiaKehamilan           Int
+}
+
+model Blok4 {
+  id                      String   @id @default(uuid())
+  anggotaKeluargaId       String   @unique
+  anggotaKeluarga         AnggotaKeluarga @relation(fields: [anggotaKeluargaId], references: [id])
+
+  401_partisipasiSekolah  Int
+  402_jenjangPendidikan   Int
+  403_kelasTertinggi      Int
+  404_ijazahTertinggi     Int
+}
+
+model Blok5 {
+  id                              String   @id @default(uuid())
+  anggotaKeluargaId               String   @unique
+  anggotaKeluarga                 AnggotaKeluarga @relation(fields: [anggotaKeluargaId], references: [id])
+
+  501_bekerjaMingguLalu           Int
+  502_lapanganUsahaUtama          String
+  503_statusPekerjaanUtama        Int
+  504_pendapatanSebulanTerakhir   String
+  505_kepemilikanNPWP             Int
+  506_memilikiUsaha               Int
+  507_jumlahUsaha                 Int
+  508_lapanganUsahaSendiri        String
+  509_statusUsaha                 Int
+  510_jumlahPekerjaTidakDibayar   Int
+  511_jumlahPekerjaDibayar        Int
+  512_kepemilikanIzinUsaha        Int
+  513_pendapatanUsahaSebulan      Int
+}
+
+model Blok6 {
+  id                            String   @id @default(uuid())
+  anggotaKeluargaId             String   @unique
+  anggotaKeluarga               AnggotaKeluarga @relation(fields: [anggotaKeluargaId], references: [id])
+
+  601_statusDisabilitas         Int
+  602_kondisiGizi               Int
+  603_keluhanKesehatanKronis    Int
+  604_memilikiWali              Int
+}
+
+model Blok7 {
+  id                            String   @id @default(uuid())
+  anggotaKeluargaId             String   @unique
+  anggotaKeluarga               AnggotaKeluarga @relation(fields: [anggotaKeluargaId], references: [id])
+
+  701_jaminanKesehatan          Int
+  702_jaminanKetenagakerjaan    Int
+  703_ikutProgramPIP            Int
+}

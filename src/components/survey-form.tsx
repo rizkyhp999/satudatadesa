@@ -19,6 +19,9 @@ import { Blok9Component } from "./survey-blocks/blok9";
 import { Blok10Component } from "./survey-blocks/blok10";
 import type { SurveyResponse } from "@/types/survey";
 
+// =====================================================================
+// PERBAIKAN UTAMA DI SINI
+// =====================================================================
 const initialSurveyData: SurveyResponse = {
   blok1: {
     "101_namaKepalaKeluarga": "",
@@ -79,7 +82,9 @@ const initialSurveyData: SurveyResponse = {
     "904e_BantuanPemda": 0,
     "904f_SubsidiPupuk": 0,
     "904g_BantuanDesa": 0,
+    "904g_catatan": "", // Properti yang hilang ditambahkan
     "904h_BantuanLainnya": 0,
+    "904h_catatan": "", // Properti yang hilang ditambahkan
     "905a_jenisBantuanSawit": 0,
     "905b_jenisBantuanIkanLele": 0,
     "905c_jenisBantuanSayurBuah": 0,
@@ -89,12 +94,15 @@ const initialSurveyData: SurveyResponse = {
     "907a_lanjutanBantuanSawit": 0,
     "907b_lanjutanBantuanIkanLele": 0,
     "907c_lanjutanBantuanSayurBuah": 0,
-    "908a_alasanTidakLanjutSawit": "",
-    "908b_alasanTidakLanjutIkanLele": "",
-    "908c_alasanTidakLanjutSayurBuah": "",
-    "909a_programDukungSawit": 0,
-    "909b_programDukungIkanLele": 0,
-    "909c_programDukungSayurBuah": 0,
+    "908a_alasanTidakLanjutSawit": [],
+    "908b_alasanTidakLanjutIkanLele": [],
+    "908c_alasanTidakLanjutSayurBuah": [],
+    "909a_programDukungSawit": [],
+    "909a_lainnya": "", // Properti yang hilang ditambahkan
+    "909b_programDukungIkanLele": [],
+    "909b_lainnya": "", // Properti yang hilang ditambahkan
+    "909c_programDukungSayurBuah": [],
+    "909c_lainnya": "", // Properti yang hilang ditambahkan
   },
   blok10: {
     "1001_catatan": "",

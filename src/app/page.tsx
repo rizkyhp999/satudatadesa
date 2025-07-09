@@ -1,19 +1,5 @@
-import { SurveyForm } from "@/components/survey-form";
+import React from "react";
 
-export default function Home() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-800 mb-2">
-            Survei Satu Data Desa
-          </h1>
-          <p className="text-slate-600 text-lg">
-            Formulir Pendataan Keluarga dan Anggota Keluarga
-          </p>
-        </div>
-        <SurveyForm />
-      </div>
-    </div>
-  );
+export default function page() {
+  return <div>page</div>;
 }

@@ -1,21 +1,26 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  // CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import { Separator } from "@/components/ui/separator";
 import { Users, Home, CreditCard } from "lucide-react";
 import type { Blok1 } from "@/types/survey";
 
 interface Blok1ComponentProps {
   data: Blok1;
   onChange: (data: Blok1) => void;
+}
+
+function formatNomorKK(raw: string) {
+  return raw
+    .replace(/\D/g, "")
+    .slice(0, 16)
+    .replace(/(.{4})/g, "$1-")
+    .replace(/-$/, "");
+}
+
+function unformatNomorKK(formatted: string) {
+  return formatted.replace(/-/g, "");
 }
 
 export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
@@ -41,6 +46,7 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
       </div>
 
       <div className="grid gap-6">
+        {/* 101 */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -69,6 +75,7 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
           </CardContent>
         </Card>
 
+        {/* 102, 103 */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -87,12 +94,11 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
               <Input
                 id="jumlahKK"
                 type="number"
-                min="1"
-                max="99"
                 value={data["102_jumlahKK"] || ""}
-                onChange={(e) =>
-                  handleChange("102_jumlahKK", parseInt(e.target.value) || 0)
-                }
+                onChange={(e) => {
+                  const val = e.target.value.slice(0, 2);
+                  handleChange("102_jumlahKK", parseInt(val) || 0);
+                }}
                 placeholder="0"
                 className="mt-1"
               />
@@ -107,15 +113,11 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
               <Input
                 id="jumlahAnggotaKeluarga"
                 type="number"
-                min="1"
-                max="99"
                 value={data["103_jumlahAnggotaKeluarga"] || ""}
-                onChange={(e) =>
-                  handleChange(
-                    "103_jumlahAnggotaKeluarga",
-                    parseInt(e.target.value) || 0
-                  )
-                }
+                onChange={(e) => {
+                  const val = e.target.value.slice(0, 2);
+                  handleChange("103_jumlahAnggotaKeluarga", parseInt(val) || 0);
+                }}
                 placeholder="0"
                 className="mt-1"
               />
@@ -123,6 +125,7 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
           </CardContent>
         </Card>
 
+        {/* 104, 105 */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -130,7 +133,7 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
               Identitas Kartu Keluarga
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid md:grid-cols-2 gap-4">
+          <CardContent className="grid gap-4">
             <div>
               <Label
                 htmlFor="nomorKK"
@@ -140,15 +143,13 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
               </Label>
               <Input
                 id="nomorKK"
-                type="number"
-                value={data["104_nomorKK"] || ""}
+                inputMode="numeric"
+                value={formatNomorKK((data["104_nomorKK"] || "").toString())}
                 onChange={(e) => {
-                  const value = e.target.value;
-                  if (value.length <= 16) {
-                    handleChange("104_nomorKK", parseInt(value) || 0);
-                  }
+                  const raw = unformatNomorKK(e.target.value);
+                  handleChange("104_nomorKK", parseInt(raw) || 0);
                 }}
-                placeholder="1234567890123456"
+                placeholder="1234-5678-9012-3456"
                 className="mt-1"
               />
             </div>
@@ -162,18 +163,22 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
               <Input
                 id="kodeKK"
                 type="number"
-                min="0"
-                max="9"
+                min={0}
+                max={9}
                 value={data["105_kodeKK"] || ""}
                 onChange={(e) => {
                   const value = parseInt(e.target.value);
                   if (value >= 0 && value <= 9) {
-                    handleChange("105_kodeKK", value || 0);
+                    handleChange("105_kodeKK", value);
                   }
                 }}
                 placeholder="0"
                 className="mt-1"
               />
+              <p className="text-xs text-slate-500 mt-1">
+                Kode 105 : Kode Kartu Keluarga
+                <br />0 - Kode Sesuai, 1 - Keluarga Induk, 2 - Keluarga Pecahan
+              </p>
             </div>
           </CardContent>
         </Card>

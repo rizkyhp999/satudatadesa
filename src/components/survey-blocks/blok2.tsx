@@ -20,9 +20,9 @@ interface Blok2ComponentProps {
 }
 
 const statusKependudukanOptions = [
-  { value: 1, label: "Penduduk Tetap" },
-  { value: 2, label: "Penduduk Sementara" },
-  { value: 3, label: "Penduduk Musiman" },
+  { value: 1, label: "KTP Desa" },
+  { value: 2, label: "KTP Luar Desa" },
+  { value: 3, label: "KTP Luar Kabupaten Tana Tidung" },
 ];
 
 export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
@@ -50,6 +50,7 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
       </div>
 
       <div className="grid gap-6">
+        {/* KARTU RT & BANGUNAN */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -85,15 +86,13 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
                 <Input
                   id="nomorUrutBangunan"
                   type="number"
-                  min="1"
-                  max="99"
+                  min={1}
+                  max={99}
                   value={data["202_nomorUrutBangunan"] || ""}
-                  onChange={(e) =>
-                    handleChange(
-                      "202_nomorUrutBangunan",
-                      parseInt(e.target.value) || 0
-                    )
-                  }
+                  onChange={(e) => {
+                    const val = e.target.value.slice(0, 2);
+                    handleChange("202_nomorUrutBangunan", parseInt(val) || 0);
+                  }}
                   placeholder="01"
                   className="mt-1"
                 />
@@ -108,15 +107,13 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
                 <Input
                   id="nomorUrutKeluarga"
                   type="number"
-                  min="1"
-                  max="99"
+                  min={1}
+                  max={99}
                   value={data["203_nomorUrutKeluarga"] || ""}
-                  onChange={(e) =>
-                    handleChange(
-                      "203_nomorUrutKeluarga",
-                      parseInt(e.target.value) || 0
-                    )
-                  }
+                  onChange={(e) => {
+                    const val = e.target.value.slice(0, 2);
+                    handleChange("203_nomorUrutKeluarga", parseInt(val) || 0);
+                  }}
                   placeholder="01"
                   className="mt-1"
                 />
@@ -125,6 +122,7 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
           </CardContent>
         </Card>
 
+        {/* KARTU ALAMAT & STATUS */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -178,6 +176,15 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
                   ))}
                 </SelectContent>
               </Select>
+              <p className="text-xs text-slate-500 mt-1">
+                Kode 205 : Kode Status Kependudukan
+                <br />
+                1. KTP Desa
+                <br />
+                2. KTP Luar Desa
+                <br />
+                3. KTP Luar Kabupaten Tana Tidung
+              </p>
             </div>
           </CardContent>
         </Card>

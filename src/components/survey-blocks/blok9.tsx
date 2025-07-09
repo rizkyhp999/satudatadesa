@@ -1,5 +1,6 @@
 "use client";
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Coins, Home, Car, MilkIcon as Cow, Gift, Sprout } from "lucide-react";
 import type { Blok9 } from "@/types/survey";
 
@@ -19,13 +20,91 @@ interface Blok9ComponentProps {
   onChange: (data: Blok9) => void;
 }
 
+const alasanTidakLanjutOptions = [
+  { id: "A", label: "A. Kurangnya pemahaman" },
+  { id: "B", label: "B. Kurangnya SDM" },
+  { id: "C", label: "C. Kurangnya sarana" },
+  { id: "D", label: "D. Kurangnya anggaran" },
+  { id: "E", label: "E. Dimakan hama" },
+  { id: "F", label: "F. Lahan yang kurang memadai" },
+  { id: "G", label: "G. Cuaca yang tidak mendukung" },
+];
+const dukunganDiperlukanOptions = [
+  { id: "A", label: "A. Pelatihan/penyuluhan" },
+  { id: "B", label: "B. Program Satu Anggota Keluarga Satu Petani" },
+  { id: "C", label: "C. Subsidi keperluan pertanian" },
+  { id: "D", label: "D. Tersedia penampung hasil pertanian" },
+  { id: "E", label: "E. Lainnya, tuliskan:" },
+];
+const lanjutanBantuanOptions = [
+  { value: "1", label: "1. Lanjut, proses tanam/pembenihan" },
+  { value: "2", label: "2. Lanjut, pernah panen" },
+  { value: "3", label: "3. Tidak lanjut, pernah panen" },
+  { value: "4", label: "4. Tidak lanjut, gagal panen" },
+];
+
 export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
-  const handleChange = (field: keyof Blok9, value: string | number) => {
-    onChange({
-      ...data,
-      [field]: value,
-    });
+  const handleChange = useCallback(
+    (field: keyof Blok9, value: any) => {
+      onChange({ ...data, [field]: value });
+    },
+    [data, onChange]
+  );
+
+  const handleCheckboxChange = (
+    field: keyof Blok9,
+    optionId: string,
+    checked: boolean
+  ) => {
+    const currentValues = (data[field] as string[]) || [];
+    let newValues: string[];
+    if (checked) {
+      newValues = [...currentValues, optionId];
+    } else {
+      newValues = currentValues.filter((id) => id !== optionId);
+    }
+    handleChange(field, newValues);
   };
+
+  // =====================================================================
+  // KONDISI UNTUK LOGIKA DISABLE (TANPA useEffect)
+  // =====================================================================
+
+  const showCatatan904g = data["904g_BantuanDesa"] === 1;
+  const showCatatan904h = data["904h_BantuanLainnya"] === 1;
+
+  // Logika Bantuan Sawit
+  const disableBantuanSawitLanjutan = data["905a_jenisBantuanSawit"] !== 1;
+  const disableTerimaBantuanSawit =
+    disableBantuanSawitLanjutan || data["906a_terimaBantuanSawit"] !== 1;
+  const disableAlasanTidakLanjutSawit =
+    disableTerimaBantuanSawit ||
+    ![3, 4].includes(data["907a_lanjutanBantuanSawit"]);
+  const showLainnyaDukungSawit =
+    !disableTerimaBantuanSawit &&
+    (data["909a_programDukungSawit"] || []).includes("E");
+
+  // Logika Bantuan Ikan Lele
+  const disableBantuanLeleLanjutan = data["905b_jenisBantuanIkanLele"] !== 1;
+  const disableTerimaBantuanLele =
+    disableBantuanLeleLanjutan || data["906b_terimaBantuanIkanLele"] !== 1;
+  const disableAlasanTidakLanjutLele =
+    disableTerimaBantuanLele ||
+    ![3, 4].includes(data["907b_lanjutanBantuanIkanLele"]);
+  const showLainnyaDukungLele =
+    !disableTerimaBantuanLele &&
+    (data["909b_programDukungIkanLele"] || []).includes("E");
+
+  // Logika Bantuan Sayur/Buah
+  const disableBantuanSayurLanjutan = data["905c_jenisBantuanSayurBuah"] !== 1;
+  const disableTerimaBantuanSayur =
+    disableBantuanSayurLanjutan || data["906c_terimaBantuanSayurBuah"] !== 1;
+  const disableAlasanTidakLanjutSayur =
+    disableTerimaBantuanSayur ||
+    ![3, 4].includes(data["907c_lanjutanBantuanSayurBuah"]);
+  const showLainnyaDukungSayur =
+    !disableTerimaBantuanSayur &&
+    (data["909c_programDukungSayurBuah"] || []).includes("E");
 
   return (
     <div className="space-y-6">
@@ -42,9 +121,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
           </p>
         </div>
       </div>
-
       <div className="grid gap-6">
-        {/* Aset Lahan dan Properti */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -55,331 +132,245 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
           <CardContent className="grid md:grid-cols-2 gap-4">
             <div>
               <Label className="text-sm font-medium text-slate-700">
-                901a. Keluarga Memiliki Aset Lahan (2 digit)
+                901a. Jumlah Aset Lahan (m²)
               </Label>
-              <Select
-                value={data["901a_asetLahan"]?.toString()}
-                onValueChange={(value) =>
-                  handleChange("901a_asetLahan", Number.parseInt(value))
+              <Input
+                type="number"
+                min="0"
+                value={data["901a_asetLahan"] || ""}
+                onChange={(e) =>
+                  handleChange("901a_asetLahan", Number(e.target.value) || 0)
                 }
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Pilih" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">Ya, Luas {"< 0.5 Ha"}</SelectItem>
-                  <SelectItem value="2">Ya, Luas 0.5-1 Ha</SelectItem>
-                  <SelectItem value="3">Ya, Luas {"> 1 Ha"}</SelectItem>
-                  <SelectItem value="4">Tidak</SelectItem>
-                </SelectContent>
-              </Select>
+                placeholder="0"
+                className="mt-1"
+              />
             </div>
             <div>
               <Label className="text-sm font-medium text-slate-700">
-                901b. Keluarga Memiliki Aset Rumah/Bangunan di Tempat Lain (2
-                digit)
+                901b. Jumlah Aset Rumah Lain
               </Label>
-              <Select
-                value={data["901b_asetRumahLain"]?.toString()}
-                onValueChange={(value) =>
-                  handleChange("901b_asetRumahLain", Number.parseInt(value))
+              <Input
+                type="number"
+                min="0"
+                value={data["901b_asetRumahLain"] || ""}
+                onChange={(e) =>
+                  handleChange(
+                    "901b_asetRumahLain",
+                    Number(e.target.value) || 0
+                  )
                 }
-              >
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Pilih" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                  <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                  <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                  <SelectItem value="4">Tidak</SelectItem>
-                </SelectContent>
-              </Select>
+                placeholder="0"
+                className="mt-1"
+              />
             </div>
           </CardContent>
         </Card>
-
-        {/* Kepemilikan Barang */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Car className="w-5 h-5 text-slate-600" />
-              Kepemilikan Barang (2 digit)
+              Kepemilikan Barang
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902a. Tabung Gas ≥5.5kg
+                  902a. Jumlah Tabung Gas ≥5.5kg
                 </Label>
-                <Select
-                  value={data["902a_tabungGas"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902a_tabungGas", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902a_tabungGas"] || ""}
+                  onChange={(e) =>
+                    handleChange("902a_tabungGas", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902b. Lemari Es/Kulkas
+                  902b. Jumlah Kulkas
                 </Label>
-                <Select
-                  value={data["902b_kulkas"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902b_kulkas", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902b_kulkas"] || ""}
+                  onChange={(e) =>
+                    handleChange("902b_kulkas", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902c. Air Conditioner (AC)
+                  902c. Jumlah AC
                 </Label>
-                <Select
-                  value={data["902c_ac"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902c_ac", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902c_ac"] || ""}
+                  onChange={(e) =>
+                    handleChange("902c_ac", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
             </div>
-
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902d. Televisi (min 30 inci)
+                  902d. Jumlah TV (min 30 inci)
                 </Label>
-                <Select
-                  value={data["902d_tv"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902d_tv", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902d_tv"] || ""}
+                  onChange={(e) =>
+                    handleChange("902d_tv", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902e. Emas/Perhiasan
+                  902e. Jumlah Emas (gram)
                 </Label>
-                <Select
-                  value={data["902e_emas"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902e_emas", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902e_emas"] || ""}
+                  onChange={(e) =>
+                    handleChange("902e_emas", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, {"< 10 gram"}</SelectItem>
-                    <SelectItem value="2">Ya, 10-50 gram</SelectItem>
-                    <SelectItem value="3">Ya, {"> 50 gram"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902f. Komputer/Laptop/Tablet
+                  902f. Jumlah Komputer/Laptop
                 </Label>
-                <Select
-                  value={data["902f_komputer"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902f_komputer", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902f_komputer"] || ""}
+                  onChange={(e) =>
+                    handleChange("902f_komputer", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
             </div>
-
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902g. Sepeda Motor
+                  902g. Jumlah Sepeda Motor
                 </Label>
-                <Select
-                  value={data["902g_motor"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902g_motor", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902g_motor"] || ""}
+                  onChange={(e) =>
+                    handleChange("902g_motor", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902h. Perahu Motor
+                  902h. Jumlah Perahu Motor
                 </Label>
-                <Select
-                  value={data["902h_perahuMotor"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902h_perahuMotor", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902h_perahuMotor"] || ""}
+                  onChange={(e) =>
+                    handleChange(
+                      "902h_perahuMotor",
+                      Number(e.target.value) || 0
+                    )
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902i. Mobil
+                  902i. Jumlah Mobil
                 </Label>
-                <Select
-                  value={data["902i_mobil"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902i_mobil", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902i_mobil"] || ""}
+                  onChange={(e) =>
+                    handleChange("902i_mobil", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
             </div>
-
             <div className="grid md:grid-cols-3 gap-4">
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902j. Sepeda
+                  902j. Jumlah Sepeda
                 </Label>
-                <Select
-                  value={data["902j_sepeda"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902j_sepeda", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902j_sepeda"] || ""}
+                  onChange={(e) =>
+                    handleChange("902j_sepeda", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902k. Perahu
+                  902k. Jumlah Perahu
                 </Label>
-                <Select
-                  value={data["902k_perahu"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902k_perahu", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902k_perahu"] || ""}
+                  onChange={(e) =>
+                    handleChange("902k_perahu", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
               <div>
                 <Label className="text-sm font-medium text-slate-700">
-                  902l. Smartphone
+                  902l. Jumlah Smartphone
                 </Label>
-                <Select
-                  value={data["902l_smartphone"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("902l_smartphone", Number.parseInt(value))
+                <Input
+                  type="number"
+                  min="0"
+                  value={data["902l_smartphone"] || ""}
+                  onChange={(e) =>
+                    handleChange("902l_smartphone", Number(e.target.value) || 0)
                   }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya, 1 Unit</SelectItem>
-                    <SelectItem value="2">Ya, 2 Unit</SelectItem>
-                    <SelectItem value="3">Ya, {"> 2 Unit"}</SelectItem>
-                    <SelectItem value="4">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
+                  placeholder="0"
+                  className="mt-1"
+                />
               </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* Kepemilikan Ternak */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Cow className="w-5 h-5 text-slate-600" />
-              Kepemilikan Ternak (2 digit)
+              Kepemilikan Ternak
             </CardTitle>
           </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-4">
@@ -392,12 +383,12 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903a_sapi"] || ""}
-                onChange={(e) => {
-                  const value = Number.parseInt(e.target.value);
-                  if (value >= 0 && value <= 99) {
-                    handleChange("903a_sapi", value || 0);
-                  }
-                }}
+                onChange={(e) =>
+                  handleChange(
+                    "903a_sapi",
+                    Number.parseInt(e.target.value) || 0
+                  )
+                }
                 placeholder="00"
                 className="mt-1"
               />
@@ -411,12 +402,12 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903b_kerbau"] || ""}
-                onChange={(e) => {
-                  const value = Number.parseInt(e.target.value);
-                  if (value >= 0 && value <= 99) {
-                    handleChange("903b_kerbau", value || 0);
-                  }
-                }}
+                onChange={(e) =>
+                  handleChange(
+                    "903b_kerbau",
+                    Number.parseInt(e.target.value) || 0
+                  )
+                }
                 placeholder="00"
                 className="mt-1"
               />
@@ -430,12 +421,12 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903c_kuda"] || ""}
-                onChange={(e) => {
-                  const value = Number.parseInt(e.target.value);
-                  if (value >= 0 && value <= 99) {
-                    handleChange("903c_kuda", value || 0);
-                  }
-                }}
+                onChange={(e) =>
+                  handleChange(
+                    "903c_kuda",
+                    Number.parseInt(e.target.value) || 0
+                  )
+                }
                 placeholder="00"
                 className="mt-1"
               />
@@ -449,214 +440,214 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
                 min="0"
                 max="99"
                 value={data["903d_babi"] || ""}
-                onChange={(e) => {
-                  const value = Number.parseInt(e.target.value);
-                  if (value >= 0 && value <= 99) {
-                    handleChange("903d_babi", value || 0);
-                  }
-                }}
+                onChange={(e) =>
+                  handleChange(
+                    "903d_babi",
+                    Number.parseInt(e.target.value) || 0
+                  )
+                }
                 placeholder="00"
                 className="mt-1"
               />
             </div>
             <div>
               <Label className="text-sm font-medium text-slate-700">
-                903e. Jumlah Kambing/Domba (ekor)
+                903e. Jumlah Kambing/Domba
               </Label>
               <Input
                 type="number"
                 min="0"
                 max="99"
                 value={data["903e_kambing"] || ""}
-                onChange={(e) => {
-                  const value = Number.parseInt(e.target.value);
-                  if (value >= 0 && value <= 99) {
-                    handleChange("903e_kambing", value || 0);
-                  }
-                }}
+                onChange={(e) =>
+                  handleChange(
+                    "903e_kambing",
+                    Number.parseInt(e.target.value) || 0
+                  )
+                }
                 placeholder="00"
                 className="mt-1"
               />
             </div>
           </CardContent>
         </Card>
-
-        {/* Bantuan Pemerintah */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <Gift className="w-5 h-5 text-slate-600" />
-              Bantuan Pemerintah (1 Tahun Terakhir) - 1 digit
+              Bantuan Pemerintah (1 Tahun Terakhir)
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  904a. BPNT
-                </Label>
-                <Select
-                  value={data["904a_BPNT"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("904a_BPNT", Number.parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  904b. PKH
-                </Label>
-                <Select
-                  value={data["904b_PKH"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("904b_PKH", Number.parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          <CardContent className="grid md:grid-cols-2 gap-y-4 gap-x-6">
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                904a. BPNT
+              </Label>
+              <Select
+                value={data["904a_BPNT"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("904a_BPNT", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  904c. BLT Desa
-                </Label>
-                <Select
-                  value={data["904c_BLTDesa"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("904c_BLTDesa", Number.parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  904d. Subsidi Listrik
-                </Label>
-                <Select
-                  value={data["904d_SubsidiListrik"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("904d_SubsidiListrik", Number.parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                904b. PKH
+              </Label>
+              <Select
+                value={data["904b_PKH"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("904b_PKH", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  904e. Bantuan Pemda
-                </Label>
-                <Select
-                  value={data["904e_BantuanPemda"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("904e_BantuanPemda", Number.parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  904f. Subsidi Pupuk
-                </Label>
-                <Select
-                  value={data["904f_SubsidiPupuk"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("904f_SubsidiPupuk", Number.parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                904c. BLT Desa
+              </Label>
+              <Select
+                value={data["904c_BLTDesa"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("904c_BLTDesa", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  904g. Bantuan Desa
-                </Label>
-                <Select
-                  value={data["904g_BantuanDesa"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("904g_BantuanDesa", Number.parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  904h. Bantuan Lainnya
-                </Label>
-                <Select
-                  value={data["904h_BantuanLainnya"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("904h_BantuanLainnya", Number.parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Ya</SelectItem>
-                    <SelectItem value="2">Tidak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                904d. Subsidi Listrik
+              </Label>
+              <Select
+                value={data["904d_SubsidiListrik"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("904d_SubsidiListrik", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                904e. Bantuan Pemda
+              </Label>
+              <Select
+                value={data["904e_BantuanPemda"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("904e_BantuanPemda", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                904f. Subsidi Pupuk
+              </Label>
+              <Select
+                value={data["904f_SubsidiPupuk"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("904f_SubsidiPupuk", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-slate-700">
+                904g. Bantuan Desa
+              </Label>
+              <Select
+                value={data["904g_BantuanDesa"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("904g_BantuanDesa", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
+              {showCatatan904g && (
+                <Input
+                  value={data["904g_catatan"] || ""}
+                  onChange={(e) => handleChange("904g_catatan", e.target.value)}
+                  placeholder="Sebutkan bantuan desa..."
+                />
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label className="text-sm font-medium text-slate-700">
+                904h. Bantuan Lainnya
+              </Label>
+              <Select
+                value={data["904h_BantuanLainnya"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("904h_BantuanLainnya", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Ya</SelectItem>
+                  <SelectItem value="2">Tidak</SelectItem>
+                </SelectContent>
+              </Select>
+              {showCatatan904h && (
+                <Input
+                  value={data["904h_catatan"] || ""}
+                  onChange={(e) => handleChange("904h_catatan", e.target.value)}
+                  placeholder="Sebutkan bantuan lainnya..."
+                />
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Bantuan Khusus */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -665,385 +656,498 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Jenis Bantuan */}
-            <div>
-              <h4 className="font-medium text-slate-700 mb-3">
-                Jenis Bantuan yang Diterima (1 digit)
-              </h4>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    905a. Bantuan Bibit Sawit
-                  </Label>
-                  <Select
-                    value={data["905a_jenisBantuanSawit"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "905a_jenisBantuanSawit",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Bibit</SelectItem>
-                      <SelectItem value="2">Pupuk</SelectItem>
-                      <SelectItem value="3">Alat</SelectItem>
-                      <SelectItem value="4">Lainnya</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    905b. Bantuan Benih Ikan Lele
-                  </Label>
-                  <Select
-                    value={data["905b_jenisBantuanIkanLele"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "905b_jenisBantuanIkanLele",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Benih</SelectItem>
-                      <SelectItem value="2">Pakan</SelectItem>
-                      <SelectItem value="3">Kolam</SelectItem>
-                      <SelectItem value="4">Lainnya</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    905c. Bantuan Bibit Sayur/Buah
-                  </Label>
-                  <Select
-                    value={data["905c_jenisBantuanSayurBuah"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "905c_jenisBantuanSayurBuah",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Bibit</SelectItem>
-                      <SelectItem value="2">Pupuk</SelectItem>
-                      <SelectItem value="3">Alat</SelectItem>
-                      <SelectItem value="4">Lainnya</SelectItem>
-                    </SelectContent>
-                  </Select>
+            <div className="p-4 border rounded-md space-y-4">
+              <h4 className="font-semibold text-slate-800">Bantuan Sawit</h4>
+              <div>
+                <Label className="text-sm font-medium">
+                  905a. Pernah terima bantuan sawit?
+                </Label>
+                <Select
+                  value={data["905a_jenisBantuanSawit"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange("905a_jenisBantuanSawit", Number.parseInt(v))
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Ya</SelectItem>
+                    <SelectItem value="2">Tidak</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className={`${disableBantuanSawitLanjutan && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableBantuanSawitLanjutan && "text-slate-400"
+                  }`}
+                >
+                  906a. Terima bantuan sawit 1 tahun terakhir?
+                </Label>
+                <Select
+                  disabled={disableBantuanSawitLanjutan}
+                  value={data["906a_terimaBantuanSawit"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange("906a_terimaBantuanSawit", Number.parseInt(v))
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Ya</SelectItem>
+                    <SelectItem value="2">Tidak</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className={`${disableTerimaBantuanSawit && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableTerimaBantuanSawit && "text-slate-400"
+                  }`}
+                >
+                  907a. Keberlanjutan Bantuan Sawit
+                </Label>
+                <Select
+                  disabled={disableTerimaBantuanSawit}
+                  value={data["907a_lanjutanBantuanSawit"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange(
+                      "907a_lanjutanBantuanSawit",
+                      Number.parseInt(v)
+                    )
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {lanjutanBantuanOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div
+                className={`${disableAlasanTidakLanjutSawit && "opacity-50"}`}
+              >
+                <Label
+                  className={`text-sm font-medium ${
+                    disableAlasanTidakLanjutSawit && "text-slate-400"
+                  }`}
+                >
+                  908a. Alasan Tidak Lanjut Sawit
+                </Label>
+                <div className="space-y-2 mt-2">
+                  {alasanTidakLanjutOptions.map((opt) => (
+                    <div key={opt.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`908a-${opt.id}`}
+                        disabled={disableAlasanTidakLanjutSawit}
+                        checked={(
+                          data["908a_alasanTidakLanjutSawit"] || []
+                        ).includes(opt.id)}
+                        onCheckedChange={(c) =>
+                          handleCheckboxChange(
+                            "908a_alasanTidakLanjutSawit",
+                            opt.id,
+                            !!c
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={`908a-${opt.id}`}
+                        className="text-sm font-normal"
+                      >
+                        {opt.label}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-
-            <Separator />
-
-            {/* Status Penerimaan */}
-            <div>
-              <h4 className="font-medium text-slate-700 mb-3">
-                Status Penerimaan Bantuan (1 digit)
-              </h4>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    906a. Terima Bantuan Sawit
-                  </Label>
-                  <Select
-                    value={data["906a_terimaBantuanSawit"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "906a_terimaBantuanSawit",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Ya</SelectItem>
-                      <SelectItem value="2">Tidak</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    906b. Terima Bantuan Ikan Lele
-                  </Label>
-                  <Select
-                    value={data["906b_terimaBantuanIkanLele"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "906b_terimaBantuanIkanLele",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Ya</SelectItem>
-                      <SelectItem value="2">Tidak</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    906c. Terima Bantuan Sayur/Buah
-                  </Label>
-                  <Select
-                    value={data["906c_terimaBantuanSayurBuah"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "906c_terimaBantuanSayurBuah",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Ya</SelectItem>
-                      <SelectItem value="2">Tidak</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Keberlanjutan */}
-            <div>
-              <h4 className="font-medium text-slate-700 mb-3">
-                Keberlanjutan Bantuan (1 digit)
-              </h4>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    907a. Lanjutan Bantuan Sawit
-                  </Label>
-                  <Select
-                    value={data["907a_lanjutanBantuanSawit"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "907a_lanjutanBantuanSawit",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Ya</SelectItem>
-                      <SelectItem value="2">Tidak</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    907b. Lanjutan Bantuan Ikan Lele
-                  </Label>
-                  <Select
-                    value={data["907b_lanjutanBantuanIkanLele"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "907b_lanjutanBantuanIkanLele",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Ya</SelectItem>
-                      <SelectItem value="2">Tidak</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    907c. Lanjutan Bantuan Sayur/Buah
-                  </Label>
-                  <Select
-                    value={data["907c_lanjutanBantuanSayurBuah"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "907c_lanjutanBantuanSayurBuah",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Ya</SelectItem>
-                      <SelectItem value="2">Tidak</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Alasan Tidak Lanjut */}
-            <div>
-              <h4 className="font-medium text-slate-700 mb-3">
-                Alasan Tidak Melanjutkan (1 huruf kapital)
-              </h4>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    908a. Alasan Tidak Lanjut Sawit
-                  </Label>
-                  <Input
-                    value={data["908a_alasanTidakLanjutSawit"]}
-                    onChange={(e) => {
-                      const value = e.target.value.toUpperCase();
-                      if (value.length <= 1) {
-                        handleChange("908a_alasanTidakLanjutSawit", value);
+              <div className={`${disableTerimaBantuanSawit && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableTerimaBantuanSawit && "text-slate-400"
+                  }`}
+                >
+                  909a. Program Dukungan Sawit Diperlukan
+                </Label>
+                <div className="space-y-2 mt-2">
+                  {dukunganDiperlukanOptions.map((opt) => (
+                    <div key={opt.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`909a-${opt.id}`}
+                        disabled={disableTerimaBantuanSawit}
+                        checked={(
+                          data["909a_programDukungSawit"] || []
+                        ).includes(opt.id)}
+                        onCheckedChange={(c) =>
+                          handleCheckboxChange(
+                            "909a_programDukungSawit",
+                            opt.id,
+                            !!c
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={`909a-${opt.id}`}
+                        className="text-sm font-normal"
+                      >
+                        {opt.label}
+                      </label>
+                    </div>
+                  ))}
+                  {showLainnyaDukungSawit && (
+                    <Input
+                      disabled={disableTerimaBantuanSawit}
+                      value={data["909a_lainnya"] || ""}
+                      onChange={(e) =>
+                        handleChange("909a_lainnya", e.target.value)
                       }
-                    }}
-                    placeholder="A"
-                    maxLength={1}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    908b. Alasan Tidak Lanjut Ikan Lele
-                  </Label>
-                  <Input
-                    value={data["908b_alasanTidakLanjutIkanLele"]}
-                    onChange={(e) => {
-                      const value = e.target.value.toUpperCase();
-                      if (value.length <= 1) {
-                        handleChange("908b_alasanTidakLanjutIkanLele", value);
-                      }
-                    }}
-                    placeholder="A"
-                    maxLength={1}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    908c. Alasan Tidak Lanjut Sayur/Buah
-                  </Label>
-                  <Input
-                    value={data["908c_alasanTidakLanjutSayurBuah"]}
-                    onChange={(e) => {
-                      const value = e.target.value.toUpperCase();
-                      if (value.length <= 1) {
-                        handleChange("908c_alasanTidakLanjutSayurBuah", value);
-                      }
-                    }}
-                    placeholder="A"
-                    maxLength={1}
-                    className="mt-1"
-                  />
+                      placeholder="Sebutkan dukungan lainnya..."
+                      className="mt-2"
+                    />
+                  )}
                 </div>
               </div>
             </div>
 
-            <Separator />
-
-            {/* Program Dukungan */}
-            <div>
-              <h4 className="font-medium text-slate-700 mb-3">
-                Program Dukungan yang Diperlukan (1 digit)
+            <div className="p-4 border rounded-md space-y-4">
+              <h4 className="font-semibold text-slate-800">
+                Bantuan Ikan Lele
               </h4>
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    909a. Program Dukung Sawit
-                  </Label>
-                  <Select
-                    value={data["909a_programDukungSawit"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "909a_programDukungSawit",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Pelatihan</SelectItem>
-                      <SelectItem value="2">Modal</SelectItem>
-                      <SelectItem value="3">Pemasaran</SelectItem>
-                      <SelectItem value="4">Teknologi</SelectItem>
-                      <SelectItem value="5">Lainnya</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div>
+                <Label className="text-sm font-medium">
+                  905b. Pernah terima bantuan ikan lele?
+                </Label>
+                <Select
+                  value={data["905b_jenisBantuanIkanLele"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange(
+                      "905b_jenisBantuanIkanLele",
+                      Number.parseInt(v)
+                    )
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Ya</SelectItem>
+                    <SelectItem value="2">Tidak</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className={`${disableBantuanLeleLanjutan && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableBantuanLeleLanjutan && "text-slate-400"
+                  }`}
+                >
+                  906b. Terima bantuan lele 1 tahun terakhir?
+                </Label>
+                <Select
+                  disabled={disableBantuanLeleLanjutan}
+                  value={data["906b_terimaBantuanIkanLele"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange(
+                      "906b_terimaBantuanIkanLele",
+                      Number.parseInt(v)
+                    )
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Ya</SelectItem>
+                    <SelectItem value="2">Tidak</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className={`${disableTerimaBantuanLele && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableTerimaBantuanLele && "text-slate-400"
+                  }`}
+                >
+                  907b. Keberlanjutan Bantuan Lele
+                </Label>
+                <Select
+                  disabled={disableTerimaBantuanLele}
+                  value={data["907b_lanjutanBantuanIkanLele"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange(
+                      "907b_lanjutanBantuanIkanLele",
+                      Number.parseInt(v)
+                    )
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {lanjutanBantuanOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div
+                className={`${disableAlasanTidakLanjutLele && "opacity-50"}`}
+              >
+                <Label
+                  className={`text-sm font-medium ${
+                    disableAlasanTidakLanjutLele && "text-slate-400"
+                  }`}
+                >
+                  908b. Alasan Tidak Lanjut Lele
+                </Label>
+                <div className="space-y-2 mt-2">
+                  {alasanTidakLanjutOptions.map((opt) => (
+                    <div key={opt.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`908b-${opt.id}`}
+                        disabled={disableAlasanTidakLanjutLele}
+                        checked={(
+                          data["908b_alasanTidakLanjutIkanLele"] || []
+                        ).includes(opt.id)}
+                        onCheckedChange={(c) =>
+                          handleCheckboxChange(
+                            "908b_alasanTidakLanjutIkanLele",
+                            opt.id,
+                            !!c
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={`908b-${opt.id}`}
+                        className="text-sm font-normal"
+                      >
+                        {opt.label}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    909b. Program Dukung Ikan Lele
-                  </Label>
-                  <Select
-                    value={data["909b_programDukungIkanLele"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "909b_programDukungIkanLele",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Pelatihan</SelectItem>
-                      <SelectItem value="2">Modal</SelectItem>
-                      <SelectItem value="3">Pemasaran</SelectItem>
-                      <SelectItem value="4">Teknologi</SelectItem>
-                      <SelectItem value="5">Lainnya</SelectItem>
-                    </SelectContent>
-                  </Select>
+              </div>
+              <div className={`${disableTerimaBantuanLele && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableTerimaBantuanLele && "text-slate-400"
+                  }`}
+                >
+                  909b. Program Dukungan Lele Diperlukan
+                </Label>
+                <div className="space-y-2 mt-2">
+                  {dukunganDiperlukanOptions.map((opt) => (
+                    <div key={opt.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`909b-${opt.id}`}
+                        disabled={disableTerimaBantuanLele}
+                        checked={(
+                          data["909b_programDukungIkanLele"] || []
+                        ).includes(opt.id)}
+                        onCheckedChange={(c) =>
+                          handleCheckboxChange(
+                            "909b_programDukungIkanLele",
+                            opt.id,
+                            !!c
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={`909b-${opt.id}`}
+                        className="text-sm font-normal"
+                      >
+                        {opt.label}
+                      </label>
+                    </div>
+                  ))}
+                  {showLainnyaDukungLele && (
+                    <Input
+                      disabled={disableTerimaBantuanLele}
+                      value={data["909b_lainnya"] || ""}
+                      onChange={(e) =>
+                        handleChange("909b_lainnya", e.target.value)
+                      }
+                      placeholder="Sebutkan dukungan lainnya..."
+                      className="mt-2"
+                    />
+                  )}
                 </div>
-                <div>
-                  <Label className="text-sm font-medium text-slate-700">
-                    909c. Program Dukung Sayur/Buah
-                  </Label>
-                  <Select
-                    value={data["909c_programDukungSayurBuah"]?.toString()}
-                    onValueChange={(value) =>
-                      handleChange(
-                        "909c_programDukungSayurBuah",
-                        Number.parseInt(value)
-                      )
-                    }
-                  >
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Pilih" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Pelatihan</SelectItem>
-                      <SelectItem value="2">Modal</SelectItem>
-                      <SelectItem value="3">Pemasaran</SelectItem>
-                      <SelectItem value="4">Teknologi</SelectItem>
-                      <SelectItem value="5">Lainnya</SelectItem>
-                    </SelectContent>
-                  </Select>
+              </div>
+            </div>
+
+            <div className="p-4 border rounded-md space-y-4">
+              <h4 className="font-semibold text-slate-800">
+                Bantuan Sayur / Buah
+              </h4>
+              <div>
+                <Label className="text-sm font-medium">
+                  905c. Pernah terima bantuan sayur/buah?
+                </Label>
+                <Select
+                  value={data["905c_jenisBantuanSayurBuah"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange(
+                      "905c_jenisBantuanSayurBuah",
+                      Number.parseInt(v)
+                    )
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Ya</SelectItem>
+                    <SelectItem value="2">Tidak</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className={`${disableBantuanSayurLanjutan && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableBantuanSayurLanjutan && "text-slate-400"
+                  }`}
+                >
+                  906c. Terima bantuan sayur/buah 1 tahun terakhir?
+                </Label>
+                <Select
+                  disabled={disableBantuanSayurLanjutan}
+                  value={data["906c_terimaBantuanSayurBuah"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange(
+                      "906c_terimaBantuanSayurBuah",
+                      Number.parseInt(v)
+                    )
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Ya</SelectItem>
+                    <SelectItem value="2">Tidak</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className={`${disableTerimaBantuanSayur && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableTerimaBantuanSayur && "text-slate-400"
+                  }`}
+                >
+                  907c. Keberlanjutan Bantuan Sayur/Buah
+                </Label>
+                <Select
+                  disabled={disableTerimaBantuanSayur}
+                  value={data["907c_lanjutanBantuanSayurBuah"]?.toString()}
+                  onValueChange={(v) =>
+                    handleChange(
+                      "907c_lanjutanBantuanSayurBuah",
+                      Number.parseInt(v)
+                    )
+                  }
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {lanjutanBantuanOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div
+                className={`${disableAlasanTidakLanjutSayur && "opacity-50"}`}
+              >
+                <Label
+                  className={`text-sm font-medium ${
+                    disableAlasanTidakLanjutSayur && "text-slate-400"
+                  }`}
+                >
+                  908c. Alasan Tidak Lanjut Sayur/Buah
+                </Label>
+                <div className="space-y-2 mt-2">
+                  {alasanTidakLanjutOptions.map((opt) => (
+                    <div key={opt.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`908c-${opt.id}`}
+                        disabled={disableAlasanTidakLanjutSayur}
+                        checked={(
+                          data["908c_alasanTidakLanjutSayurBuah"] || []
+                        ).includes(opt.id)}
+                        onCheckedChange={(c) =>
+                          handleCheckboxChange(
+                            "908c_alasanTidakLanjutSayurBuah",
+                            opt.id,
+                            !!c
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={`908c-${opt.id}`}
+                        className="text-sm font-normal"
+                      >
+                        {opt.label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className={`${disableTerimaBantuanSayur && "opacity-50"}`}>
+                <Label
+                  className={`text-sm font-medium ${
+                    disableTerimaBantuanSayur && "text-slate-400"
+                  }`}
+                >
+                  909c. Program Dukungan Sayur/Buah Diperlukan
+                </Label>
+                <div className="space-y-2 mt-2">
+                  {dukunganDiperlukanOptions.map((opt) => (
+                    <div key={opt.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`909c-${opt.id}`}
+                        disabled={disableTerimaBantuanSayur}
+                        checked={(
+                          data["909c_programDukungSayurBuah"] || []
+                        ).includes(opt.id)}
+                        onCheckedChange={(c) =>
+                          handleCheckboxChange(
+                            "909c_programDukungSayurBuah",
+                            opt.id,
+                            !!c
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={`909c-${opt.id}`}
+                        className="text-sm font-normal"
+                      >
+                        {opt.label}
+                      </label>
+                    </div>
+                  ))}
+                  {showLainnyaDukungSayur && (
+                    <Input
+                      disabled={disableTerimaBantuanSayur}
+                      value={data["909c_lainnya"] || ""}
+                      onChange={(e) =>
+                        handleChange("909c_lainnya", e.target.value)
+                      }
+                      placeholder="Sebutkan dukungan lainnya..."
+                      className="mt-2"
+                    />
+                  )}
                 </div>
               </div>
             </div>

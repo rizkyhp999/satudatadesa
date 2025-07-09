@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,13 +19,131 @@ interface Blok8ComponentProps {
   onChange: (data: Blok8) => void;
 }
 
+// Opsi Dropdown
+const statusKepemilikanOptions = [
+  { value: "1", label: "1 - Milik sendiri" },
+  { value: "2", label: "2 - Kontrak/sewa" },
+  { value: "3", label: "3 - Bebas sewa" },
+  { value: "4", label: "4 - Dinas" },
+  { value: "5", label: "5 - Lainnya" },
+];
+const jenisLantaiOptions = [
+  { value: "1", label: "1 - Marmer/granit" },
+  { value: "2", label: "2 - Keramik" },
+  { value: "3", label: "3 - Parket/vinil/karpet" },
+  { value: "4", label: "4 - Ubin/tegel/teraso" },
+  { value: "5", label: "5 - Kayu/papan" },
+  { value: "6", label: "6 - Semen/bata merah" },
+  { value: "7", label: "7 - Bambu" },
+  { value: "8", label: "8 - Tanah" },
+  { value: "9", label: "9 - Lainnya" },
+];
+const jenisDindingOptions = [
+  { value: "1", label: "1 - Tembok" },
+  { value: "2", label: "2 - Plesteran ayaman bambu/kawat" },
+  { value: "3", label: "3 - Kayu/papan kayu/batang kayu" },
+  { value: "4", label: "4 - Anyaman bambu/bambu" },
+  { value: "5", label: "5 - Lainnya" },
+];
+const jenisAtapOptions = [
+  { value: "1", label: "1 - Beton" },
+  { value: "2", label: "2 - Genteng" },
+  { value: "3", label: "3 - Seng" },
+  { value: "4", label: "4 - Asbes" },
+  { value: "5", label: "5 - Bambu" },
+  { value: "6", label: "6 - Kayu/sirap" },
+  { value: "7", label: "7 - Jerami/ijuk/dedaunan/rumbia" },
+  { value: "8", label: "8 - Lainnya" },
+];
+const sumberAirOptions = [
+  { value: "1", label: "01 - Air kemasan bermerk" },
+  { value: "2", label: "02 - Air isi ulang" },
+  { value: "3", label: "03 - Leding" },
+  { value: "4", label: "04 - Sumur bor/pompa" },
+  { value: "5", label: "05 - Sumur terlindung" },
+  { value: "6", label: "06 - Sumur tak terlindung" },
+  { value: "7", label: "07 - Mata air terlindung" },
+  { value: "8", label: "08 - Mata air tak terlindung" },
+  { value: "9", label: "09 - Air permukaan (sungai/danau/dll)" },
+  { value: "10", label: "10 - Air hujan" },
+  { value: "11", label: "11 - Lainnya" },
+];
+const sumberPeneranganOptions = [
+  { value: "1", label: "1 - Listrik PLN dengan meteran" },
+  { value: "2", label: "2 - Listrik PLN tanpa meteran" },
+  { value: "3", label: "3 - Listrik Non-PLN" },
+  { value: "4", label: "4 - Bukan listrik" },
+];
+const dayaTerpasangOptions = [
+  { value: "1", label: "1 - 450 watt / 2 ampere" },
+  { value: "2", label: "2 - 900 watt / 4 ampere" },
+  { value: "3", label: "3 - 1300 watt / 6 ampere" },
+  { value: "4", label: "4 - 2200 watt / 10 ampere" },
+  { value: "5", label: "5 - > 2200 watt" },
+];
+const bahanBakarMasakOptions = [
+  { value: "1", label: "01 - Listrik" },
+  { value: "2", label: "02 - Gas elpiji 5,5 kg" },
+  { value: "3", label: "03 - Gas elpiji 12 kg" },
+  { value: "4", label: "04 - Gas elpiji 3 kg" },
+  { value: "5", label: "05 - Gas kota" },
+  { value: "6", label: "06 - Biogas" },
+  { value: "7", label: "07 - Minyak tanah" },
+  { value: "8", label: "08 - Briket" },
+  { value: "9", label: "09 - Arang" },
+  { value: "10", label: "10 - Kayu bakar" },
+  { value: "11", label: "11 - Lainnya" },
+  { value: "0", label: "00 - Tidak memasak" },
+];
+const kepemilikanBABOptions = [
+  { value: "1", label: "1 - Ada, digunakan anggota keluarga" },
+  { value: "2", label: "2 - Ada, digunakan bersama anggota keluarga tertentu" },
+  { value: "3", label: "3 - Ada, di MCK komunal" },
+  { value: "4", label: "4 - Ada, di MCK Umum/siapapun bisa menggunakan" },
+  { value: "5", label: "5 - Tidak ada fasilitas" },
+];
+const jenisKlosetOptions = [
+  { value: "1", label: "1 - Leher angsa" },
+  { value: "2", label: "2 - Plengsengan dengan tutup" },
+  { value: "3", label: "3 - Plengsengan tanpa tutup" },
+  { value: "4", label: "4 - Cemplung/cubluk" },
+];
+const tempatBuangTinjaOptions = [
+  { value: "1", label: "1 - Tangki septik" },
+  { value: "2", label: "2 - IPAL" },
+  { value: "3", label: "3 - Kolam/sawah/sungai/danau/laut" },
+  { value: "4", label: "4 - Lubang tanah" },
+  { value: "5", label: "5 - Pantai/tanah lapang/kebun" },
+  { value: "6", label: "6 - Lainnya" },
+];
+
 export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
-  const handleChange = (field: keyof Blok8, value: string | number) => {
-    onChange({
-      ...data,
-      [field]: value,
-    });
-  };
+  const handleChange = useCallback(
+    (field: keyof Blok8, value: string | number) => {
+      onChange({ ...data, [field]: value });
+    },
+    [data, onChange]
+  );
+
+  const hasMeteran = data["808a_sumberPenerangan"] === 1;
+  const hasOwnToilet = [1, 2, 3].includes(data["810a_kepemilikanFasilitasBAB"]);
+
+  useEffect(() => {
+    if (!hasMeteran) {
+      if (data["808b_dayaTerpasang1"] !== 0)
+        handleChange("808b_dayaTerpasang1", 0);
+      if (data["808b_dayaTerpasang2"] !== 0)
+        handleChange("808b_dayaTerpasang2", 0);
+      if (data["808b_dayaTerpasang3"] !== 0)
+        handleChange("808b_dayaTerpasang3", 0);
+    }
+  }, [hasMeteran, data, handleChange]);
+
+  useEffect(() => {
+    if (!hasOwnToilet && data["810b_jenisKloset"] !== 0) {
+      handleChange("810b_jenisKloset", 0);
+    }
+  }, [hasOwnToilet, data, handleChange]);
 
   return (
     <div className="space-y-6">
@@ -43,7 +162,6 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
       </div>
 
       <div className="grid gap-6">
-        {/* Kepemilikan dan Struktur Bangunan */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -70,11 +188,11 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Milik Sendiri</SelectItem>
-                    <SelectItem value="2">Kontrak/Sewa</SelectItem>
-                    <SelectItem value="3">Bebas Sewa</SelectItem>
-                    <SelectItem value="4">Dinas</SelectItem>
-                    <SelectItem value="5">Lainnya</SelectItem>
+                    {statusKepemilikanOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -114,14 +232,11 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Marmer/Granit</SelectItem>
-                    <SelectItem value="2">Keramik</SelectItem>
-                    <SelectItem value="3">Parket/Vinil</SelectItem>
-                    <SelectItem value="4">Ubin/Tegel</SelectItem>
-                    <SelectItem value="5">Kayu</SelectItem>
-                    <SelectItem value="6">Semen</SelectItem>
-                    <SelectItem value="7">Tanah</SelectItem>
-                    <SelectItem value="8">Lainnya</SelectItem>
+                    {jenisLantaiOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -139,11 +254,11 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Tembok</SelectItem>
-                    <SelectItem value="2">Kayu</SelectItem>
-                    <SelectItem value="3">Anyaman Bambu</SelectItem>
-                    <SelectItem value="4">Batang Kayu</SelectItem>
-                    <SelectItem value="5">Lainnya</SelectItem>
+                    {jenisDindingOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -161,13 +276,11 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Beton</SelectItem>
-                    <SelectItem value="2">Genteng</SelectItem>
-                    <SelectItem value="3">Seng</SelectItem>
-                    <SelectItem value="4">Asbes</SelectItem>
-                    <SelectItem value="5">Bambu</SelectItem>
-                    <SelectItem value="6">Jerami/Ijuk</SelectItem>
-                    <SelectItem value="7">Lainnya</SelectItem>
+                    {jenisAtapOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -175,7 +288,6 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
           </CardContent>
         </Card>
 
-        {/* Fasilitas Air dan Listrik */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -199,18 +311,11 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih sumber" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Air Kemasan</SelectItem>
-                    <SelectItem value="2">Air Isi Ulang</SelectItem>
-                    <SelectItem value="3">Leding Meteran</SelectItem>
-                    <SelectItem value="4">Leding Eceran</SelectItem>
-                    <SelectItem value="5">Sumur Bor/Pompa</SelectItem>
-                    <SelectItem value="6">Sumur Terlindung</SelectItem>
-                    <SelectItem value="7">Sumur Tak Terlindung</SelectItem>
-                    <SelectItem value="8">Mata Air Terlindung</SelectItem>
-                    <SelectItem value="9">Mata Air Tak Terlindung</SelectItem>
-                    <SelectItem value="10">Air Sungai/Danau/Waduk</SelectItem>
-                    <SelectItem value="11">Air Hujan</SelectItem>
-                    <SelectItem value="12">Lainnya</SelectItem>
+                    {sumberAirOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -228,16 +333,11 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih sumber" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Leding Meteran</SelectItem>
-                    <SelectItem value="2">Leding Eceran</SelectItem>
-                    <SelectItem value="3">Sumur Bor/Pompa</SelectItem>
-                    <SelectItem value="4">Sumur Terlindung</SelectItem>
-                    <SelectItem value="5">Sumur Tak Terlindung</SelectItem>
-                    <SelectItem value="6">Mata Air Terlindung</SelectItem>
-                    <SelectItem value="7">Mata Air Tak Terlindung</SelectItem>
-                    <SelectItem value="8">Air Sungai/Danau/Waduk</SelectItem>
-                    <SelectItem value="9">Air Hujan</SelectItem>
-                    <SelectItem value="10">Lainnya</SelectItem>
+                    {sumberAirOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -258,102 +358,128 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih sumber" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Listrik PLN</SelectItem>
-                    <SelectItem value="2">Listrik Non-PLN</SelectItem>
-                    <SelectItem value="3">Bukan Listrik</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  809. Bahan Bakar Memasak
-                </Label>
-                <Select
-                  value={data["809_bahanBakarMasak"]?.toString()}
-                  onValueChange={(value) =>
-                    handleChange("809_bahanBakarMasak", parseInt(value))
-                  }
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Pilih bahan bakar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Listrik</SelectItem>
-                    <SelectItem value="2">Gas Elpiji</SelectItem>
-                    <SelectItem value="3">Gas Kota</SelectItem>
-                    <SelectItem value="4">Minyak Tanah</SelectItem>
-                    <SelectItem value="5">Briket</SelectItem>
-                    <SelectItem value="6">Arang</SelectItem>
-                    <SelectItem value="7">Kayu Bakar</SelectItem>
-                    <SelectItem value="8">Lainnya</SelectItem>
+                    {sumberPeneranganOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
+            {/* Bagian Daya Listrik untuk 3 Meteran */}
             <div className="grid md:grid-cols-3 gap-4">
               <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  808b. Daya Terpasang 1 (VA)
+                <Label
+                  className={`text-sm font-medium ${
+                    !hasMeteran ? "text-slate-400" : "text-slate-700"
+                  }`}
+                >
+                  808b. Daya Meteran 1 (VA)
                 </Label>
-                <Input
-                  type="number"
-                  min="0"
-                  max="9"
-                  value={data["808b_dayaTerpasang1"] || ""}
-                  onChange={(e) =>
-                    handleChange(
-                      "808b_dayaTerpasang1",
-                      parseInt(e.target.value) || 0
-                    )
+                <Select
+                  disabled={!hasMeteran}
+                  value={data["808b_dayaTerpasang1"]?.toString()}
+                  onValueChange={(value) =>
+                    handleChange("808b_dayaTerpasang1", parseInt(value))
                   }
-                  placeholder="0"
-                  className="mt-1"
-                />
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih daya" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dayaTerpasangOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  808b. Daya Terpasang 2 (VA)
+                <Label
+                  className={`text-sm font-medium ${
+                    !hasMeteran ? "text-slate-400" : "text-slate-700"
+                  }`}
+                >
+                  808b. Daya Meteran 2 (VA)
                 </Label>
-                <Input
-                  type="number"
-                  min="0"
-                  max="9"
-                  value={data["808b_dayaTerpasang2"] || ""}
-                  onChange={(e) =>
-                    handleChange(
-                      "808b_dayaTerpasang2",
-                      parseInt(e.target.value) || 0
-                    )
+                <Select
+                  disabled={!hasMeteran}
+                  value={data["808b_dayaTerpasang2"]?.toString()}
+                  onValueChange={(value) =>
+                    handleChange("808b_dayaTerpasang2", parseInt(value))
                   }
-                  placeholder="0"
-                  className="mt-1"
-                />
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih daya" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dayaTerpasangOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <Label className="text-sm font-medium text-slate-700">
-                  808b. Daya Terpasang 3 (VA)
+                <Label
+                  className={`text-sm font-medium ${
+                    !hasMeteran ? "text-slate-400" : "text-slate-700"
+                  }`}
+                >
+                  808b. Daya Meteran 3 (VA)
                 </Label>
-                <Input
-                  type="number"
-                  min="0"
-                  max="9"
-                  value={data["808b_dayaTerpasang3"] || ""}
-                  onChange={(e) =>
-                    handleChange(
-                      "808b_dayaTerpasang3",
-                      parseInt(e.target.value) || 0
-                    )
+                <Select
+                  disabled={!hasMeteran}
+                  value={data["808b_dayaTerpasang3"]?.toString()}
+                  onValueChange={(value) =>
+                    handleChange("808b_dayaTerpasang3", parseInt(value))
                   }
-                  placeholder="0"
-                  className="mt-1"
-                />
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Pilih daya" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dayaTerpasangOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium text-slate-700">
+                809. Bahan Bakar Memasak
+              </Label>
+              <Select
+                value={data["809_bahanBakarMasak"]?.toString()}
+                onValueChange={(value) =>
+                  handleChange("809_bahanBakarMasak", parseInt(value))
+                }
+              >
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Pilih bahan bakar" />
+                </SelectTrigger>
+                <SelectContent>
+                  {bahanBakarMasakOptions
+                    .sort((a, b) => parseInt(a.value) - parseInt(b.value))
+                    .map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
         </Card>
 
-        {/* Fasilitas Sanitasi */}
         <Card className="border-slate-200">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
@@ -380,17 +506,24 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Ada, Digunakan Sendiri</SelectItem>
-                    <SelectItem value="2">Ada, Digunakan Bersama</SelectItem>
-                    <SelectItem value="3">Tidak Ada</SelectItem>
+                    {kepemilikanBABOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label className="text-sm font-medium text-slate-700">
+                <Label
+                  className={`text-sm font-medium ${
+                    !hasOwnToilet ? "text-slate-400" : "text-slate-700"
+                  }`}
+                >
                   810b. Jenis Kloset
                 </Label>
                 <Select
+                  disabled={!hasOwnToilet}
                   value={data["810b_jenisKloset"]?.toString()}
                   onValueChange={(value) =>
                     handleChange("810b_jenisKloset", parseInt(value))
@@ -400,10 +533,11 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih jenis" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Leher Angsa</SelectItem>
-                    <SelectItem value="2">Plengsengan</SelectItem>
-                    <SelectItem value="3">Cemplung/Cubluk</SelectItem>
-                    <SelectItem value="4">Tidak Pakai</SelectItem>
+                    {jenisKlosetOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -421,14 +555,11 @@ export function Blok8Component({ data, onChange }: Blok8ComponentProps) {
                     <SelectValue placeholder="Pilih tempat" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1">Tangki Septik</SelectItem>
-                    <SelectItem value="2">IPAL</SelectItem>
-                    <SelectItem value="3">
-                      Kolam/Sawah/Sungai/Danau/Laut
-                    </SelectItem>
-                    <SelectItem value="4">Lubang Tanah</SelectItem>
-                    <SelectItem value="5">Pantai/Tanah Lapang/Kebun</SelectItem>
-                    <SelectItem value="6">Lainnya</SelectItem>
+                    {tempatBuangTinjaOptions.map((o) => (
+                      <SelectItem key={o.value} value={o.value}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

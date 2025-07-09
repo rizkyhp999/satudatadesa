@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { google, sheets_v4 } from "googleapis";
+import type { SurveyResponse } from "@/types/survey";
 
-interface SurveyRequest {
-  blok1: any;
-  blok2: any;
-  anggotaKeluarga: any[];
-  blok8: any;
-  blok9: any;
-  blok10: any;
+// Fungsi untuk mengubah array jadi string koma
+function formatArrayValue(value: any): string {
+  if (Array.isArray(value)) return value.join(", ");
+  return value;
 }
 
 // Fungsi tulis header jika belum ada
@@ -17,35 +16,31 @@ async function writeHeadersIfNeeded(
   sheetName: string,
   headers: string[]
 ) {
-  const res = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: `${sheetName}!A1:1`,
-  });
-
-  const existing = res.data.values?.[0] || [];
-
-  if (existing.length === 0) {
-    await sheets.spreadsheets.values.update({
+  try {
+    const res = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: `${sheetName}!A1`,
-      valueInputOption: "RAW",
-      requestBody: {
-        values: [headers],
-      },
+      range: `${sheetName}!A1:1`,
     });
+
+    if (!res.data.values || res.data.values.length === 0) {
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: `${sheetName}!A1`,
+        valueInputOption: "RAW",
+        requestBody: {
+          values: [headers],
+        },
+      });
+    }
+  } catch (err: any) {
+    if (err.code !== 400) throw err;
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const {
-      blok1,
-      blok2,
-      anggotaKeluarga,
-      blok8,
-      blok9,
-      blok10,
-    }: SurveyRequest = await req.json();
+    const surveyData: SurveyResponse = await req.json();
+    const { blok1, blok2, anggotaKeluarga, blok8, blok9, blok10 } = surveyData;
 
     const spreadsheetId = process.env.SPREADSHEET_ID;
     const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || "{}");
@@ -64,7 +59,7 @@ export async function POST(req: NextRequest) {
 
     const sheets: sheets_v4.Sheets = google.sheets({ version: "v4", auth });
 
-    // Header Sheet1
+    // ========================= SHEET 1 ==============================
     const sheet1Headers = [
       "timestamp",
       "101_namaKepalaKeluarga",
@@ -77,12 +72,77 @@ export async function POST(req: NextRequest) {
       "203_nomorUrutKeluarga",
       "204_alamatLengkap",
       "205_statusKependudukan",
-      ...Object.keys(blok8),
-      ...Object.keys(blok9),
+      "801_statusKepemilikanBangunan",
+      "802_luasLantai",
+      "803_jenisLantai",
+      "804_jenisDinding",
+      "805_jenisAtap",
+      "806_sumberAirMinum",
+      "807_sumberAirMandi",
+      "808a_sumberPenerangan",
+      "808b_dayaTerpasang1",
+      "808b_dayaTerpasang2",
+      "808b_dayaTerpasang3",
+      "809_bahanBakarMasak",
+      "810a_kepemilikanFasilitasBAB",
+      "810b_jenisKloset",
+      "811_tempatBuangTinja",
+      "901a_asetLahan",
+      "901b_asetRumahLain",
+      "902a_tabungGas",
+      "902b_kulkas",
+      "902c_ac",
+      "902d_tv",
+      "902e_emas",
+      "902f_komputer",
+      "902g_motor",
+      "902h_perahuMotor",
+      "902i_mobil",
+      "902j_sepeda",
+      "902k_perahu",
+      "902l_smartphone",
+      "903a_sapi",
+      "903b_kerbau",
+      "903c_kuda",
+      "903d_babi",
+      "903e_kambing",
+      "904a_BPNT",
+      "904b_PKH",
+      "904c_BLTDesa",
+      "904d_SubsidiListrik",
+      "904e_BantuanPemda",
+      "904f_SubsidiPupuk",
+      "904g_BantuanDesa",
+      "904g_catatan",
+      "904h_BantuanLainnya",
+      "904h_catatan",
+      "905a_jenisBantuanSawit",
+      "905b_jenisBantuanIkanLele",
+      "905c_jenisBantuanSayurBuah",
+      "906a_terimaBantuanSawit",
+      "906b_terimaBantuanIkanLele",
+      "906c_terimaBantuanSayurBuah",
+      "907a_lanjutanBantuanSawit",
+      "907b_lanjutanBantuanIkanLele",
+      "907c_lanjutanBantuanSayurBuah",
+      "908a_alasanTidakLanjutSawit",
+      "908b_alasanTidakLanjutIkanLele",
+      "908c_alasanTidakLanjutSayurBuah",
+      "909a_programDukungSawit",
+      "909a_lainnya",
+      "909b_programDukungIkanLele",
+      "909b_lainnya",
+      "909c_programDukungSayurBuah",
+      "909c_lainnya",
       "1001_catatan",
     ];
 
-    await writeHeadersIfNeeded(sheets, spreadsheetId, "Sheet1", sheet1Headers);
+    await writeHeadersIfNeeded(
+      sheets,
+      spreadsheetId,
+      "Keluarga",
+      sheet1Headers
+    );
 
     const dataSheet1 = [
       new Date().toISOString(),
@@ -96,56 +156,121 @@ export async function POST(req: NextRequest) {
       blok2["203_nomorUrutKeluarga"],
       blok2["204_alamatLengkap"],
       blok2["205_statusKependudukan"],
-      ...Object.values(blok8),
-      ...Object.values(blok9),
+      blok8["801_statusKepemilikanBangunan"],
+      blok8["802_luasLantai"],
+      blok8["803_jenisLantai"],
+      blok8["804_jenisDinding"],
+      blok8["805_jenisAtap"],
+      blok8["806_sumberAirMinum"],
+      blok8["807_sumberAirMandi"],
+      blok8["808a_sumberPenerangan"],
+      blok8["808b_dayaTerpasang1"],
+      blok8["808b_dayaTerpasang2"],
+      blok8["808b_dayaTerpasang3"],
+      blok8["809_bahanBakarMasak"],
+      blok8["810a_kepemilikanFasilitasBAB"],
+      blok8["810b_jenisKloset"],
+      blok8["811_tempatBuangTinja"],
+      blok9["901a_asetLahan"],
+      blok9["901b_asetRumahLain"],
+      blok9["902a_tabungGas"],
+      blok9["902b_kulkas"],
+      blok9["902c_ac"],
+      blok9["902d_tv"],
+      blok9["902e_emas"],
+      blok9["902f_komputer"],
+      blok9["902g_motor"],
+      blok9["902h_perahuMotor"],
+      blok9["902i_mobil"],
+      blok9["902j_sepeda"],
+      blok9["902k_perahu"],
+      blok9["902l_smartphone"],
+      blok9["903a_sapi"],
+      blok9["903b_kerbau"],
+      blok9["903c_kuda"],
+      blok9["903d_babi"],
+      blok9["903e_kambing"],
+      blok9["904a_BPNT"],
+      blok9["904b_PKH"],
+      blok9["904c_BLTDesa"],
+      blok9["904d_SubsidiListrik"],
+      blok9["904e_BantuanPemda"],
+      blok9["904f_SubsidiPupuk"],
+      blok9["904g_BantuanDesa"],
+      blok9["904g_catatan"],
+      blok9["904h_BantuanLainnya"],
+      blok9["904h_catatan"],
+      blok9["905a_jenisBantuanSawit"],
+      blok9["905b_jenisBantuanIkanLele"],
+      blok9["905c_jenisBantuanSayurBuah"],
+      blok9["906a_terimaBantuanSawit"],
+      blok9["906b_terimaBantuanIkanLele"],
+      blok9["906c_terimaBantuanSayurBuah"],
+      blok9["907a_lanjutanBantuanSawit"],
+      blok9["907b_lanjutanBantuanIkanLele"],
+      blok9["907c_lanjutanBantuanSayurBuah"],
+      formatArrayValue(blok9["908a_alasanTidakLanjutSawit"]),
+      formatArrayValue(blok9["908b_alasanTidakLanjutIkanLele"]),
+      formatArrayValue(blok9["908c_alasanTidakLanjutSayurBuah"]),
+      formatArrayValue(blok9["909a_programDukungSawit"]),
+      blok9["909a_lainnya"],
+      formatArrayValue(blok9["909b_programDukungIkanLele"]),
+      blok9["909b_lainnya"],
+      formatArrayValue(blok9["909c_programDukungSayurBuah"]),
+      blok9["909c_lainnya"],
       blok10["1001_catatan"],
     ];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: "Sheet1!A1",
+      range: "Keluarga!A1",
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [dataSheet1],
       },
     });
 
-    // Sheet2: per anggota
-    const sheet2Headers = [
-      "104_nomorKK",
-      ...Object.keys(anggotaKeluarga[0]?.blok3 || {}),
-      ...Object.keys(anggotaKeluarga[0]?.blok4 || {}),
-      ...Object.keys(anggotaKeluarga[0]?.blok5 || {}),
-      ...Object.keys(anggotaKeluarga[0]?.blok6 || {}),
-      ...Object.keys(anggotaKeluarga[0]?.blok7 || {}),
-    ];
+    // ========================= SHEET 2 ==============================
+    if (anggotaKeluarga && anggotaKeluarga.length > 0) {
+      const sheet2Headers = [
+        "nomorKK_FK",
+        ...Object.keys(anggotaKeluarga[0].blok3),
+        ...Object.keys(anggotaKeluarga[0].blok4),
+        ...Object.keys(anggotaKeluarga[0].blok5),
+        ...Object.keys(anggotaKeluarga[0].blok6),
+        ...Object.keys(anggotaKeluarga[0].blok7),
+      ];
 
-    await writeHeadersIfNeeded(sheets, spreadsheetId, "Sheet2", sheet2Headers);
+      await writeHeadersIfNeeded(
+        sheets,
+        spreadsheetId,
+        "Anggota",
+        sheet2Headers
+      );
 
-    for (const anggota of anggotaKeluarga) {
-      const row = [
-        blok1["104_nomorKK"], // foreign key
+      const rowsToAppend = anggotaKeluarga.map((anggota) => [
+        blok1["104_nomorKK"],
         ...Object.values(anggota.blok3),
         ...Object.values(anggota.blok4),
         ...Object.values(anggota.blok5),
         ...Object.values(anggota.blok6),
         ...Object.values(anggota.blok7),
-      ];
+      ]);
 
       await sheets.spreadsheets.values.append({
         spreadsheetId,
-        range: "Sheet2!A1",
+        range: "Anggota!A1",
         valueInputOption: "USER_ENTERED",
         requestBody: {
-          values: [row],
+          values: rowsToAppend,
         },
       });
     }
 
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
-    console.error(err);
-    const message = err instanceof Error ? err.message : "Unknown Error";
+    console.error("API Error:", err);
+    const message = err instanceof Error ? err.message : JSON.stringify(err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
