@@ -23,10 +23,10 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Users, Home, Briefcase, Zap, Droplets } from "lucide-react";
-import {
-  ValueType,
-  NameType,
-} from "recharts/types/component/DefaultTooltipContent";
+// import {
+//   ValueType,
+//   NameType,
+// } from "recharts/types/component/DefaultTooltipContent";
 
 interface Keluarga {
   timestamp: string;
