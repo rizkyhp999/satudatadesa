@@ -54,6 +54,7 @@ export function Blok10Component({ data, onChange }: Blok10ComponentProps) {
               onChange={(e) => handleChange("1001_catatan", e.target.value)}
               placeholder="Tuliskan catatan tambahan, kendala yang dihadapi, atau informasi penting lainnya yang perlu dicatat selama proses survei..."
               className="mt-1 min-h-[150px]"
+              required
             />
             <p className="text-xs text-slate-500 mt-2">
               Catatan ini akan membantu dalam analisis data dan evaluasi proses

@@ -138,6 +138,14 @@ export function SurveyForm() {
   };
 
   const handleSave = async () => {
+    // Validasi catatan wajib isi
+    if (!surveyData.blok10["1001_catatan"].trim()) {
+      alert(
+        "Mohon isi catatan pada Blok 10 terlebih dahulu sebelum menyimpan survei."
+      );
+      return;
+    }
+
     try {
       const res = await fetch("/api/survei/submit", {
         method: "POST",
@@ -256,14 +264,14 @@ export function SurveyForm() {
         </Button>
 
         <div className="flex gap-3">
-          <Button
+          {/* <Button
             variant="outline"
             onClick={handleSave}
             className="flex items-center gap-2"
           >
             <Save className="w-4 h-4" />
             Simpan
-          </Button>
+          </Button> */}
 
           {currentBlock < blockTitles.length - 1 ? (
             <Button
