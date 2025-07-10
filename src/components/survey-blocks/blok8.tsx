@@ -39,7 +39,7 @@ const jenisLantaiOptions = [
   { value: "9", label: "9 - Lainnya" },
 ];
 const jenisDindingOptions = [
-  { value: "1", label: "1 - Tembok" },
+  { value: "1", label: "1 - Tembok." },
   { value: "2", label: "2 - Plesteran ayaman bambu/kawat" },
   { value: "3", label: "3 - Kayu/papan kayu/batang kayu" },
   { value: "4", label: "4 - Anyaman bambu/bambu" },
