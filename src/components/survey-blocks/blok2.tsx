@@ -33,6 +33,14 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
     });
   };
 
+  const isInvalid = {
+    namaRT: data["201_namaRT"].trim() === "",
+    nomorUrutBangunan: !data["202_nomorUrutBangunan"],
+    nomorUrutKeluarga: !data["203_nomorUrutKeluarga"],
+    alamatLengkap: data["204_alamatLengkap"].trim() === "",
+    statusKependudukan: !data["205_statusKependudukan"],
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 mb-6">
@@ -71,7 +79,11 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
                 value={data["201_namaRT"]}
                 onChange={(e) => handleChange("201_namaRT", e.target.value)}
                 placeholder="Masukkan nama RT"
-                className="mt-1"
+                className={`mt-1 ${
+                  isInvalid.namaRT
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
 
@@ -94,7 +106,11 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
                     handleChange("202_nomorUrutBangunan", parseInt(val) || 0);
                   }}
                   placeholder="01"
-                  className="mt-1"
+                  className={`mt-1 ${
+                    isInvalid.nomorUrutBangunan
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                  }`}
                 />
               </div>
               <div>
@@ -115,7 +131,11 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
                     handleChange("203_nomorUrutKeluarga", parseInt(val) || 0);
                   }}
                   placeholder="01"
-                  className="mt-1"
+                  className={`mt-1 ${
+                    isInvalid.nomorUrutKeluarga
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                  }`}
                 />
               </div>
             </div>
@@ -145,7 +165,11 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
                   handleChange("204_alamatLengkap", e.target.value)
                 }
                 placeholder="Masukkan alamat lengkap (jalan, nomor rumah, RT/RW, kelurahan, kecamatan)"
-                className="mt-1 min-h-[100px]"
+                className={`mt-1 min-h-[100px] ${
+                  isInvalid.alamatLengkap
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
 
@@ -162,7 +186,13 @@ export function Blok2Component({ data, onChange }: Blok2ComponentProps) {
                   handleChange("205_statusKependudukan", parseInt(value))
                 }
               >
-                <SelectTrigger className="mt-1">
+                <SelectTrigger
+                  className={`mt-1 ${
+                    isInvalid.statusKependudukan
+                      ? "border-red-500 ring-red-500 focus-visible:ring-red-500"
+                      : ""
+                  }`}
+                >
                   <SelectValue placeholder="Pilih status kependudukan" />
                 </SelectTrigger>
                 <SelectContent>

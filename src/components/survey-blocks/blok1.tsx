@@ -11,8 +11,8 @@ interface Blok1ComponentProps {
   onChange: (data: Blok1) => void;
 }
 
-function formatNomorKK(raw: string) {
-  return raw
+function formatNomorKK(raw: string | number | undefined): string {
+  return String(raw || "")
     .replace(/\D/g, "")
     .slice(0, 16)
     .replace(/(.{4})/g, "$1-")
@@ -24,11 +24,19 @@ function unformatNomorKK(formatted: string) {
 }
 
 export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
-  const handleChange = (field: keyof Blok1, value: string | number) => {
-    onChange({
-      ...data,
-      [field]: value,
-    });
+  const handleChange = (field: keyof Blok1, value: string) => {
+    onChange({ ...data, [field]: value });
+  };
+
+  const isInvalid = {
+    namaKepalaKeluarga: data["101_namaKepalaKeluarga"].trim() === "",
+    jumlahKK: String(data["102_jumlahKK"]).trim() === "",
+    jumlahAnggotaKeluarga:
+      String(data["103_jumlahAnggotaKeluarga"]).trim() === "",
+    nomorKK: unformatNomorKK(data["104_nomorKK"] || "").length !== 16,
+    kodeKK:
+      String(data["105_kodeKK"]).trim() === "" ||
+      !/^[0-2]$/.test(String(data["105_kodeKK"])),
   };
 
   return (
@@ -69,7 +77,11 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
                   handleChange("101_namaKepalaKeluarga", e.target.value)
                 }
                 placeholder="Masukkan nama kepala keluarga"
-                className="mt-1"
+                className={`mt-1 ${
+                  isInvalid.namaKepalaKeluarga
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
           </CardContent>
@@ -94,13 +106,16 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
               <Input
                 id="jumlahKK"
                 type="number"
-                value={data["102_jumlahKK"] || ""}
-                onChange={(e) => {
-                  const val = e.target.value.slice(0, 2);
-                  handleChange("102_jumlahKK", parseInt(val) || 0);
-                }}
+                value={data["102_jumlahKK"]}
+                onChange={(e) =>
+                  handleChange("102_jumlahKK", e.target.value.slice(0, 2))
+                }
                 placeholder="0"
-                className="mt-1"
+                className={`mt-1 ${
+                  isInvalid.jumlahKK
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
             <div>
@@ -113,13 +128,19 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
               <Input
                 id="jumlahAnggotaKeluarga"
                 type="number"
-                value={data["103_jumlahAnggotaKeluarga"] || ""}
-                onChange={(e) => {
-                  const val = e.target.value.slice(0, 2);
-                  handleChange("103_jumlahAnggotaKeluarga", parseInt(val) || 0);
-                }}
+                value={data["103_jumlahAnggotaKeluarga"]}
+                onChange={(e) =>
+                  handleChange(
+                    "103_jumlahAnggotaKeluarga",
+                    e.target.value.slice(0, 2)
+                  )
+                }
                 placeholder="0"
-                className="mt-1"
+                className={`mt-1 ${
+                  isInvalid.jumlahAnggotaKeluarga
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
           </CardContent>
@@ -144,13 +165,16 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
               <Input
                 id="nomorKK"
                 inputMode="numeric"
-                value={formatNomorKK((data["104_nomorKK"] || "").toString())}
-                onChange={(e) => {
-                  const raw = unformatNomorKK(e.target.value);
-                  handleChange("104_nomorKK", parseInt(raw) || 0);
-                }}
+                value={formatNomorKK(data["104_nomorKK"])}
+                onChange={(e) =>
+                  handleChange("104_nomorKK", unformatNomorKK(e.target.value))
+                }
                 placeholder="1234-5678-9012-3456"
-                className="mt-1"
+                className={`mt-1 ${
+                  isInvalid.nomorKK
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
             </div>
             <div>
@@ -165,15 +189,19 @@ export function Blok1Component({ data, onChange }: Blok1ComponentProps) {
                 type="number"
                 min={0}
                 max={9}
-                value={data["105_kodeKK"] || ""}
+                value={data["105_kodeKK"]}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value);
-                  if (value >= 0 && value <= 9) {
-                    handleChange("105_kodeKK", value);
+                  const val = e.target.value;
+                  if (val === "" || /^[0-9]$/.test(val)) {
+                    handleChange("105_kodeKK", val);
                   }
                 }}
                 placeholder="0"
-                className="mt-1"
+                className={`mt-1 ${
+                  isInvalid.kodeKK
+                    ? "border-red-500 focus-visible:ring-red-500"
+                    : ""
+                }`}
               />
               <p className="text-xs text-slate-500 mt-1">
                 Kode 105 : Kode Kartu Keluarga

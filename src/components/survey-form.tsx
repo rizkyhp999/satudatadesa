@@ -25,10 +25,10 @@ import type { SurveyResponse } from "@/types/survey";
 const initialSurveyData: SurveyResponse = {
   blok1: {
     "101_namaKepalaKeluarga": "",
-    "102_jumlahKK": 0,
-    "103_jumlahAnggotaKeluarga": 0,
-    "104_nomorKK": 0,
-    "105_kodeKK": 0,
+    "102_jumlahKK": " ",
+    "103_jumlahAnggotaKeluarga": " ",
+    "104_nomorKK": " ",
+    "105_kodeKK": " ",
   },
   blok2: {
     "201_namaRT": "",

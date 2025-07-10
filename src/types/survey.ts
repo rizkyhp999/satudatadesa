@@ -2,10 +2,10 @@
 
 export interface Blok1 {
   "101_namaKepalaKeluarga": string;
-  "102_jumlahKK": number;
-  "103_jumlahAnggotaKeluarga": number;
-  "104_nomorKK": number;
-  "105_kodeKK": number;
+  "102_jumlahKK": string;
+  "103_jumlahAnggotaKeluarga": string;
+  "104_nomorKK": string;
+  "105_kodeKK": string;
 }
 
 export interface Blok2 {
@@ -19,7 +19,7 @@ export interface Blok2 {
 export interface AnggotaKeluarga {
   "301_nomorUrut": number;
   "302_nama": string;
-  "303_nik": number;
+  "303_nik": string;
   "304_keteranganKeberadaan": number;
   "305_kecDesaSaatIni": string;
   "306_provKabSaatIni": string;

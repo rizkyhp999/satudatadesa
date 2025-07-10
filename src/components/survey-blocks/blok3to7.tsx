@@ -48,7 +48,7 @@ const createEmptyMember = (nomorUrut: number): FamilyMember => ({
   blok3: {
     "301_nomorUrut": nomorUrut,
     "302_nama": "",
-    "303_nik": 0,
+    "303_nik": "", // <-- PERUBAHAN DI SINI: NIK diinisialisasi sebagai string kosong
     "304_keteranganKeberadaan": 0,
     "305_kecDesaSaatIni": "",
     "306_provKabSaatIni": "",
@@ -303,15 +303,14 @@ export function Blok3to7Component({ data, onChange }: Blok3to7ComponentProps) {
 const getValidationClass = (
   value: string | number | undefined | null
 ): string => {
+  // Perhatikan bahwa untuk NIK, string kosong akan ditandai validasi.
+  // Jika "0" adalah nilai valid, perlu penyesuaian jika angka nol dimasukkan sebagai NIK
   if (value === "" || value === 0 || value === null || value === undefined) {
     return "border-rose-400 focus-visible:ring-rose-500";
   }
   return "";
 };
 
-// =====================================================================
-// PERUBAHAN UTAMA DI SINI - Blok3Form
-// =====================================================================
 function Blok3Form({
   data,
   onChange,
@@ -319,9 +318,6 @@ function Blok3Form({
   data: AnggotaKeluarga;
   onChange: (field: string, value: any) => void;
 }) {
-  // useEffect untuk umur otomatis DIHAPUS
-
-  // useEffect untuk mereset kehamilan tetap ada
   useEffect(() => {
     const isFemale = data["308_jenisKelamin"] === 2;
     const isOfMaritalAge = [2, 3, 4].includes(data["311_statusPerkawinan"]);
@@ -340,7 +336,7 @@ function Blok3Form({
 
   const handleNikChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "");
-    if (value.length <= 16) onChange("303_nik", Number(value) || 0);
+    if (value.length <= 16) onChange("303_nik", value); // <-- PERUBAHAN DI SINI: Tidak lagi mengkonversi ke Number
   };
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
@@ -361,11 +357,15 @@ function Blok3Form({
     onChange("310_umur", Number(value) || 0);
   };
 
-  const formatNik = (nik: number) => {
-    if (!nik || nik === 0) return "";
-    const nikStr = nik.toString().padStart(16, "0");
-    return nikStr.replace(/(\d{4})(?=\d)/g, "$1-").slice(0, 19);
+  const formatNik = (nik: string | number) => {
+    // Pastikan nik adalah string sebelum memformat
+    const nikString = typeof nik === "number" ? nik.toString() : nik;
+    if (!nikString.trim()) return "";
+    // Memastikan hanya digit yang diformat
+    const digitsOnly = nikString.replace(/\D/g, "");
+    return digitsOnly.replace(/(\d{4})(?=\d)/g, "$1-").slice(0, 19);
   };
+
   const isFemale = data["308_jenisKelamin"] === 2;
   const isOfMaritalAge = [2, 3, 4].includes(data["311_statusPerkawinan"]);
   const isPregnancyApplicable = isFemale && isOfMaritalAge;
