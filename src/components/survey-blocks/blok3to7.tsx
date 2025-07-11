@@ -1702,19 +1702,26 @@ function Blok6Form({
   );
 }
 
+// ========== [START] KODE YANG DIPERBARUI ==========
+
 const jaminanKesehatanOptions = [
+  { value: "0", label: "0 - Tidak memiliki" },
   { value: "1", label: "1 - PBI JKN" },
   { value: "2", label: "2 - JKN Mandiri" },
   { value: "4", label: "4 - JKN Pemberi kerja" },
-  { value: "8", label: "8 - Jamkes lainnya" },
+  { value: "8", label: "8 - Jamkes lain" },
 ];
+
 const jaminanKetenagakerjaanOptions = [
+  { value: "0", label: "0 - Tidak memiliki" },
   { value: "1", label: "1 - BPJS Jaminan Kecelakaan Kerja" },
   { value: "2", label: "2 - BPJS Jaminan Kematian" },
   { value: "4", label: "4 - BPJS Jaminan Hari Tua" },
   { value: "8", label: "8 - BPJS Jaminan Pensiun" },
-  { value: "16", label: "16 - Lainnya (Taspen/pensiunan swasta)" },
+  { value: "16", label: "16 - Lainnya (taspen/pensiunan swasta)" },
+  { value: "99", label: "99 - Tidak tahu" },
 ];
+
 const pipOptions = [
   { value: "1", label: "1 - Ya, aktif" },
   { value: "2", label: "2 - Ya, tidak aktif" },
@@ -1735,33 +1742,16 @@ function Blok7Form({
   const isEligibleForPip = umur >= 5 && umur <= 30;
 
   useEffect(() => {
-    if (!isEligibleForKerja && data["702_jaminanKetenagakerjaan"] !== 0)
+    if (!isEligibleForKerja && data["702_jaminanKetenagakerjaan"] !== 0) {
       onChange("702_jaminanKetenagakerjaan", 0);
+    }
   }, [isEligibleForKerja, data, onChange]);
 
   useEffect(() => {
-    if (!isEligibleForPip && data["703_ikutProgramPIP"] !== 0)
+    if (!isEligibleForPip && data["703_ikutProgramPIP"] !== 0) {
       onChange("703_ikutProgramPIP", 0);
+    }
   }, [isEligibleForPip, data, onChange]);
-
-  const handleBitmaskChange = (
-    field: "701_jaminanKesehatan" | "702_jaminanKetenagakerjaan",
-    optionValue: number,
-    isChecked: boolean
-  ) => {
-    const currentValue = data[field] || 0;
-    const newValue = isChecked
-      ? currentValue | optionValue // Add bit
-      : currentValue & ~optionValue; // Remove bit
-    onChange(field, newValue);
-  };
-
-  const getJaminanKesehatanMode = () => {
-    const value = data["701_jaminanKesehatan"];
-    if (value === 99) return "tidak-tau";
-    if (value > 0) return "punya";
-    return "tidak-punya";
-  };
 
   return (
     <Card className="border-slate-200">
@@ -1772,107 +1762,66 @@ function Blok7Form({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="space-y-4 p-4 border rounded-md">
+        <div>
           <Label className="text-sm font-medium text-slate-700">
-            701. Jaminan Kesehatan
+            701. Kepemilikan jaminan kesehatan dalam setahun terakhir
           </Label>
-          <RadioGroup
-            value={getJaminanKesehatanMode()}
-            onValueChange={(mode) => {
-              if (mode === "tidak-punya") onChange("701_jaminanKesehatan", 0);
-              else if (mode === "tidak-tau")
-                onChange("701_jaminanKesehatan", 99);
-              else if (mode === "punya" && data["701_jaminanKesehatan"] === 0)
-                onChange("701_jaminanKesehatan", 0); // Reset to 0 when switching to 'punya' from 'tidak-punya' or 'tidak-tau'
-            }}
-            className="flex flex-wrap gap-4 mt-2"
+          <Select
+            value={data["701_jaminanKesehatan"]?.toString()}
+            onValueChange={(value) =>
+              onChange("701_jaminanKesehatan", Number.parseInt(value))
+            }
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="punya" id="jk-punya" />
-              <Label htmlFor="jk-punya" className="font-normal">
-                Punya
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="tidak-punya" id="jk-tidak-punya" />
-              <Label htmlFor="jk-tidak-punya" className="font-normal">
-                Tidak Punya
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="tidak-tau" id="jk-tidak-tau" />
-              <Label htmlFor="jk-tidak-tau" className="font-normal">
-                Tidak Tau
-              </Label>
-            </div>
-          </RadioGroup>
-
-          {getJaminanKesehatanMode() === "punya" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-4 pl-2">
-              {jaminanKesehatanOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-2">
-                  <Checkbox
-                    id={`701-${option.value}`}
-                    checked={
-                      (data["701_jaminanKesehatan"] & Number(option.value)) > 0
-                    }
-                    onCheckedChange={(checked) =>
-                      handleBitmaskChange(
-                        "701_jaminanKesehatan",
-                        Number(option.value),
-                        !!checked
-                      )
-                    }
-                  />
-                  <Label
-                    htmlFor={`701-${option.value}`}
-                    className="font-normal"
-                  >
-                    {option.label}
-                  </Label>
-                </div>
+            <SelectTrigger
+              className={`mt-1 ${getValidationClass(
+                data["701_jaminanKesehatan"]
+              )}`}
+            >
+              <SelectValue placeholder="Pilih jaminan kesehatan" />
+            </SelectTrigger>
+            <SelectContent>
+              {jaminanKesehatanOptions.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
               ))}
-            </div>
-          )}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="space-y-4 p-4 border rounded-md">
+        <div>
           <Label
             className={`text-sm font-medium ${
               !isEligibleForKerja ? "text-slate-400" : "text-slate-700"
             }`}
           >
-            702. Jaminan Ketenagakerjaan (Usia 15+)
+            702. Kepemilikan jaminan ketenagakerjaan dalam setahun terakhir
+            (Usia 15+)
           </Label>
-          {isEligibleForKerja ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-2">
-              {jaminanKetenagakerjaanOptions.map((option) => (
-                <div key={option.value} className="flex items-center gap-2">
-                  <Checkbox
-                    id={`702-${option.value}`}
-                    checked={
-                      (data["702_jaminanKetenagakerjaan"] &
-                        Number(option.value)) >
-                      0
-                    }
-                    onCheckedChange={(checked) =>
-                      handleBitmaskChange(
-                        "702_jaminanKetenagakerjaan",
-                        Number(option.value),
-                        !!checked
-                      )
-                    }
-                  />
-                  <Label
-                    htmlFor={`702-${option.value}`}
-                    className="font-normal"
-                  >
-                    {option.label}
-                  </Label>
-                </div>
+          <Select
+            disabled={!isEligibleForKerja}
+            value={data["702_jaminanKetenagakerjaan"]?.toString()}
+            onValueChange={(value) =>
+              onChange("702_jaminanKetenagakerjaan", Number.parseInt(value))
+            }
+          >
+            <SelectTrigger
+              className={`mt-1 ${
+                isEligibleForKerja &&
+                getValidationClass(data["702_jaminanKetenagakerjaan"])
+              }`}
+            >
+              <SelectValue placeholder="Pilih jaminan ketenagakerjaan" />
+            </SelectTrigger>
+            <SelectContent>
+              {jaminanKetenagakerjaanOptions.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
               ))}
-            </div>
-          ) : (
+            </SelectContent>
+          </Select>
+          {!isEligibleForKerja && (
             <p className="text-sm text-slate-500 mt-1">
               Tidak berlaku untuk usia di bawah 15 tahun.
             </p>
@@ -1885,7 +1834,8 @@ function Blok7Form({
               !isEligibleForPip ? "text-slate-400" : "text-slate-700"
             }`}
           >
-            703. Program Indonesia Pintar (Usia 5-30)
+            703. Dalam setahun terakhir, apakah ikut serta dalam Program
+            Indonesia Pintar (Usia 5-30)
           </Label>
           <Select
             disabled={!isEligibleForPip}
@@ -1900,7 +1850,7 @@ function Blok7Form({
                 getValidationClass(data["703_ikutProgramPIP"])
               }`}
             >
-              <SelectValue placeholder="Pilih" />
+              <SelectValue placeholder="Pilih status keikutsertaan" />
             </SelectTrigger>
             <SelectContent>
               {pipOptions.map((o) => (
@@ -1910,8 +1860,14 @@ function Blok7Form({
               ))}
             </SelectContent>
           </Select>
+          {!isEligibleForPip && (
+            <p className="text-sm text-slate-500 mt-1">
+              Tidak berlaku untuk usia di luar rentang 5-30 tahun.
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>
   );
 }
+// ========== [END] KODE YANG DIPERBARUI ==========

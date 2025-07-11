@@ -450,8 +450,8 @@ export default function SurveyDashboard() {
         </div>
 
         {/* Main Dashboard */}
-        <Tabs defaultValue="demographics" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-6">
+        <Tabs defaultValue="demographics" className="space-y-10 md:space-y-4 ">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
             <TabsTrigger value="demographics">Demografi</TabsTrigger>
             <TabsTrigger value="education">Pendidikan</TabsTrigger>
             <TabsTrigger value="employment">Pekerjaan</TabsTrigger>
