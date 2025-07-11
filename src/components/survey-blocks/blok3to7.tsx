@@ -939,6 +939,11 @@ const npwpOptions = [
   { value: "2", label: "2 - Ada, tidak dapat menunjukkan" },
   { value: "3", label: "3 - Tidak ada" },
 ];
+const statusUsahaOptions = [
+  { value: "1", label: "1 - Berusaha sendiri" },
+  { value: "2", label: "2 - Berusaha dibantu buruh tidak tetap/tidak dibayar" },
+  { value: "3", label: "3 - Berusaha dibantu buruh tetap/buruh dibayar" },
+];
 const izinUsahaOptions = [
   { value: "1", label: "01 - SITU" },
   { value: "2", label: "02 - SIUP" },
@@ -1044,6 +1049,8 @@ function Blok5Form({
     const numValue = value.replace(/\D/g, "").slice(0, 2);
     onChange(field, Number(numValue) || 0);
   };
+
+  const commonBusinessFieldsDisabled = hasNoBusiness || !isEligibleForWork;
 
   return (
     <Card className="border-slate-200">
@@ -1256,7 +1263,7 @@ function Blok5Form({
             <div>
               <Label
                 className={`text-sm font-medium ${
-                  hasNoBusiness || !isEligibleForWork
+                  commonBusinessFieldsDisabled
                     ? "text-slate-400"
                     : "text-slate-700"
                 }`}
@@ -1271,22 +1278,211 @@ function Blok5Form({
                 }
                 placeholder="00"
                 maxLength={2}
-                disabled={hasNoBusiness || !isEligibleForWork}
+                disabled={commonBusinessFieldsDisabled}
                 className={`mt-1 ${
-                  !hasNoBusiness &&
-                  isEligibleForWork &&
+                  !commonBusinessFieldsDisabled &&
                   getValidationClass(data["507_jumlahUsaha"])
                 }`}
               />
             </div>
           </div>
-          {/* ... Sisa form Usaha ... */}
-        </div>
-        <div className="mt-6 p-4 border-l-4 border-blue-500 bg-blue-50 rounded-md">
-          <h4 className="font-semibold text-sm text-blue-800 mb-2">
-            Catatan Kode Ketenagakerjaan
-          </h4>
-          {/* ... Sisa Catatan Kode ... */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label
+                className={`text-sm font-medium ${
+                  commonBusinessFieldsDisabled
+                    ? "text-slate-400"
+                    : "text-slate-700"
+                }`}
+              >
+                508. Lapangan Usaha dari Usaha Utama
+              </Label>
+              <Select
+                disabled={commonBusinessFieldsDisabled}
+                value={data["508_lapanganUsahaSendiri"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("508_lapanganUsahaSendiri", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger
+                  className={`mt-1 ${
+                    !commonBusinessFieldsDisabled &&
+                    getValidationClass(data["508_lapanganUsahaSendiri"])
+                  }`}
+                >
+                  <SelectValue placeholder="Pilih lapangan usaha" />
+                </SelectTrigger>
+                <SelectContent>
+                  {lapanganUsahaOptions.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label
+                className={`text-sm font-medium ${
+                  commonBusinessFieldsDisabled
+                    ? "text-slate-400"
+                    : "text-slate-700"
+                }`}
+              >
+                509. Status dalam Usaha Utama
+              </Label>
+              <Select
+                disabled={commonBusinessFieldsDisabled}
+                value={data["509_statusUsaha"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("509_statusUsaha", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger
+                  className={`mt-1 ${
+                    !commonBusinessFieldsDisabled &&
+                    getValidationClass(data["509_statusUsaha"])
+                  }`}
+                >
+                  <SelectValue placeholder="Pilih status usaha" />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusUsahaOptions.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label
+                className={`text-sm font-medium ${
+                  commonBusinessFieldsDisabled || !canHaveUnpaidWorkers
+                    ? "text-slate-400"
+                    : "text-slate-700"
+                }`}
+              >
+                510. Jumlah Pekerja Tidak Dibayar
+              </Label>
+              <Input
+                type="text"
+                value={data["510_jumlahPekerjaTidakDibayar"] || ""}
+                onChange={(e) =>
+                  handle2DigitChange(
+                    "510_jumlahPekerjaTidakDibayar",
+                    e.target.value
+                  )
+                }
+                placeholder="00"
+                maxLength={2}
+                disabled={commonBusinessFieldsDisabled || !canHaveUnpaidWorkers}
+                className={`mt-1 ${
+                  !commonBusinessFieldsDisabled &&
+                  canHaveUnpaidWorkers &&
+                  getValidationClass(data["510_jumlahPekerjaTidakDibayar"])
+                }`}
+              />
+            </div>
+            <div>
+              <Label
+                className={`text-sm font-medium ${
+                  commonBusinessFieldsDisabled || !canHavePaidWorkers
+                    ? "text-slate-400"
+                    : "text-slate-700"
+                }`}
+              >
+                511. Jumlah Pekerja Dibayar
+              </Label>
+              <Input
+                type="text"
+                value={data["511_jumlahPekerjaDibayar"] || ""}
+                onChange={(e) =>
+                  handle2DigitChange("511_jumlahPekerjaDibayar", e.target.value)
+                }
+                placeholder="00"
+                maxLength={2}
+                disabled={commonBusinessFieldsDisabled || !canHavePaidWorkers}
+                className={`mt-1 ${
+                  !commonBusinessFieldsDisabled &&
+                  canHavePaidWorkers &&
+                  getValidationClass(data["511_jumlahPekerjaDibayar"])
+                }`}
+              />
+            </div>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <Label
+                className={`text-sm font-medium ${
+                  commonBusinessFieldsDisabled
+                    ? "text-slate-400"
+                    : "text-slate-700"
+                }`}
+              >
+                512. Kepemilikan Izin Usaha
+              </Label>
+              <Select
+                disabled={commonBusinessFieldsDisabled}
+                value={data["512_kepemilikanIzinUsaha"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("512_kepemilikanIzinUsaha", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger
+                  className={`mt-1 ${
+                    !commonBusinessFieldsDisabled &&
+                    getValidationClass(data["512_kepemilikanIzinUsaha"])
+                  }`}
+                >
+                  <SelectValue placeholder="Pilih izin usaha" />
+                </SelectTrigger>
+                <SelectContent>
+                  {izinUsahaOptions.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label
+                className={`text-sm font-medium ${
+                  commonBusinessFieldsDisabled
+                    ? "text-slate-400"
+                    : "text-slate-700"
+                }`}
+              >
+                513. Pendapatan Usaha Sebulan Terakhir
+              </Label>
+              <Select
+                disabled={commonBusinessFieldsDisabled}
+                value={data["513_pendapatanUsahaSebulan"]?.toString()}
+                onValueChange={(value) =>
+                  onChange("513_pendapatanUsahaSebulan", Number.parseInt(value))
+                }
+              >
+                <SelectTrigger
+                  className={`mt-1 ${
+                    !commonBusinessFieldsDisabled &&
+                    getValidationClass(data["513_pendapatanUsahaSebulan"])
+                  }`}
+                >
+                  <SelectValue placeholder="Pilih pendapatan" />
+                </SelectTrigger>
+                <SelectContent>
+                  {pendapatanUsahaOptions.map((o) => (
+                    <SelectItem key={o.value} value={o.value}>
+                      {o.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>
