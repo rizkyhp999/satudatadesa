@@ -1,15 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { google, sheets_v4 } from "googleapis";
 import type { SurveyResponse } from "@/types/survey";
-
-// Fungsi untuk mengubah array jadi string koma
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* Fungsi utilitas */
 function formatArrayValue(value: any): string {
   if (Array.isArray(value)) return value.join(", ");
   return value;
 }
 
-// Fungsi tulis header jika belum ada
+function mapRowToObject(row: string[], headers: string[]) {
+  return headers.reduce((obj, header, index) => {
+    obj[header] = row[index] || "";
+    return obj;
+  }, {} as { [key: string]: string });
+}
+
+async function fetchSheetData(
+  sheets: sheets_v4.Sheets,
+  spreadsheetId: string,
+  sheetName: string
+) {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${sheetName}!A1:ZZ`,
+  });
+
+  const rows = response.data.values;
+  if (!rows || rows.length < 2) return [];
+  const headers = rows[0];
+  return rows.slice(1).map((row) => mapRowToObject(row, headers));
+}
+
 async function writeHeadersIfNeeded(
   sheets: sheets_v4.Sheets,
   spreadsheetId: string,
@@ -59,7 +80,44 @@ export async function POST(req: NextRequest) {
 
     const sheets: sheets_v4.Sheets = google.sheets({ version: "v4", auth });
 
-    // ========================= SHEET 1 ==============================
+    // ===================== CEK DUPLIKAT KK & NIK =====================
+    const existingKeluarga = await fetchSheetData(
+      sheets,
+      spreadsheetId,
+      "Keluarga"
+    );
+    const existingKKs = new Set(
+      existingKeluarga.map((row) => row["104_nomorKK"])
+    );
+
+    const existingAnggota = await fetchSheetData(
+      sheets,
+      spreadsheetId,
+      "Anggota"
+    );
+    const existingNIKs = new Set(existingAnggota.map((row) => row["303_nik"]));
+
+    // Cek KK
+    if (existingKKs.has(blok1["104_nomorKK"])) {
+      return NextResponse.json(
+        { error: `Nomor KK ${blok1["104_nomorKK"]} sudah ada.` },
+        { status: 400 }
+      );
+    }
+
+    // Cek NIK
+    const duplikatNIK = anggotaKeluarga.find((anggota) =>
+      existingNIKs.has(anggota.blok3["303_nik"])
+    );
+
+    if (duplikatNIK) {
+      return NextResponse.json(
+        { error: `NIK ${duplikatNIK.blok3["303_nik"]} sudah ada.` },
+        { status: 400 }
+      );
+    }
+
+    // ======================= SHEET 1: Keluarga =======================
     const sheet1Headers = [
       "timestamp",
       "101_namaKepalaKeluarga",
@@ -230,7 +288,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // ========================= SHEET 2 ==============================
+    // ======================= SHEET 2: Anggota =======================
     if (anggotaKeluarga && anggotaKeluarga.length > 0) {
       const sheet2Headers = [
         "nomorKK_FK",
