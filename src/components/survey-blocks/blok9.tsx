@@ -132,7 +132,7 @@ export function Blok9Component({ data, onChange }: Blok9ComponentProps) {
           <CardContent className="grid md:grid-cols-2 gap-4">
             <div>
               <Label className="text-sm font-medium text-slate-700">
-                901a. Jumlah Aset Lahan (m²)
+                901a. Jumlah Aset Lahan (jumlah)
               </Label>
               <Input
                 type="number"

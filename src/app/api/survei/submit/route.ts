@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { google, sheets_v4 } from "googleapis";
 import type { SurveyResponse } from "@/types/survey";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 /* Fungsi utilitas */
 function formatArrayValue(value: any): string {
   if (Array.isArray(value)) return value.join(", ");
@@ -253,7 +254,7 @@ export async function POST(req: NextRequest) {
       blok9["904c_BLTDesa"],
       blok9["904d_SubsidiListrik"],
       blok9["904e_BantuanPemda"],
-      blok9["904f_SubsidiPupuk"],
+      "904f_SubsidiPupuk",
       blok9["904g_BantuanDesa"],
       blok9["904g_catatan"],
       blok9["904h_BantuanLainnya"],

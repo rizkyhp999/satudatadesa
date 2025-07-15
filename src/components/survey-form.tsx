@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // <--- IMPORT useRouter
 import {
   Card,
   CardContent,
@@ -19,9 +20,7 @@ import { Blok9Component } from "./survey-blocks/blok9";
 import { Blok10Component } from "./survey-blocks/blok10";
 import type { SurveyResponse } from "@/types/survey";
 
-// =====================================================================
-// PERBAIKAN UTAMA DI SINI
-// =====================================================================
+// Data awal tidak berubah, tetap di sini untuk reset form
 const initialSurveyData: SurveyResponse = {
   blok1: {
     "101_namaKepalaKeluarga": "",
@@ -82,9 +81,9 @@ const initialSurveyData: SurveyResponse = {
     "904e_BantuanPemda": 0,
     "904f_SubsidiPupuk": 0,
     "904g_BantuanDesa": 0,
-    "904g_catatan": "", // Properti yang hilang ditambahkan
+    "904g_catatan": "",
     "904h_BantuanLainnya": 0,
-    "904h_catatan": "", // Properti yang hilang ditambahkan
+    "904h_catatan": "",
     "905a_jenisBantuanSawit": 0,
     "905b_jenisBantuanIkanLele": 0,
     "905c_jenisBantuanSayurBuah": 0,
@@ -98,11 +97,11 @@ const initialSurveyData: SurveyResponse = {
     "908b_alasanTidakLanjutIkanLele": [],
     "908c_alasanTidakLanjutSayurBuah": [],
     "909a_programDukungSawit": [],
-    "909a_lainnya": "", // Properti yang hilang ditambahkan
+    "909a_lainnya": "",
     "909b_programDukungIkanLele": [],
-    "909b_lainnya": "", // Properti yang hilang ditambahkan
+    "909b_lainnya": "",
     "909c_programDukungSayurBuah": [],
-    "909c_lainnya": "", // Properti yang hilang ditambahkan
+    "909c_lainnya": "",
   },
   blok10: {
     "1001_catatan": "",
@@ -122,6 +121,8 @@ export function SurveyForm() {
   const [currentBlock, setCurrentBlock] = useState(0);
   const [surveyData, setSurveyData] =
     useState<SurveyResponse>(initialSurveyData);
+  const [isSubmitting, setIsSubmitting] = useState(false); // State untuk loading
+  const router = useRouter(); // <--- Inisialisasi router
 
   const progress = ((currentBlock + 1) / blockTitles.length) * 100;
 
@@ -146,6 +147,8 @@ export function SurveyForm() {
       return;
     }
 
+    setIsSubmitting(true); // Mulai proses submit, disable tombol
+
     try {
       const res = await fetch("/api/survei/submit", {
         method: "POST",
@@ -159,9 +162,22 @@ export function SurveyForm() {
       if (!res.ok) throw new Error(data.error || "Gagal menyimpan");
 
       alert("Data survei berhasil dikirim!");
+
+      // =====================================================================
+      // PERUBAHAN UTAMA DI SINI
+      // =====================================================================
+      // 1. Reset state form ke kondisi awal
+      setSurveyData(initialSurveyData);
+      // 2. Kembali ke blok pertama
+      setCurrentBlock(0);
+      // 3. Refresh halaman untuk memastikan semua state (termasuk di komponen anak) bersih
+      router.refresh();
     } catch (err) {
-      alert(`Terjadi kesalahan: ${err}`);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      alert(`Terjadi kesalahan: ${errorMessage}`);
       console.error(err);
+    } finally {
+      setIsSubmitting(false); // Selesai proses submit, aktifkan kembali tombol
     }
   };
 
@@ -256,7 +272,7 @@ export function SurveyForm() {
         <Button
           variant="outline"
           onClick={handlePrevious}
-          disabled={currentBlock === 0}
+          disabled={currentBlock === 0 || isSubmitting}
           className="flex items-center gap-2"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -264,18 +280,10 @@ export function SurveyForm() {
         </Button>
 
         <div className="flex gap-3">
-          {/* <Button
-            variant="outline"
-            onClick={handleSave}
-            className="flex items-center gap-2"
-          >
-            <Save className="w-4 h-4" />
-            Simpan
-          </Button> */}
-
           {currentBlock < blockTitles.length - 1 ? (
             <Button
               onClick={handleNext}
+              disabled={isSubmitting}
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
             >
               Selanjutnya
@@ -284,10 +292,11 @@ export function SurveyForm() {
           ) : (
             <Button
               onClick={handleSave}
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+              disabled={isSubmitting} // <-- Disable tombol saat submitting
+              className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              Selesai
+              {isSubmitting ? "Menyimpan..." : "Selesai"}
             </Button>
           )}
         </div>

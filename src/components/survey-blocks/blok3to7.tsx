@@ -14,8 +14,6 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { Checkbox } from "@/components/ui/checkbox";
-// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   UserPlus,
   UserMinus,
@@ -31,7 +29,7 @@ import type {
   Blok5,
   Blok6,
   Blok7,
-} from "@/types/survey"; // Pastikan path ini sesuai dengan struktur proyek Anda
+} from "@/types/survey";
 
 interface FamilyMember {
   blok3: AnggotaKeluarga;
@@ -100,23 +98,39 @@ const createEmptyMember = (nomorUrut: number): FamilyMember => ({
 export function Blok3to7Component({ data, onChange }: Blok3to7ComponentProps) {
   const [selectedMember, setSelectedMember] = useState(0);
 
+  // Tambahkan anggota baru jika data kosong saat komponen dimuat
+  useEffect(() => {
+    if (data.length === 0) {
+      addMember();
+    }
+  }, []);
+
   const addMember = () => {
     const newMember = createEmptyMember(data.length + 1);
-    onChange([...data, newMember]);
-    setSelectedMember(data.length);
+    const newData = [...data, newMember];
+    onChange(newData);
+    setSelectedMember(data.length); // Atur fokus ke anggota yang baru ditambahkan
   };
 
   const removeMember = (index: number) => {
+    // Cegah penghapusan jika hanya ada satu anggota
+    if (data.length <= 1) {
+      alert("Minimal harus ada satu anggota keluarga.");
+      return;
+    }
     const newData = data.filter((_, i) => i !== index);
     const updatedData = newData.map((member, i) => ({
       ...member,
       blok3: { ...member.blok3, "301_nomorUrut": i + 1 },
     }));
     onChange(updatedData);
+
+    // Atur ulang anggota terpilih
     if (selectedMember >= updatedData.length && updatedData.length > 0) {
       setSelectedMember(updatedData.length - 1);
     } else if (updatedData.length === 0) {
-      setSelectedMember(0);
+      // Skenario ini seharusnya tidak terjadi karena pencegahan di atas
+      addMember();
     }
   };
 
@@ -128,10 +142,15 @@ export function Blok3to7Component({ data, onChange }: Blok3to7ComponentProps) {
   ) => {
     const newData = [...data];
     if (newData[index]) {
-      newData[index] = {
+      // Buat salinan objek yang akan diubah untuk menghindari mutasi langsung
+      const updatedMember = {
         ...newData[index],
-        [block]: { ...newData[index][block], [field]: value },
+        [block]: {
+          ...(newData[index][block] as any),
+          [field]: value,
+        },
       };
+      newData[index] = updatedMember;
       onChange(newData);
     }
   };
@@ -181,7 +200,7 @@ export function Blok3to7Component({ data, onChange }: Blok3to7ComponentProps) {
             <UserPlus className="w-4 h-4 mr-1" />
             Tambah
           </Button>
-          {data.length > 0 && (
+          {data.length > 1 && (
             <Button
               onClick={() => removeMember(selectedMember)}
               size="sm"
@@ -313,12 +332,55 @@ function Blok3Form({
   data: AnggotaKeluarga;
   onChange: (field: string, value: any) => void;
 }) {
+  // ========== [START] KODE YANG DIPERBARUI ==========
+  // useEffect untuk menghitung umur secara otomatis berdasarkan tanggal lahir
+  useEffect(() => {
+    const dob = data["309_tanggalLahir"];
+
+    // Cek apakah format tanggal lahir valid (dd/mm/yyyy)
+    if (dob && dob.length === 10) {
+      const parts = dob.split("/");
+      if (parts.length === 3) {
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const year = parseInt(parts[2], 10);
+
+        // Lakukan validasi dasar pada tanggal
+        if (
+          !isNaN(day) &&
+          !isNaN(month) &&
+          !isNaN(year) &&
+          year > 1900 &&
+          year <= new Date().getFullYear()
+        ) {
+          const birthDate = new Date(year, month - 1, day); // bulan pada Date() dimulai dari 0
+          const today = new Date();
+
+          let age = today.getFullYear() - birthDate.getFullYear();
+          const m = today.getMonth() - birthDate.getMonth();
+
+          // Kurangi umur jika ulang tahun tahun ini belum tiba
+          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+
+          // Perbarui state umur jika hasil kalkulasi berbeda
+          // Ini mencegah loop render yang tidak perlu
+          if (age >= 0 && data["310_umur"] !== age) {
+            onChange("310_umur", age);
+          }
+        }
+      }
+    }
+  }, [data["309_tanggalLahir"], data["310_umur"], onChange]); // Dependensi: tanggal lahir & umur
+  // ========== [END] KODE YANG DIPERBARUI ==========
+
+  // useEffect untuk logika skip pattern (sudah ada sebelumnya)
   useEffect(() => {
     const isFemale = data["308_jenisKelamin"] === 2;
     const isOfMaritalAge = [2, 3, 4].includes(data["311_statusPerkawinan"]);
     const isPregnancyApplicable = isFemale && isOfMaritalAge;
 
-    // Logic untuk kehamilan
     if (
       !isPregnancyApplicable ||
       data["313_sedangHamil"] !== 1 // Jika tidak hamil
@@ -331,7 +393,6 @@ function Blok3Form({
       }
     }
 
-    // Logic untuk alamat pindah
     const keberadaan = data["304_keteranganKeberadaan"];
     if (![3, 4].includes(keberadaan) && data["305_kecDesaSaatIni"] !== "") {
       onChange("305_kecDesaSaatIni", "");
@@ -661,6 +722,7 @@ function Blok3Form({
   );
 }
 
+// ... (Sisa kode untuk Blok4Form, Blok5Form, dst. tidak diubah dan tetap sama seperti yang Anda berikan)
 const pendidikanOptions = [
   { value: "1", label: "01 - Paket A" },
   { value: "2", label: "02 - SD LB" },
@@ -1702,8 +1764,6 @@ function Blok6Form({
   );
 }
 
-// ========== [START] KODE YANG DIPERBARUI ==========
-
 const jaminanKesehatanOptions = [
   { value: "0", label: "0 - Tidak memiliki" },
   { value: "1", label: "1 - PBI JKN" },
@@ -1870,4 +1930,3 @@ function Blok7Form({
     </Card>
   );
 }
-// ========== [END] KODE YANG DIPERBARUI ==========
