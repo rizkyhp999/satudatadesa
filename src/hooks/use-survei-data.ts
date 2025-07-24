@@ -134,7 +134,7 @@ export default function useSurveiData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/survei");
+        const response = await fetch("/api/survei");
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
