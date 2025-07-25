@@ -8,6 +8,14 @@ import { SummaryStats } from "@/components/dashboard/summary-stats";
 import { GovernmentAssistance } from "@/components/dashboard/goverment-assistance";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
+import T1p5 from "@/components/dashboard/t1p5";
+import T1p6 from "@/components/dashboard/t1p6";
+// import T2p1 from "@/components/dashboard/t2p1";
+// helper function untuk styling (pengganti cn)
+function cn(...classes: (string | boolean | undefined | null)[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 export default function Page() {
   const { data, loading, error } = useSurveiData();
@@ -62,18 +70,13 @@ export default function Page() {
           </p>
         </motion.div>
 
-        {/* Summary Statistics */}
+        {/* Summary */}
         <SummaryStats data={data} />
 
-        {/* Visualizations */}
-        <div className="space-y-8">
-          <GenderDistribution data={data} />
-          <AgeDistribution data={data} />
-          <MaritalStatus data={data} />
-          <HousingOwnership data={data} />
-          <GovernmentAssistance data={data} />
-        </div>
-
+        {/* Tabs */}
+        <T1p5></T1p5>
+        <T1p6></T1p6>
+        {/* <T2p1></T2p1> */}
         {/* Footer */}
         <motion.div
           initial={{ opacity: 0 }}

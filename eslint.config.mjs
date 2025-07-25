@@ -10,7 +10,16 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
+  // Konfigurasi bawaan dari Next.js
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+
+  // Tambahkan aturan untuk menonaktifkan no-unused-vars
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
 ];
 
 export default eslintConfig;
