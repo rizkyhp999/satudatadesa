@@ -1,24 +1,27 @@
 "use client";
-import useSurveiData from "@/hooks/use-survei-data";
-import { AgeDistribution } from "@/components/dashboard/age-distribution";
-import { GenderDistribution } from "@/components/dashboard/gender-distribution";
-import { HousingOwnership } from "@/components/dashboard/housing-ownership";
-import { MaritalStatus } from "@/components/dashboard/matrial-status";
-import { SummaryStats } from "@/components/dashboard/summary-stats";
-import { GovernmentAssistance } from "@/components/dashboard/goverment-assistance";
+
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
-import * as TabsPrimitive from "@radix-ui/react-tabs";
+import { Loader2, Download } from "lucide-react";
+import * as Tabs from "@radix-ui/react-tabs";
+import { Button } from "@/components/ui/button";
+
+import useSurveiData from "@/hooks/use-survei-data";
+import { SummaryStats } from "@/components/dashboard/summary-stats";
 import T1p5 from "@/components/dashboard/t1p5";
 import T1p6 from "@/components/dashboard/t1p6";
-// import T2p1 from "@/components/dashboard/t2p1";
-// helper function untuk styling (pengganti cn)
+import T2p1 from "@/components/dashboard/t2p1";
+import T2p2 from "@/components/dashboard/t2p2";
+import T2p3 from "@/components/dashboard/t2p3";
+
+// helper function untuk class merge
 function cn(...classes: (string | boolean | undefined | null)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Page() {
   const { data, loading, error } = useSurveiData();
+  const [tab, setTab] = useState("t1p5");
 
   if (loading) {
     return (
@@ -70,18 +73,112 @@ export default function Page() {
           </p>
         </motion.div>
 
-        {/* Summary */}
+        {/* Summary Stats */}
         <SummaryStats data={data} />
 
-        {/* Tabs */}
-        <T1p5></T1p5>
-        <T1p6></T1p6>
-        {/* <T2p1></T2p1> */}
+        {/* Tabs Section */}
+        <Tabs.Root value={tab} onValueChange={setTab} className="mt-10 w-full">
+          <Tabs.List className="flex flex-wrap gap-2 border-b pb-2">
+            <Tabs.Trigger
+              value="t1p5"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t1p5"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T1P5
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t1p6"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t1p6"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T1P6
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t2p1"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t2p1"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T2P1
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t2p2"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t2p2"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T2P2
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t2p3"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t2p3"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T2P3
+            </Tabs.Trigger>
+            {/* Tambahkan trigger lain jika ada T1P7, T2P1, dst. */}
+          </Tabs.List>
+
+          <div className="mt-6 flex justify-between items-center">
+            <h2 className="text-xl font-semibold text-gray-800">
+              {tab.toUpperCase()}
+            </h2>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm">
+                <Download className="w-4 h-4 mr-2" />
+                Download Grafik
+              </Button>
+              <Button variant="outline" size="sm">
+                <Download className="w-4 h-4 mr-2" />
+                Download Tabel
+              </Button>
+            </div>
+          </div>
+
+          <Tabs.Content value="t1p5" className="mt-4">
+            <T1p5 data={data} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t1p6" className="mt-4">
+            <T1p6 data={data} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t2p1" className="mt-4">
+            <T2p1 data={data} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t2p2" className="mt-4">
+            <T2p2 data={data} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t2p3" className="mt-4">
+            <T2p3 data={data} />
+          </Tabs.Content>
+        </Tabs.Root>
+
         {/* Footer */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.5 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
           className="text-center mt-12 py-8 border-t border-gray-200"
         >
           <p className="text-gray-500">
