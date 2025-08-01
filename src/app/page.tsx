@@ -13,6 +13,9 @@ import T1p6 from "@/components/dashboard/t1p6";
 import T2p1 from "@/components/dashboard/t2p1";
 import T2p2 from "@/components/dashboard/t2p2";
 import T2p3 from "@/components/dashboard/t2p3";
+import T3p1 from "@/components/dashboard/t3p1";
+import T3p2 from "@/components/dashboard/t3p2";
+import T3p3 from "@/components/dashboard/t3p3";
 
 // helper function untuk class merge
 function cn(...classes: (string | boolean | undefined | null)[]) {
@@ -134,6 +137,39 @@ export default function Page() {
             >
               T2P3
             </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p1"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p1"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P1
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p2"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p2"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P2
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p3"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p3"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P3
+            </Tabs.Trigger>
             {/* Tambahkan trigger lain jika ada T1P7, T2P1, dst. */}
           </Tabs.List>
 
@@ -171,6 +207,18 @@ export default function Page() {
 
           <Tabs.Content value="t2p3" className="mt-4">
             <T2p3 data={data} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p1" className="mt-4">
+            <T3p1 data={data} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p2" className="mt-4">
+            <T3p2 data={data} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p3" className="mt-4">
+            <T3p3 data={data} />
           </Tabs.Content>
         </Tabs.Root>
 

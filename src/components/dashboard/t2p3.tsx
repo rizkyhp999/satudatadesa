@@ -1,6 +1,22 @@
 "use client";
 
+import { useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
+import { toPng } from "html-to-image";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 type Props = {
   data: any;
@@ -16,6 +32,8 @@ const statusMap: Record<string, string> = {
 const statusOrder = ["1", "2", "3", "4"];
 
 export default function T2P3({ data }: Props) {
+  const chartRef = useRef<HTMLDivElement>(null);
+
   // Rekap data per status perkawinan dan jenis kelamin
   const summary = statusOrder.map((kode) => {
     let laki = 0;
@@ -38,75 +56,140 @@ export default function T2P3({ data }: Props) {
   const totalPerempuan = summary.reduce((sum, s) => sum + s.perempuan, 0);
   const totalSemua = summary.reduce((sum, s) => sum + s.total, 0);
 
+  const handleDownloadChart = async () => {
+    if (!chartRef.current) return;
+    try {
+      const dataUrl = await toPng(chartRef.current);
+      const link = document.createElement("a");
+      link.download = "grafik_status_perkawinan_jenis_kelamin.png";
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Gagal mengunduh grafik:", err);
+    }
+  };
+
+  const handleDownloadTable = () => {
+    const wsData = [
+      ["Status Perkawinan", "Laki-Laki", "Perempuan", "Total"],
+      ...summary.map(({ status, laki, perempuan, total }) => [
+        status,
+        laki,
+        perempuan,
+        total,
+      ]),
+      ["TOTAL", totalLaki, totalPerempuan, totalSemua],
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "rekap_status_perkawinan_jenis_kelamin.xlsx");
+  };
+
   return (
-    <Card className="mt-8">
-      <CardHeader>
-        <CardTitle>
-          Jumlah Penduduk Menurut Status Perkawinan dan Jenis Kelamin di Desa
-          Kapuak, 2025
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-gray-200">
-            <thead>
-              <tr>
-                <th
-                  rowSpan={2}
-                  className="border px-4 py-2 align-middle bg-gray-50"
-                >
-                  Status Perkawinan
-                </th>
-                <th
-                  colSpan={3}
-                  className="border px-4 py-2 text-center bg-gray-50"
-                >
-                  Jumlah Penduduk
-                </th>
-              </tr>
-              <tr>
-                <th className="border px-4 py-2 text-center bg-gray-50">
-                  Laki-Laki
-                </th>
-                <th className="border px-4 py-2 text-center bg-gray-50">
-                  Perempuan
-                </th>
-                <th className="border px-4 py-2 text-center bg-gray-50">
-                  Total
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {summary.map((row, i) => (
-                <tr key={i} className="hover:bg-gray-50">
-                  <td className="border px-4 py-2">{row.status}</td>
-                  <td className="border px-4 py-2 text-center">{row.laki}</td>
-                  <td className="border px-4 py-2 text-center">
-                    {row.perempuan}
+    <div>
+      <Card className="mb-6 mt-8">
+        <CardHeader className="flex items-center justify-between">
+          <CardTitle className="text-lg font-semibold">
+            Jumlah Penduduk Menurut Status Perkawinan dan Jenis Kelamin di Desa
+            Kapuak, 2025 (Grafik)
+          </CardTitle>
+          <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+            <Download className="w-4 h-4 mr-2" />
+            Download Grafik
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <div ref={chartRef} className="w-full h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={summary}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="status" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="laki" name="Laki-Laki" fill="#2563eb" />
+                <Bar dataKey="perempuan" name="Perempuan" fill="#f472b6" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex items-center justify-between">
+          <CardTitle>
+            Jumlah Penduduk Menurut Status Perkawinan dan Jenis Kelamin di Desa
+            Kapuak, 2025 (Tabel)
+          </CardTitle>
+          <Button variant="outline" size="sm" onClick={handleDownloadTable}>
+            <Download className="w-4 h-4 mr-2" />
+            Download Tabel
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border border-gray-200">
+              <thead>
+                <tr>
+                  <th
+                    rowSpan={2}
+                    className="border px-4 py-2 align-middle bg-gray-50"
+                  >
+                    Status Perkawinan
+                  </th>
+                  <th
+                    colSpan={3}
+                    className="border px-4 py-2 text-center bg-gray-50"
+                  >
+                    Jumlah Penduduk
+                  </th>
+                </tr>
+                <tr>
+                  <th className="border px-4 py-2 text-center bg-gray-50">
+                    Laki-Laki
+                  </th>
+                  <th className="border px-4 py-2 text-center bg-gray-50">
+                    Perempuan
+                  </th>
+                  <th className="border px-4 py-2 text-center bg-gray-50">
+                    Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {summary.map((row, i) => (
+                  <tr key={i} className="hover:bg-gray-50">
+                    <td className="border px-4 py-2">{row.status}</td>
+                    <td className="border px-4 py-2 text-center">{row.laki}</td>
+                    <td className="border px-4 py-2 text-center">
+                      {row.perempuan}
+                    </td>
+                    <td className="border px-4 py-2 text-center font-semibold">
+                      {row.total}
+                    </td>
+                  </tr>
+                ))}
+                <tr>
+                  <td className="border px-4 py-2 font-bold bg-gray-100">
+                    Total
                   </td>
-                  <td className="border px-4 py-2 text-center font-semibold">
-                    {row.total}
+                  <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                    {totalLaki}
+                  </td>
+                  <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                    {totalPerempuan}
+                  </td>
+                  <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                    {totalSemua}
                   </td>
                 </tr>
-              ))}
-              <tr>
-                <td className="border px-4 py-2 font-bold bg-gray-100">
-                  Total
-                </td>
-                <td className="border px-4 py-2 text-center font-bold bg-gray-100">
-                  {totalLaki}
-                </td>
-                <td className="border px-4 py-2 text-center font-bold bg-gray-100">
-                  {totalPerempuan}
-                </td>
-                <td className="border px-4 py-2 text-center font-bold bg-gray-100">
-                  {totalSemua}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </CardContent>
-    </Card>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
