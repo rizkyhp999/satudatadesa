@@ -33,8 +33,15 @@ async function fetchSheetData(
   return dataRows.map((row) => mapRowToObject(row, headers));
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    // Ambil query parameter dari URL
+    const { searchParams } = new URL(req.url);
+    const kode_provinsi = searchParams.get("prov");
+    const kode_kabupaten = searchParams.get("kab");
+    const kode_kecamatan = searchParams.get("kec");
+    const kode_desa = searchParams.get("desa");
+
     const spreadsheetId = process.env.SPREADSHEET_ID;
     const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || "{}");
 
@@ -58,9 +65,23 @@ export async function GET() {
       fetchSheetData(sheets, spreadsheetId, "Anggota"),
     ]);
 
+    // Jika ada parameter filter, lakukan filter
+    let filteredKeluarga = keluargaData;
+    // Anggota tidak difilter karena tidak ada kode wilayah di spreadsheet anggota
+    if (kode_provinsi && kode_kabupaten && kode_kecamatan && kode_desa) {
+      filteredKeluarga = keluargaData.filter(
+        (k: any) =>
+          k.kode_provinsi === kode_provinsi &&
+          k.kode_kabupaten === kode_kabupaten &&
+          k.kode_kecamatan === kode_kecamatan &&
+          k.kode_desa === kode_desa
+      );
+      // filteredAnggota = anggotaData; // Tidak perlu filter anggota
+    }
+
     // Kembalikan data dalam satu objek
     return NextResponse.json({
-      keluarga: keluargaData,
+      keluarga: filteredKeluarga,
       anggota: anggotaData,
     });
   } catch (err: unknown) {

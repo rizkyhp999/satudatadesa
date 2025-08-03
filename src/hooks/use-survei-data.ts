@@ -4,79 +4,87 @@ import { useState, useEffect } from "react";
 
 export interface KeluargaData {
   timestamp: string;
+  // Kode Wilayah
+  kode_provinsi?: string;
+  kode_kabupaten?: string;
+  kode_kecamatan?: string;
+  kode_desa?: string;
+  // Blok 1
   "101_namaKepalaKeluarga": string;
   "102_jumlahKK": string;
   "103_jumlahAnggotaKeluarga": string;
   "104_nomorKK": string;
   "105_kodeKK": string;
+  // Blok 2
   "201_namaRT": string;
   "202_nomorUrutBangunan": string;
   "203_nomorUrutKeluarga": string;
   "204_alamatLengkap": string;
   "205_statusKependudukan": string;
-  "801_statusKepemilikanBangunan": string;
-  "802_luasLantai": string;
-  "803_jenisLantai": string;
-  "804_jenisDinding": string;
-  "805_jenisAtap": string;
-  "806_sumberAirMinum": string;
-  "807_sumberAirMandi": string;
-  "808a_sumberPenerangan": string;
-  "808b_dayaTerpasang1": string;
-  "808b_dayaTerpasang2": string;
-  "808b_dayaTerpasang3": string;
-  "809_bahanBakarMasak": string;
-  "810a_kepemilikanFasilitasBAB": string;
-  "810b_jenisKloset": string;
-  "811_tempatBuangTinja": string;
-  "901a_asetLahan": string;
-  "901b_asetRumahLain": string;
-  "902a_tabungGas": string;
-  "902b_kulkas": string;
-  "902c_ac": string;
-  "902d_tv": string;
-  "902e_emas": string;
-  "902f_komputer": string;
-  "902g_motor": string;
-  "902h_perahuMotor": string;
-  "902i_mobil": string;
-  "902j_sepeda": string;
-  "902k_perahu": string;
-  "902l_smartphone": string;
-  "903a_sapi": string;
-  "903b_kerbau": string;
-  "903c_kuda": string;
-  "903d_babi": string;
-  "903e_kambing": string;
-  "904a_BPNT": string;
-  "904b_PKH": string;
-  "904c_BLTDesa": string;
-  "904d_SubsidiListrik": string;
-  "904e_BantuanPemda": string;
-  "904f_SubsidiPupuk": string;
-  "904g_BantuanDesa": string;
-  "904g_catatan": string;
-  "904h_BantuanLainnya": string;
-  "904h_catatan": string;
-  "905a_jenisBantuanSawit": string;
-  "905b_jenisBantuanIkanLele": string;
-  "905c_jenisBantuanSayurBuah": string;
-  "906a_terimaBantuanSawit": string;
-  "906b_terimaBantuanIkanLele": string;
-  "906c_terimaBantuanSayurBuah": string;
-  "907a_lanjutanBantuanSawit": string;
-  "907b_lanjutanBantuanIkanLele": string;
-  "907c_lanjutanBantuanSayurBuah": string;
-  "908a_alasanTidakLanjutSawit": string;
-  "908b_alasanTidakLanjutIkanLele": string;
-  "908c_alasanTidakLanjutSayurBuah": string;
-  "909a_programDukungSawit": string;
-  "909a_lainnya": string;
-  "909b_programDukungIkanLele": string;
-  "909b_lainnya": string;
-  "909c_programDukungSayurBuah": string;
-  "909c_lainnya": string;
-  "1001_catatan": string;
+  // Blok 8
+  "801_statusKepemilikanBangunan"?: string;
+  "802_luasLantai"?: string;
+  "803_jenisLantai"?: string;
+  "804_jenisDinding"?: string;
+  "805_jenisAtap"?: string;
+  "806_sumberAirMinum"?: string;
+  "807_sumberAirMandi"?: string;
+  "808a_sumberPenerangan"?: string;
+  "808b_dayaTerpasang1"?: string;
+  "808b_dayaTerpasang2"?: string;
+  "808b_dayaTerpasang3"?: string;
+  "809_bahanBakarMasak"?: string;
+  "810a_kepemilikanFasilitasBAB"?: string;
+  "810b_jenisKloset"?: string;
+  "811_tempatBuangTinja"?: string;
+  // Blok 9
+  "901a_asetLahan"?: string;
+  "901b_asetRumahLain"?: string;
+  "902a_tabungGas"?: string;
+  "902b_kulkas"?: string;
+  "902c_ac"?: string;
+  "902d_tv"?: string;
+  "902e_emas"?: string;
+  "902f_komputer"?: string;
+  "902g_motor"?: string;
+  "902h_perahuMotor"?: string;
+  "902i_mobil"?: string;
+  "902j_sepeda"?: string;
+  "902k_perahu"?: string;
+  "902l_smartphone"?: string;
+  "903a_sapi"?: string;
+  "903b_kerbau"?: string;
+  "903c_kuda"?: string;
+  "903d_babi"?: string;
+  "903e_kambing"?: string;
+  "904a_BPNT"?: string;
+  "904b_PKH"?: string;
+  "904c_BLTDesa"?: string;
+  "904d_SubsidiListrik"?: string;
+  "904e_BantuanPemda"?: string;
+  "904f_SubsidiPupuk"?: string;
+  "904g_BantuanDesa"?: string;
+  "904h_BantuanLainnya"?: string;
+  "905a_jenisBantuanSawit"?: string;
+  "905b_jenisBantuanIkanLele"?: string;
+  "905c_jenisBantuanSayurBuah"?: string;
+  "906a_terimaBantuanSawit"?: string;
+  "906b_terimaBantuanIkanLele"?: string;
+  "906c_terimaBantuanSayurBuah"?: string;
+  "907a_lanjutanBantuanSawit"?: string;
+  "907b_lanjutanBantuanIkanLele"?: string;
+  "907c_lanjutanBantuanSayurBuah"?: string;
+  "908a_alasanTidakLanjutSawit"?: string;
+  "908b_alasanTidakLanjutIkanLele"?: string;
+  "908c_alasanTidakLanjutSayurBuah"?: string;
+  "909a_programDukungSawit"?: string;
+  "909a_lainnya"?: string;
+  "909b_programDukungIkanLele"?: string;
+  "909b_lainnya"?: string;
+  "909c_programDukungSayurBuah"?: string;
+  "909c_lainnya"?: string;
+  // Blok 10
+  "1001_catatan"?: string;
 }
 
 export interface AnggotaData {
@@ -126,7 +134,18 @@ export interface SurveiData {
   anggota: AnggotaData[];
 }
 
-export default function useSurveiData() {
+export default function useSurveiData(params?: {
+  kode_provinsi?: string;
+  kode_kabupaten?: string;
+  kode_kecamatan?: string;
+  kode_desa?: string;
+}) {
+  // Ambil kode wilayah dari argumen, bukan dari URL
+  const kode_provinsi = params?.kode_provinsi;
+  const kode_kabupaten = params?.kode_kabupaten;
+  const kode_kecamatan = params?.kode_kecamatan;
+  const kode_desa = params?.kode_desa;
+
   const [data, setData] = useState<SurveiData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -134,7 +153,12 @@ export default function useSurveiData() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/survei");
+        // Bangun query string jika semua kode ada
+        let url = "/api/survei";
+        if (kode_provinsi && kode_kabupaten && kode_kecamatan && kode_desa) {
+          url += `?prov=${kode_provinsi}&kab=${kode_kabupaten}&kec=${kode_kecamatan}&desa=${kode_desa}`;
+        }
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
@@ -148,7 +172,8 @@ export default function useSurveiData() {
     };
 
     fetchData();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kode_provinsi, kode_kabupaten, kode_kecamatan, kode_desa]);
 
   return { data, loading, error };
 }

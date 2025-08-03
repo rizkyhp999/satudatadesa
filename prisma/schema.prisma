@@ -11,6 +11,12 @@ model Survei {
   id                             String   @id @default(uuid())
   createdAt                      DateTime @default(now())
 
+  // Kode Wilayah
+  kode_provinsi                  Int      // 2 digit
+  kode_kabupaten                 Int      // 2 digit
+  kode_kecamatan                 Int      // 3 digit
+  kode_desa                      Int      // 3 digit
+
   // Blok 1
   101_namaKepalaKeluarga         String
   102_jumlahKK                   Int
@@ -100,9 +106,12 @@ model Blok9 {
   908a_alasanTidakLanjutSawit    String
   908b_alasanTidakLanjutIkanLele String
   908c_alasanTidakLanjutSayurBuah String
-  909a_programDukungSawit        Int
-  909b_programDukungIkanLele     Int
-  909c_programDukungSayurBuah    Int
+  909a_programDukungSawit        String
+  909a_lainnya                   String
+  909b_programDukungIkanLele     String
+  909b_lainnya                   String
+  909c_programDukungSayurBuah    String
+  909c_lainnya                   String
 }
 
 model AnggotaKeluarga {

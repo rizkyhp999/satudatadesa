@@ -18,16 +18,23 @@ import { Blok3to7Component } from "./survey-blocks/blok3to7";
 import { Blok8Component } from "./survey-blocks/blok8";
 import { Blok9Component } from "./survey-blocks/blok9";
 import { Blok10Component } from "./survey-blocks/blok10";
-import type { SurveyResponse } from "@/types/survey";
+import type { SurveyResponse, Wilayah } from "@/types/survey";
+import { Wilayah as WilayahComponent } from "./survey-blocks/wilayah";
 
 // Data awal tidak berubah, tetap di sini untuk reset form
 const initialSurveyData: SurveyResponse = {
+  wilayah: {
+    kode_provinsi: "65",
+    kode_kabupaten: "03",
+    kode_kecamatan: "",
+    kode_desa: "",
+  },
   blok1: {
     "101_namaKepalaKeluarga": "",
-    "102_jumlahKK": " ",
-    "103_jumlahAnggotaKeluarga": " ",
-    "104_nomorKK": " ",
-    "105_kodeKK": " ",
+    "102_jumlahKK": "",
+    "103_jumlahAnggotaKeluarga": "",
+    "104_nomorKK": "",
+    "105_kodeKK": "",
   },
   blok2: {
     "201_namaRT": "",
@@ -109,6 +116,7 @@ const initialSurveyData: SurveyResponse = {
 };
 
 const blockTitles = [
+  "Wilayah",
   "Blok 1: Identitas Keluarga",
   "Blok 2: Lokasi dan Alamat",
   "Blok 3-7: Data Anggota Keluarga",
@@ -121,8 +129,8 @@ export function SurveyForm() {
   const [currentBlock, setCurrentBlock] = useState(0);
   const [surveyData, setSurveyData] =
     useState<SurveyResponse>(initialSurveyData);
-  const [isSubmitting, setIsSubmitting] = useState(false); // State untuk loading
-  const router = useRouter(); // <--- Inisialisasi router
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const progress = ((currentBlock + 1) / blockTitles.length) * 100;
 
@@ -185,6 +193,15 @@ export function SurveyForm() {
     switch (currentBlock) {
       case 0:
         return (
+          <WilayahComponent
+            value={surveyData.wilayah}
+            onChange={(wilayah) =>
+              setSurveyData((prev) => ({ ...prev, wilayah }))
+            }
+          />
+        );
+      case 1:
+        return (
           <Blok1Component
             data={surveyData.blok1}
             onChange={(data) =>
@@ -192,7 +209,7 @@ export function SurveyForm() {
             }
           />
         );
-      case 1:
+      case 2:
         return (
           <Blok2Component
             data={surveyData.blok2}
@@ -201,7 +218,7 @@ export function SurveyForm() {
             }
           />
         );
-      case 2:
+      case 3:
         return (
           <Blok3to7Component
             data={surveyData.anggotaKeluarga}
@@ -210,7 +227,7 @@ export function SurveyForm() {
             }
           />
         );
-      case 3:
+      case 4:
         return (
           <Blok8Component
             data={surveyData.blok8}
@@ -219,7 +236,7 @@ export function SurveyForm() {
             }
           />
         );
-      case 4:
+      case 5:
         return (
           <Blok9Component
             data={surveyData.blok9}
@@ -228,7 +245,7 @@ export function SurveyForm() {
             }
           />
         );
-      case 5:
+      case 6:
         return (
           <Blok10Component
             data={surveyData.blok10}
@@ -292,7 +309,7 @@ export function SurveyForm() {
           ) : (
             <Button
               onClick={handleSave}
-              disabled={isSubmitting} // <-- Disable tombol saat submitting
+              disabled={isSubmitting}
               className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />

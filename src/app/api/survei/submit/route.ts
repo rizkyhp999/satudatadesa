@@ -121,6 +121,10 @@ export async function POST(req: NextRequest) {
     // ======================= SHEET 1: Keluarga =======================
     const sheet1Headers = [
       "timestamp",
+      "kode_provinsi",
+      "kode_kabupaten",
+      "kode_kecamatan",
+      "kode_desa",
       "101_namaKepalaKeluarga",
       "102_jumlahKK",
       "103_jumlahAnggotaKeluarga",
@@ -205,6 +209,16 @@ export async function POST(req: NextRequest) {
 
     const dataSheet1 = [
       new Date().toISOString(),
+      surveyData.wilayah?.kode_provinsi
+        ? `'${surveyData.wilayah.kode_provinsi}`
+        : "",
+      surveyData.wilayah?.kode_kabupaten
+        ? `'${surveyData.wilayah.kode_kabupaten}`
+        : "",
+      surveyData.wilayah?.kode_kecamatan
+        ? `'${surveyData.wilayah.kode_kecamatan}`
+        : "",
+      surveyData.wilayah?.kode_desa ? `'${surveyData.wilayah.kode_desa}` : "",
       blok1["101_namaKepalaKeluarga"],
       blok1["102_jumlahKK"],
       blok1["103_jumlahAnggotaKeluarga"],

@@ -294,7 +294,7 @@ export default function T3P3({ data }: Props) {
                     <td className="border px-4 py-2">{label}</td>
                     <td className="border px-4 py-2 text-center">
                       {
-                        summary.result[key]["Tidak/Belum Pernah Sekolah"] [
+                        summary.result[key]["Tidak/Belum Pernah Sekolah"][
                           "SD Sederajat"
                         ]
                       }
@@ -310,7 +310,7 @@ export default function T3P3({ data }: Props) {
                     </td>
                     <td className="border px-4 py-2 text-center">
                       {
-                        summary.result[key]["Masih Bersekolah"] [
+                        summary.result[key]["Masih Bersekolah"][
                           "Perguruan Tinggi"
                         ]
                       }
@@ -323,7 +323,11 @@ export default function T3P3({ data }: Props) {
                 <tr className="font-bold bg-gray-100">
                   <td className="border px-4 py-2">Total</td>
                   <td className="border px-4 py-2 text-center">
-                    {summary.total["Tidak/Belum Pernah Sekolah"]["SD Sederajat"]}
+                    {
+                      summary.total["Tidak/Belum Pernah Sekolah"][
+                        "SD Sederajat"
+                      ]
+                    }
                   </td>
                   <td className="border px-4 py-2 text-center">
                     {summary.total["Masih Bersekolah"]["SD Sederajat"]}

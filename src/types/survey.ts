@@ -141,7 +141,16 @@ export interface Blok9 {
 export interface Blok10 {
   "1001_catatan": string;
 }
+
+export interface Wilayah {
+  kode_provinsi: string; // 2 digit
+  kode_kabupaten: string; // 2 digit
+  kode_kecamatan: string; // 3 digit
+  kode_desa: string; // 3 digit
+}
+
 export interface SurveyResponse {
+  wilayah: Wilayah;
   blok1: Blok1;
   blok2: Blok2;
 
