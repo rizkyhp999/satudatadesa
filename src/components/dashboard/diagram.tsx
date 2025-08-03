@@ -60,12 +60,12 @@ function Diagram({ data }: DiagramProps) {
   };
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>Alasan Tidak Lanjut Program (Akumulasi)</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col md:flex-row items-center gap-6">
-        <div className="w-64 h-64">
+        <div className="w-56 h-56">
           <Pie
             data={dataChart}
             options={{ plugins: { legend: { display: false } } }}

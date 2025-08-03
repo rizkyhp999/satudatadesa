@@ -370,7 +370,7 @@ export default function Page() {
           >
             <Button
               size="lg"
-              className="bg-black dark:bg-white text-white dark:text-black px-8 py-2 text-lg font-semibold shadow-lg border border-neutral-300 dark:border-neutral-700"
+              className="bg-black dark:bg-white text-white dark:text-black px-8 py-2 text-lg font-semibold shadow-lg border border-neutral-300 dark:border-neutral-700 cursor-pointer"
               disabled={!canGo}
               onClick={handleEnter}
             >
@@ -380,12 +380,21 @@ export default function Page() {
         </div>
       </motion.div>
       <motion.div
-        className="mt-12 text-neutral-400 text-xs"
+        className="mt-12 text-neutral-400 text-xs flex flex-col items-center"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2 }}
       >
-        &copy; {new Date().getFullYear()} Satu Data Desa | Kabupaten Tana Tidung
+        <div>
+          &copy; {new Date().getFullYear()} Satu Data Desa | Kabupaten Tana
+          Tidung
+        </div>
+        <div className="mt-1 flex items-center gap-1">
+          <span>Powered by</span>
+          <span className="font-semibold text-blue-700 dark:text-blue-400">
+            BPS Kabupaten Tana Tidung
+          </span>
+        </div>
       </motion.div>
     </motion.div>
   );

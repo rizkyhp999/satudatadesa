@@ -85,7 +85,7 @@ export default function Diagram2({ data }: Diagram2Props) {
   }
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>
           Program apa yang perlu dilaksanakan untuk mendukung pertanian di Desa?

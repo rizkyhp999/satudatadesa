@@ -70,69 +70,75 @@ export default function T1P5({ data }: Props) {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="mb-6">
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>Jumlah Keluarga per SLS (Grafik)</CardTitle>
-          <Button variant="outline" size="sm" onClick={handleDownloadChart}>
-            Download Grafik
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div ref={chartRef} className="w-full h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={tableData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="sls" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="jumlah" fill="#6366f1" name="Jumlah Keluarga" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col">
+          <CardHeader>
+            <CardTitle>Jumlah Keluarga per SLS (Grafik)</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col">
+            <div ref={chartRef} className="w-full" style={{ minHeight: 420 }}>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={tableData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="sls" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="jumlah" fill="#6366f1" name="Jumlah Keluarga" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+                Download Grafik
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
-      <Card>
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>Jumlah Keluarga per SLS (Tabel)</CardTitle>
-          <Button variant="outline" size="sm" onClick={handleDownloadExcel}>
-            Download Excel
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border border-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="border px-4 py-2">SLS</th>
-                  <th className="border px-4 py-2 text-center">
-                    Jumlah Keluarga
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData.map((row, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2">{row.sls}</td>
-                    <td className="border px-4 py-2 text-center font-semibold">
-                      {row.jumlah}
+        <Card className="md:w-1/2 flex flex-col">
+          <CardHeader>
+            <CardTitle>Jumlah Keluarga per SLS (Tabel)</CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col">
+            <div className="overflow-x-auto" style={{ minHeight: 420 }}>
+              <table className="w-full text-sm border border-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="border px-4 py-2">SLS</th>
+                    <th className="border px-4 py-2 text-center">
+                      Jumlah Keluarga
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableData.map((row, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="border px-4 py-2">{row.sls}</td>
+                      <td className="border px-4 py-2 text-center font-semibold">
+                        {row.jumlah}
+                      </td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td className="border px-4 py-2 font-bold bg-gray-100">
+                      Total
+                    </td>
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                      {totalKeluarga}
                     </td>
                   </tr>
-                ))}
-                <tr>
-                  <td className="border px-4 py-2 font-bold bg-gray-100">
-                    Total
-                  </td>
-                  <td className="border px-4 py-2 text-center font-bold bg-gray-100">
-                    {totalKeluarga}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadExcel}>
+                Download Excel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </motion.div>
   );
 }

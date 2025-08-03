@@ -1,11 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Loader2, Download, Sun, Moon } from "lucide-react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import useSurveiData from "@/hooks/use-survei-data";
 import { SummaryStats } from "@/components/dashboard/summary-stats";
@@ -25,8 +33,125 @@ function cn(...classes: (string | boolean | undefined | null)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+// Data wilayah (copy dari halaman awal)
+const PROVINSI = [{ kode: "65", nama: "Kalimantan Utara" }];
+const KABUPATEN = [{ kode: "03", nama: "Kabupaten Tana Tidung" }];
+const KECAMATAN_DESA = [
+  {
+    kecKode: "010",
+    kecNama: "MURUK RIAN",
+    desaKode: "001",
+    desaNama: "BALAYAN ARI",
+  },
+  {
+    kecKode: "010",
+    kecNama: "MURUK RIAN",
+    desaKode: "002",
+    desaNama: "SEPUTUK",
+  },
+  { kecKode: "010", kecNama: "MURUK RIAN", desaKode: "003", desaNama: "RIAN" },
+  {
+    kecKode: "010",
+    kecNama: "MURUK RIAN",
+    desaKode: "004",
+    desaNama: "KAPUAK",
+  },
+  {
+    kecKode: "010",
+    kecNama: "MURUK RIAN",
+    desaKode: "005",
+    desaNama: "RIAN RAYO",
+  },
+  {
+    kecKode: "010",
+    kecNama: "MURUK RIAN",
+    desaKode: "006",
+    desaNama: "SAPARI",
+  },
+  { kecKode: "020", kecNama: "SESAYAP", desaKode: "001", desaNama: "SEDULUN" },
+  {
+    kecKode: "020",
+    kecNama: "SESAYAP",
+    desaKode: "002",
+    desaNama: "LIMBU SEDULUN",
+  },
+  { kecKode: "020", kecNama: "SESAYAP", desaKode: "003", desaNama: "GUNAWAN" },
+  {
+    kecKode: "020",
+    kecNama: "SESAYAP",
+    desaKode: "004",
+    desaNama: "TIDENG PALE",
+  },
+  {
+    kecKode: "020",
+    kecNama: "SESAYAP",
+    desaKode: "005",
+    desaNama: "TIDENG PALE TIMUR",
+  },
+  { kecKode: "020", kecNama: "SESAYAP", desaKode: "006", desaNama: "SEBIDAI" },
+  { kecKode: "020", kecNama: "SESAYAP", desaKode: "007", desaNama: "SEBAWANG" },
+  { kecKode: "030", kecNama: "BETAYAU", desaKode: "001", desaNama: "MENDUPO" },
+  { kecKode: "030", kecNama: "BETAYAU", desaKode: "002", desaNama: "PERIUK" },
+  { kecKode: "030", kecNama: "BETAYAU", desaKode: "003", desaNama: "BEBAKUNG" },
+  { kecKode: "030", kecNama: "BETAYAU", desaKode: "004", desaNama: "KUJAU" },
+  { kecKode: "030", kecNama: "BETAYAU", desaKode: "005", desaNama: "MANING" },
+  {
+    kecKode: "030",
+    kecNama: "BETAYAU",
+    desaKode: "006",
+    desaNama: "BUONG BARU",
+  },
+  {
+    kecKode: "040",
+    kecNama: "SESAYAP HILIR",
+    desaKode: "001",
+    desaNama: "SELUDAU",
+  },
+  {
+    kecKode: "040",
+    kecNama: "SESAYAP HILIR",
+    desaKode: "002",
+    desaNama: "SESAYAP",
+  },
+  {
+    kecKode: "040",
+    kecNama: "SESAYAP HILIR",
+    desaKode: "003",
+    desaNama: "SEPALA DALUNG",
+  },
+  {
+    kecKode: "050",
+    kecNama: "TANA LIA",
+    desaKode: "001",
+    desaNama: "TANAH MERAH",
+  },
+  {
+    kecKode: "050",
+    kecNama: "TANA LIA",
+    desaKode: "002",
+    desaNama: "SAMBUNGAN",
+  },
+  {
+    kecKode: "050",
+    kecNama: "TANA LIA",
+    desaKode: "004",
+    desaNama: "TANAH MERAH BARAT",
+  },
+  {
+    kecKode: "050",
+    kecNama: "TANA LIA",
+    desaKode: "005",
+    desaNama: "SAMBUNGAN SELATAN",
+  },
+];
+
+const KECAMATAN_LIST = Array.from(
+  new Map(KECAMATAN_DESA.map((d) => [d.kecKode, d.kecNama])).entries()
+).map(([kode, nama]) => ({ kode, nama }));
+
 export default function Page() {
   const params = useParams();
+  const router = useRouter();
   const kode_provinsi = Array.isArray(params?.prov)
     ? params.prov[0]
     : params?.prov;
@@ -38,12 +163,12 @@ export default function Page() {
     : params?.kec;
   const kode_desa = Array.isArray(params?.desa) ? params.desa[0] : params?.desa;
 
-  // Kirim kode wilayah ke useSurveiData
-  const { data, loading, error } = useSurveiData({
-    kode_provinsi,
-    kode_kabupaten,
-    kode_kecamatan,
-    kode_desa,
+  // State untuk select wilayah
+  const [wilayah, setWilayah] = useState({
+    kode_provinsi: kode_provinsi || "65",
+    kode_kabupaten: kode_kabupaten || "03",
+    kode_kecamatan: kode_kecamatan || "",
+    kode_desa: kode_desa || "",
   });
   const [tab, setTab] = useState("t1p5");
   const [dark, setDark] = useState(false);
@@ -60,6 +185,46 @@ export default function Page() {
       return next;
     });
   }
+
+  // Nama wilayah
+  const provinsiNama =
+    PROVINSI.find((p) => p.kode === wilayah.kode_provinsi)?.nama || "";
+  const kabupatenNama =
+    KABUPATEN.find((k) => k.kode === wilayah.kode_kabupaten)?.nama || "";
+  const kecamatanNama =
+    KECAMATAN_LIST.find((k) => k.kode === wilayah.kode_kecamatan)?.nama || "";
+  const desaNama =
+    KECAMATAN_DESA.find(
+      (d) =>
+        d.kecKode === wilayah.kode_kecamatan && d.desaKode === wilayah.kode_desa
+    )?.desaNama || "";
+
+  // Desa sesuai kecamatan terpilih
+  const desaOptions = KECAMATAN_DESA.filter(
+    (d) => d.kecKode === wilayah.kode_kecamatan
+  );
+
+  // Navigasi jika semua kode terisi
+  function handlePilihWilayah() {
+    if (
+      wilayah.kode_provinsi &&
+      wilayah.kode_kabupaten &&
+      wilayah.kode_kecamatan &&
+      wilayah.kode_desa
+    ) {
+      router.push(
+        `/dashboard/${wilayah.kode_provinsi}/${wilayah.kode_kabupaten}/${wilayah.kode_kecamatan}/${wilayah.kode_desa}`
+      );
+    }
+  }
+
+  // Kirim kode wilayah ke useSurveiData
+  const { data, loading, error } = useSurveiData({
+    kode_provinsi,
+    kode_kabupaten,
+    kode_kecamatan,
+    kode_desa,
+  });
 
   if (loading) {
     return (
@@ -91,7 +256,196 @@ export default function Page() {
   if (!filteredData || filteredData.keluarga.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg">Tidak ada data tersedia untuk wilayah ini</p>
+        <div className="text-center">
+          <p className="text-xl mb-4">
+            Tidak ada data tersedia untuk wilayah ini
+          </p>
+          {/* Pilih Wilayah */}
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center items-end gap-4 mb-2 w-full max-w-2xl mx-auto">
+            {/* Provinsi */}
+            <div className="w-full sm:w-auto flex-1 min-w-[140px] max-w-xs">
+              <Label
+                htmlFor="provinsi"
+                className="text-gray-700 dark:text-white"
+              >
+                Provinsi
+              </Label>
+              <Select
+                value={wilayah.kode_provinsi}
+                onValueChange={(kode) =>
+                  setWilayah((w) => ({
+                    ...w,
+                    kode_provinsi: kode,
+                    kode_kabupaten: "03",
+                    kode_kecamatan: "",
+                    kode_desa: "",
+                  }))
+                }
+                defaultValue="65"
+              >
+                <SelectTrigger
+                  id="provinsi"
+                  className="w-40 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                >
+                  <SelectValue placeholder="Pilih Provinsi" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROVINSI.map((p) => (
+                    <SelectItem
+                      key={p.kode}
+                      value={p.kode}
+                      className="text-black dark:text-white"
+                    >
+                      {p.kode} - {p.nama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Kabupaten */}
+            <div className="w-full sm:w-auto flex-1 min-w-[180px] max-w-xs">
+              <Label
+                htmlFor="kabupaten"
+                className="text-gray-700 dark:text-white"
+              >
+                Kabupaten
+              </Label>
+              <Select
+                value={wilayah.kode_kabupaten}
+                onValueChange={(kode) =>
+                  setWilayah((w) => ({
+                    ...w,
+                    kode_kabupaten: kode,
+                    kode_kecamatan: "",
+                    kode_desa: "",
+                  }))
+                }
+                defaultValue="03"
+              >
+                <SelectTrigger
+                  id="kabupaten"
+                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                >
+                  <SelectValue placeholder="Pilih Kabupaten" />
+                </SelectTrigger>
+                <SelectContent>
+                  {KABUPATEN.map((k) => (
+                    <SelectItem
+                      key={k.kode}
+                      value={k.kode}
+                      className="text-black dark:text-white"
+                    >
+                      {k.kode} - {k.nama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Kecamatan */}
+            <div className="w-full sm:w-auto flex-1 min-w-[180px] max-w-xs">
+              <Label
+                htmlFor="kecamatan"
+                className="text-gray-700 dark:text-white"
+              >
+                Kecamatan
+              </Label>
+              <Select
+                value={wilayah.kode_kecamatan}
+                onValueChange={(kode) =>
+                  setWilayah((w) => ({
+                    ...w,
+                    kode_kecamatan: kode,
+                    kode_desa: "",
+                  }))
+                }
+              >
+                <SelectTrigger
+                  id="kecamatan"
+                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                >
+                  <SelectValue placeholder="Pilih Kecamatan" />
+                </SelectTrigger>
+                <SelectContent>
+                  {KECAMATAN_LIST.map((k) => (
+                    <SelectItem
+                      key={k.kode}
+                      value={k.kode}
+                      className="text-black dark:text-white"
+                    >
+                      [{k.kode}] {k.nama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Desa */}
+            <div className="w-full sm:w-auto flex-1 min-w-[180px] max-w-xs">
+              <Label htmlFor="desa" className="text-gray-700 dark:text-white">
+                Desa
+              </Label>
+              <Select
+                value={wilayah.kode_desa}
+                onValueChange={(kode) =>
+                  setWilayah((w) => ({
+                    ...w,
+                    kode_desa: kode,
+                  }))
+                }
+                disabled={!wilayah.kode_kecamatan}
+              >
+                <SelectTrigger
+                  id="desa"
+                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                >
+                  <SelectValue placeholder="Pilih Desa" />
+                </SelectTrigger>
+                <SelectContent>
+                  {KECAMATAN_DESA.filter(
+                    (d) => d.kecKode === wilayah.kode_kecamatan
+                  ).map((d) => (
+                    <SelectItem
+                      key={d.desaKode}
+                      value={d.desaKode}
+                      className="text-black dark:text-white"
+                    >
+                      [{d.desaKode}] {d.desaNama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Tombol navigasi */}
+            <div className="w-full sm:w-auto flex items-end self-end sm:self-auto">
+              <Button
+                className="ml-0 sm:ml-2 mt-6 bg-black dark:bg-white text-white dark:text-black border border-neutral-300 dark:border-neutral-700 cursor-pointer w-full sm:w-auto"
+                disabled={
+                  !(
+                    wilayah.kode_provinsi &&
+                    wilayah.kode_kabupaten &&
+                    wilayah.kode_kecamatan &&
+                    wilayah.kode_desa
+                  )
+                }
+                onClick={() => {
+                  if (
+                    wilayah.kode_provinsi &&
+                    wilayah.kode_kabupaten &&
+                    wilayah.kode_kecamatan &&
+                    wilayah.kode_desa
+                  ) {
+                    // Navigasi ke dashboard wilayah baru
+                    router.push(
+                      `/dashboard/${wilayah.kode_provinsi}/${wilayah.kode_kabupaten}/${wilayah.kode_kecamatan}/${wilayah.kode_desa}`
+                    );
+                  }
+                }}
+                size="sm"
+              >
+                Pilih Wilayah Lain
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -121,17 +475,193 @@ export default function Page() {
           </button>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
             Dashboard Analisis Data Survei
+            {desaNama && (
+              <span className="block text-2xl font-semibold text-blue-700 dark:text-blue-400 mt-2">
+                Desa {desaNama}
+              </span>
+            )}
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Visualisasi Data Demografis dan Sosial Ekonomi
           </p>
+          {/* Pilih Wilayah */}
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            {/* Provinsi */}
+            <div>
+              <Label
+                htmlFor="provinsi"
+                className="text-gray-700 dark:text-white"
+              >
+                Provinsi
+              </Label>
+              <Select
+                value={wilayah.kode_provinsi}
+                onValueChange={(kode) =>
+                  setWilayah((w) => ({
+                    ...w,
+                    kode_provinsi: kode,
+                    kode_kabupaten: "03",
+                    kode_kecamatan: "",
+                    kode_desa: "",
+                  }))
+                }
+                defaultValue="65"
+              >
+                <SelectTrigger
+                  id="provinsi"
+                  className="w-40 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                >
+                  <SelectValue placeholder="Pilih Provinsi" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROVINSI.map((p) => (
+                    <SelectItem
+                      key={p.kode}
+                      value={p.kode}
+                      className="text-black dark:text-white"
+                    >
+                      {p.kode} - {p.nama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Kabupaten */}
+            <div>
+              <Label
+                htmlFor="kabupaten"
+                className="text-gray-700 dark:text-white"
+              >
+                Kabupaten
+              </Label>
+              <Select
+                value={wilayah.kode_kabupaten}
+                onValueChange={(kode) =>
+                  setWilayah((w) => ({
+                    ...w,
+                    kode_kabupaten: kode,
+                    kode_kecamatan: "",
+                    kode_desa: "",
+                  }))
+                }
+                defaultValue="03"
+              >
+                <SelectTrigger
+                  id="kabupaten"
+                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                >
+                  <SelectValue placeholder="Pilih Kabupaten" />
+                </SelectTrigger>
+                <SelectContent>
+                  {KABUPATEN.map((k) => (
+                    <SelectItem
+                      key={k.kode}
+                      value={k.kode}
+                      className="text-black dark:text-white"
+                    >
+                      {k.kode} - {k.nama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Kecamatan */}
+            <div>
+              <Label
+                htmlFor="kecamatan"
+                className="text-gray-700 dark:text-white"
+              >
+                Kecamatan
+              </Label>
+              <Select
+                value={wilayah.kode_kecamatan}
+                onValueChange={(kode) =>
+                  setWilayah((w) => ({
+                    ...w,
+                    kode_kecamatan: kode,
+                    kode_desa: "",
+                  }))
+                }
+              >
+                <SelectTrigger
+                  id="kecamatan"
+                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                >
+                  <SelectValue placeholder="Pilih Kecamatan" />
+                </SelectTrigger>
+                <SelectContent>
+                  {KECAMATAN_LIST.map((k) => (
+                    <SelectItem
+                      key={k.kode}
+                      value={k.kode}
+                      className="text-black dark:text-white"
+                    >
+                      [{k.kode}] {k.nama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Desa */}
+            <div>
+              <Label htmlFor="desa" className="text-gray-700 dark:text-white">
+                Desa
+              </Label>
+              <Select
+                value={wilayah.kode_desa}
+                onValueChange={(kode) =>
+                  setWilayah((w) => ({
+                    ...w,
+                    kode_desa: kode,
+                  }))
+                }
+                disabled={!wilayah.kode_kecamatan}
+              >
+                <SelectTrigger
+                  id="desa"
+                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                >
+                  <SelectValue placeholder="Pilih Desa" />
+                </SelectTrigger>
+                <SelectContent>
+                  {desaOptions.map((d) => (
+                    <SelectItem
+                      key={d.desaKode}
+                      value={d.desaKode}
+                      className="text-black dark:text-white"
+                    >
+                      [{d.desaKode}] {d.desaNama}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Tombol navigasi */}
+            <div className="flex items-end">
+              <Button
+                className="ml-2 mt-6 bg-black dark:bg-white text-white dark:text-black border border-neutral-300 dark:border-neutral-700 cursor-pointer"
+                disabled={
+                  !(
+                    wilayah.kode_provinsi &&
+                    wilayah.kode_kabupaten &&
+                    wilayah.kode_kecamatan &&
+                    wilayah.kode_desa
+                  )
+                }
+                onClick={handlePilihWilayah}
+                size="sm"
+              >
+                Pilih Wilayah
+              </Button>
+            </div>
+          </div>
         </motion.div>
 
         {/* Summary Stats */}
         <SummaryStats data={filteredData} />
 
         {/* Diagram Pie Charts Side by Side */}
-        <div className="mb-8 flex flex-col lg:flex-row gap-8">
+        <div className="mb-8 flex flex-col lg:flex-row gap-8 items-stretch">
           <div className="flex-1">
             <Diagram data={filteredData} />
           </div>
@@ -233,22 +763,6 @@ export default function Page() {
             </Tabs.Trigger>
             {/* Tambahkan trigger lain jika ada T1P7, T2P1, dst. */}
           </Tabs.List>
-
-          <div className="mt-6 flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-gray-800">
-              {tab.toUpperCase()}
-            </h2>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Download Grafik
-              </Button>
-              <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Download Tabel
-              </Button>
-            </div>
-          </div>
 
           <Tabs.Content value="t1p5" className="mt-4">
             <T1p5 data={filteredData} />

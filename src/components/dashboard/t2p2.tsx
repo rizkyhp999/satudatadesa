@@ -104,106 +104,114 @@ export default function T2P2({ data }: Props) {
 
   return (
     <div>
-      <Card className="mb-6 mt-8">
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">
-            Jumlah Penduduk Menurut Kelompok Umur dan Jenis Kelamin di Desa
-            Kapuak, 2025 (Grafik)
-          </CardTitle>
-          <Button variant="outline" size="sm" onClick={handleDownloadChart}>
-            <Download className="w-4 h-4 mr-2" />
-            Download Grafik
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div ref={chartRef} className="w-full h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={summary}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="kelompok" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="laki" name="Laki-Laki" fill="#2563eb" />
-                <Bar dataKey="perempuan" name="Perempuan" fill="#f472b6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>
-            Jumlah Penduduk Menurut Kelompok Umur dan Jenis Kelamin di Desa
-            Kapuak, 2025 (Tabel)
-          </CardTitle>
-          <Button variant="outline" size="sm" onClick={handleDownloadTable}>
-            <Download className="w-4 h-4 mr-2" />
-            Download Tabel
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border border-gray-200">
-              <thead>
-                <tr>
-                  <th
-                    rowSpan={2}
-                    className="border px-4 py-2 align-middle bg-gray-50"
-                  >
-                    Kelompok Umur
-                  </th>
-                  <th
-                    colSpan={3}
-                    className="border px-4 py-2 text-center bg-gray-50"
-                  >
-                    Jumlah Penduduk
-                  </th>
-                </tr>
-                <tr>
-                  <th className="border px-4 py-2 text-center bg-gray-50">
-                    Laki-Laki
-                  </th>
-                  <th className="border px-4 py-2 text-center bg-gray-50">
-                    Perempuan
-                  </th>
-                  <th className="border px-4 py-2 text-center bg-gray-50">
-                    Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {summary.map((row, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2">{row.kelompok}</td>
-                    <td className="border px-4 py-2 text-center">{row.laki}</td>
-                    <td className="border px-4 py-2 text-center">
-                      {row.perempuan}
+      <div className="flex flex-col gap-6 md:flex-row md:items-start ">
+        <Card className="mb-6 mt-8 md:mb-0 md:w-1/2 flex flex-col">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              Jumlah Penduduk Menurut Kelompok Umur dan Jenis Kelamin di Desa
+              Kapuak, 2025 (Grafik)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col">
+            <div ref={chartRef} className="w-full" style={{ minHeight: 340 }}>
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart data={summary}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="kelompok" />
+                  <YAxis allowDecimals={false} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="laki" name="Laki-Laki" fill="#2563eb" />
+                  <Bar dataKey="perempuan" name="Perempuan" fill="#f472b6" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+                <Download className="w-4 h-4 mr-2" />
+                Download Grafik
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="md:w-1/2 flex flex-col">
+          <CardHeader>
+            <CardTitle>
+              Jumlah Penduduk Menurut Kelompok Umur dan Jenis Kelamin di Desa
+              Kapuak, 2025 (Tabel)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col">
+            <div className="overflow-x-auto" style={{ minHeight: 340 }}>
+              <table className="w-full text-sm border border-gray-200">
+                <thead>
+                  <tr>
+                    <th
+                      rowSpan={2}
+                      className="border px-4 py-2 align-middle bg-gray-50"
+                    >
+                      Kelompok Umur
+                    </th>
+                    <th
+                      colSpan={3}
+                      className="border px-4 py-2 text-center bg-gray-50"
+                    >
+                      Jumlah Penduduk
+                    </th>
+                  </tr>
+                  <tr>
+                    <th className="border px-4 py-2 text-center bg-gray-50">
+                      Laki-Laki
+                    </th>
+                    <th className="border px-4 py-2 text-center bg-gray-50">
+                      Perempuan
+                    </th>
+                    <th className="border px-4 py-2 text-center bg-gray-50">
+                      Total
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {summary.map((row, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="border px-4 py-2">{row.kelompok}</td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.laki}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.perempuan}
+                      </td>
+                      <td className="border px-4 py-2 text-center font-semibold">
+                        {row.total}
+                      </td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td className="border px-4 py-2 font-bold bg-gray-100">
+                      Total
                     </td>
-                    <td className="border px-4 py-2 text-center font-semibold">
-                      {row.total}
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                      {totalLaki}
+                    </td>
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                      {totalPerempuan}
+                    </td>
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                      {totalSemua}
                     </td>
                   </tr>
-                ))}
-                <tr>
-                  <td className="border px-4 py-2 font-bold bg-gray-100">
-                    Total
-                  </td>
-                  <td className="border px-4 py-2 text-center font-bold bg-gray-100">
-                    {totalLaki}
-                  </td>
-                  <td className="border px-4 py-2 text-center font-bold bg-gray-100">
-                    {totalPerempuan}
-                  </td>
-                  <td className="border px-4 py-2 text-center font-bold bg-gray-100">
-                    {totalSemua}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadTable}>
+                <Download className="w-4 h-4 mr-2" />
+                Download Tabel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

@@ -214,142 +214,166 @@ export default function T3P2({ data }: Props) {
 
   return (
     <div>
-      <Card className="mb-6 mt-8">
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>
-            Jumlah Penduduk Berumur 5 Tahun ke Atas Menurut Jenis Kelamin dan
-            Status Pendidikan di Desa, 2025 (Grafik)
-          </CardTitle>
-          <Button variant="outline" size="sm" onClick={handleDownloadChart}>
-            Download Grafik
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div ref={chartRef} className="w-full h-96">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={summary.chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
-                layout="vertical"
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" allowDecimals={false} />
-                <YAxis
-                  type="category"
-                  dataKey="kategori"
-                  width={200}
-                  tick={{ fontSize: 13 }}
-                />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="Laki-Laki" fill="#2563eb" />
-                <Bar dataKey="Perempuan" fill="#f472b6" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>
-            Jumlah Penduduk Berumur 5 Tahun ke Atas Menurut Jenis Kelamin dan
-            Status Pendidikan di Desa, 2025 (Tabel)
-          </CardTitle>
-          <Button variant="outline" size="sm" onClick={handleDownloadExcel}>
-            Download Excel
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border border-gray-200">
-              <thead>
-                <tr>
-                  <th className="border px-4 py-2 bg-gray-50" rowSpan={2}>
-                    Jenis Kelamin
-                  </th>
-                  <th className="border px-4 py-2 bg-gray-50" rowSpan={2}>
-                    Tidak/Belum
-                    <br />
-                    Pernah Sekolah
-                  </th>
-                  <th className="border px-4 py-2 bg-gray-50" colSpan={4}>
-                    Masih Bersekolah
-                  </th>
-                  <th className="border px-4 py-2 bg-gray-50" rowSpan={2}>
-                    Tidak Bersekolah Lagi
-                  </th>
-                </tr>
-                <tr>
-                  <th className="border px-4 py-2 bg-gray-50">SD Sederajat</th>
-                  <th className="border px-4 py-2 bg-gray-50">SMP Sederajat</th>
-                  <th className="border px-4 py-2 bg-gray-50">SMA Sederajat</th>
-                  <th className="border px-4 py-2 bg-gray-50">
-                    Perguruan Tinggi
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {jenisKelaminOrder.map(({ key, label }) => (
-                  <tr key={key} className="hover:bg-gray-50">
-                    <td className="border px-4 py-2">{label}</td>
+      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col">
+          <CardHeader>
+            <CardTitle>
+              Jumlah Penduduk Berumur 5 Tahun ke Atas Menurut Jenis Kelamin dan
+              Status Pendidikan di Desa, 2025 (Grafik)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col">
+            <div ref={chartRef} className="w-full" style={{ minHeight: 420 }}>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                  data={summary.chartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
+                  layout="vertical"
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" allowDecimals={false} />
+                  <YAxis
+                    type="category"
+                    dataKey="kategori"
+                    width={200}
+                    tick={{ fontSize: 13 }}
+                  />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="Laki-Laki" fill="#2563eb" />
+                  <Bar dataKey="Perempuan" fill="#f472b6" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+                Download Grafik
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="md:w-1/2 flex flex-col">
+          <CardHeader>
+            <CardTitle>
+              Jumlah Penduduk Berumur 5 Tahun ke Atas Menurut Jenis Kelamin dan
+              Status Pendidikan di Desa, 2025 (Tabel)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col">
+            <div className="overflow-x-auto" style={{ minHeight: 420 }}>
+              <table className="w-full text-sm border border-gray-200">
+                <thead>
+                  <tr>
+                    <th className="border px-4 py-2 bg-gray-50" rowSpan={2}>
+                      Jenis Kelamin
+                    </th>
+                    <th className="border px-4 py-2 bg-gray-50" rowSpan={2}>
+                      Tidak/Belum
+                      <br />
+                      Pernah Sekolah
+                    </th>
+                    <th className="border px-4 py-2 bg-gray-50" colSpan={4}>
+                      Masih Bersekolah
+                    </th>
+                    <th className="border px-4 py-2 bg-gray-50" rowSpan={2}>
+                      Tidak Bersekolah Lagi
+                    </th>
+                  </tr>
+                  <tr>
+                    <th className="border px-4 py-2 bg-gray-50">
+                      SD Sederajat
+                    </th>
+                    <th className="border px-4 py-2 bg-gray-50">
+                      SMP Sederajat
+                    </th>
+                    <th className="border px-4 py-2 bg-gray-50">
+                      SMA Sederajat
+                    </th>
+                    <th className="border px-4 py-2 bg-gray-50">
+                      Perguruan Tinggi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {jenisKelaminOrder.map(({ key, label }) => (
+                    <tr key={key} className="hover:bg-gray-50">
+                      <td className="border px-4 py-2">{label}</td>
+                      <td className="border px-4 py-2 text-center">
+                        {
+                          summary.result[key]["Tidak/Belum Pernah Sekolah"][
+                            "SD Sederajat"
+                          ]
+                        }
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {
+                          summary.result[key]["Masih Bersekolah"][
+                            "SD Sederajat"
+                          ]
+                        }
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {
+                          summary.result[key]["Masih Bersekolah"][
+                            "SMP Sederajat"
+                          ]
+                        }
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {
+                          summary.result[key]["Masih Bersekolah"][
+                            "SMA Sederajat"
+                          ]
+                        }
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {
+                          summary.result[key]["Masih Bersekolah"][
+                            "Perguruan Tinggi"
+                          ]
+                        }
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {summary.result[key]["Tidak Bersekolah Lagi"]["total"]}
+                      </td>
+                    </tr>
+                  ))}
+                  <tr className="font-bold bg-gray-100">
+                    <td className="border px-4 py-2">Total</td>
                     <td className="border px-4 py-2 text-center">
                       {
-                        summary.result[key]["Tidak/Belum Pernah Sekolah"][
+                        summary.total["Tidak/Belum Pernah Sekolah"][
                           "SD Sederajat"
                         ]
                       }
                     </td>
                     <td className="border px-4 py-2 text-center">
-                      {summary.result[key]["Masih Bersekolah"]["SD Sederajat"]}
+                      {summary.total["Masih Bersekolah"]["SD Sederajat"]}
                     </td>
                     <td className="border px-4 py-2 text-center">
-                      {summary.result[key]["Masih Bersekolah"]["SMP Sederajat"]}
+                      {summary.total["Masih Bersekolah"]["SMP Sederajat"]}
                     </td>
                     <td className="border px-4 py-2 text-center">
-                      {summary.result[key]["Masih Bersekolah"]["SMA Sederajat"]}
+                      {summary.total["Masih Bersekolah"]["SMA Sederajat"]}
                     </td>
                     <td className="border px-4 py-2 text-center">
-                      {
-                        summary.result[key]["Masih Bersekolah"][
-                          "Perguruan Tinggi"
-                        ]
-                      }
+                      {summary.total["Masih Bersekolah"]["Perguruan Tinggi"]}
                     </td>
                     <td className="border px-4 py-2 text-center">
-                      {summary.result[key]["Tidak Bersekolah Lagi"]["total"]}
+                      {summary.total["Tidak Bersekolah Lagi"]["total"]}
                     </td>
                   </tr>
-                ))}
-                <tr className="font-bold bg-gray-100">
-                  <td className="border px-4 py-2">Total</td>
-                  <td className="border px-4 py-2 text-center">
-                    {
-                      summary.total["Tidak/Belum Pernah Sekolah"][
-                        "SD Sederajat"
-                      ]
-                    }
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    {summary.total["Masih Bersekolah"]["SD Sederajat"]}
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    {summary.total["Masih Bersekolah"]["SMP Sederajat"]}
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    {summary.total["Masih Bersekolah"]["SMA Sederajat"]}
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    {summary.total["Masih Bersekolah"]["Perguruan Tinggi"]}
-                  </td>
-                  <td className="border px-4 py-2 text-center">
-                    {summary.total["Tidak Bersekolah Lagi"]["total"]}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadExcel}>
+                Download Excel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
