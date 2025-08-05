@@ -22,7 +22,7 @@ type Props = {
   data: any; // ganti dengan tipe data survei kamu
 };
 
-export default function T1P6({ data }: Props) {
+export default function T1p6({ data }: Props) {
   const chartRef = useRef<HTMLDivElement>(null);
 
   const kategori: Record<string, number> = {
@@ -30,6 +30,14 @@ export default function T1P6({ data }: Props) {
     "KTP Luar Desa": 0,
     "KTP Luar Kabupaten Tana Tidung": 0,
   };
+
+  // Helper untuk format SLS jika diperlukan di masa depan
+  function formatSLS(sls: string) {
+    if (sls === "99") return "Luar Desa";
+    if (/^\d+$/.test(sls)) return `RT ${sls.padStart(3, "0")}`;
+    if (sls === "Tidak diketahui") return "Tidak diketahui";
+    return sls;
+  }
 
   data.keluarga.forEach((item: any) => {
     const status = item["205_statusKependudukan"];

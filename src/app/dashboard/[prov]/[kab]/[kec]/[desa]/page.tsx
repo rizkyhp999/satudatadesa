@@ -19,14 +19,14 @@ import useSurveiData from "@/hooks/use-survei-data";
 import { SummaryStats } from "@/components/dashboard/summary-stats";
 import Diagram from "@/components/dashboard/diagram";
 import Diagram2 from "@/components/dashboard/diagram2";
+import T1p1_4 from "@/components/dashboard/t1p1_4";
 import T1p5 from "@/components/dashboard/t1p5";
 import T1p6 from "@/components/dashboard/t1p6";
+import T1p7 from "@/components/dashboard/t1p7";
+import T1p8 from "@/components/dashboard/t1p8";
+import T1p9 from "@/components/dashboard/t1p9";
 import T2p1 from "@/components/dashboard/t2p1";
 import T2p2 from "@/components/dashboard/t2p2";
-import T2p3 from "@/components/dashboard/t2p3";
-import T3p1 from "@/components/dashboard/t3p1";
-import T3p2 from "@/components/dashboard/t3p2";
-import T3p3 from "@/components/dashboard/t3p3";
 
 // helper function untuk class merge
 function cn(...classes: (string | boolean | undefined | null)[]) {
@@ -170,7 +170,7 @@ export default function Page() {
     kode_kecamatan: kode_kecamatan || "",
     kode_desa: kode_desa || "",
   });
-  const [tab, setTab] = useState("t1p5");
+  const [tab, setTab] = useState("t1p1_4");
   const [dark, setDark] = useState(false);
 
   // Toggle dark mode pada <html>
@@ -674,6 +674,17 @@ export default function Page() {
         <Tabs.Root value={tab} onValueChange={setTab} className="mt-10 w-full">
           <Tabs.List className="flex flex-wrap gap-2 border-b pb-2">
             <Tabs.Trigger
+              value="t1p1_4"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t1p1_4"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T1P1.1-1.4
+            </Tabs.Trigger>
+            <Tabs.Trigger
               value="t1p5"
               className={cn(
                 "px-4 py-2 rounded-md text-sm font-medium",
@@ -694,6 +705,39 @@ export default function Page() {
               )}
             >
               T1P6
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t1p7"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t1p7"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T1P7
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t1p8"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t1p8"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T1P8
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t1p9"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t1p9"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T1P9
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p1"
@@ -717,52 +761,11 @@ export default function Page() {
             >
               T2P2
             </Tabs.Trigger>
-            <Tabs.Trigger
-              value="t2p3"
-              className={cn(
-                "px-4 py-2 rounded-md text-sm font-medium",
-                tab === "t2p3"
-                  ? "bg-primary text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              )}
-            >
-              T2P3
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              value="t3p1"
-              className={cn(
-                "px-4 py-2 rounded-md text-sm font-medium",
-                tab === "t3p1"
-                  ? "bg-primary text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              )}
-            >
-              T3P1
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              value="t3p2"
-              className={cn(
-                "px-4 py-2 rounded-md text-sm font-medium",
-                tab === "t3p2"
-                  ? "bg-primary text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              )}
-            >
-              T3P2
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              value="t3p3"
-              className={cn(
-                "px-4 py-2 rounded-md text-sm font-medium",
-                tab === "t3p3"
-                  ? "bg-primary text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
-              )}
-            >
-              T3P3
-            </Tabs.Trigger>
-            {/* Tambahkan trigger lain jika ada T1P7, T2P1, dst. */}
           </Tabs.List>
+
+          <Tabs.Content value="t1p1_4" className="mt-4">
+            <T1p1_4 />
+          </Tabs.Content>
 
           <Tabs.Content value="t1p5" className="mt-4">
             <T1p5 data={filteredData} />
@@ -772,28 +775,24 @@ export default function Page() {
             <T1p6 data={filteredData} />
           </Tabs.Content>
 
+          <Tabs.Content value="t1p7" className="mt-4">
+            <T1p7 data={filteredData} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t1p8" className="mt-4">
+            <T1p8 data={filteredData} />
+          </Tabs.Content>
+
+          <Tabs.Content value="t1p9" className="mt-4">
+            <T1p9 data={filteredData} />
+          </Tabs.Content>
+
           <Tabs.Content value="t2p1" className="mt-4">
             <T2p1 data={filteredData} />
           </Tabs.Content>
 
           <Tabs.Content value="t2p2" className="mt-4">
             <T2p2 data={filteredData} />
-          </Tabs.Content>
-
-          <Tabs.Content value="t2p3" className="mt-4">
-            <T2p3 data={filteredData} />
-          </Tabs.Content>
-
-          <Tabs.Content value="t3p1" className="mt-4">
-            <T3p1 data={filteredData} />
-          </Tabs.Content>
-
-          <Tabs.Content value="t3p2" className="mt-4">
-            <T3p2 data={filteredData} />
-          </Tabs.Content>
-
-          <Tabs.Content value="t3p3" className="mt-4">
-            <T3p3 data={filteredData} />
           </Tabs.Content>
         </Tabs.Root>
 

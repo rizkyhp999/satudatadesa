@@ -22,33 +22,55 @@ type Props = {
   data: any;
 };
 
-const statusMap: Record<string, string> = {
-  "1": "Belum Kawin",
-  "2": "Kawin",
-  "3": "Cerai Hidup",
-  "4": "Cerai Mati",
-};
+const ageGroups = [
+  { label: "0-4", min: 0, max: 4 },
+  { label: "5-9", min: 5, max: 9 },
+  { label: "10-14", min: 10, max: 14 },
+  { label: "15-19", min: 15, max: 19 },
+  { label: "20-24", min: 20, max: 24 },
+  { label: "25-29", min: 25, max: 29 },
+  { label: "30-34", min: 30, max: 34 },
+  { label: "35-39", min: 35, max: 39 },
+  { label: "40-44", min: 40, max: 44 },
+  { label: "45-49", min: 45, max: 49 },
+  { label: "50-54", min: 50, max: 54 },
+  { label: "55-59", min: 55, max: 59 },
+  { label: "60-64", min: 60, max: 64 },
+  { label: "65+", min: 65, max: 200 },
+];
 
-const statusOrder = ["1", "2", "3", "4"];
-
-export default function T2P3({ data }: Props) {
+export default function T1p8({ data }: Props) {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  // Rekap data per status perkawinan dan jenis kelamin
-  const summary = statusOrder.map((kode) => {
-    let laki = 0;
-    let perempuan = 0;
-    data.anggota.forEach((a: any) => {
-      if (a["311_statusPerkawinan"] === kode) {
-        if (a["308_jenisKelamin"] === "1") laki++;
-        else if (a["308_jenisKelamin"] === "2") perempuan++;
-      }
-    });
+  // Mapping nomorKK_FK ke RT dari keluarga
+  const keluargaMap = data.keluarga.reduce((acc: any, keluarga: any) => {
+    acc[keluarga["104_nomorKK"]] = keluarga["201_namaRT"];
+    return acc;
+  }, {} as Record<string, string>);
+
+  // Rekap dengan reduce mirip t1p7, tetap pakai umur
+  const summaryObj = data.anggota.reduce((acc: any, anggota: any) => {
+    const umur = parseInt(anggota["310_umur"], 10);
+    if (isNaN(umur)) return acc;
+    const jenis = anggota["308_jenisKelamin"]?.toLowerCase();
+    // Cari kelompok umur yang cocok
+    const group = ageGroups.find((g) =>
+      g.label === "65+" ? umur >= 65 : umur >= g.min && umur <= g.max
+    );
+    if (!group) return acc;
+    if (!acc[group.label]) acc[group.label] = { laki: 0, perempuan: 0 };
+    if (jenis?.includes("1")) acc[group.label].laki++;
+    else if (jenis?.includes("2")) acc[group.label].perempuan++;
+    return acc;
+  }, {} as Record<string, { laki: number; perempuan: number }>);
+
+  const summary = ageGroups.map((group) => {
+    const data = summaryObj[group.label] || { laki: 0, perempuan: 0 };
     return {
-      status: statusMap[kode],
-      laki,
-      perempuan,
-      total: laki + perempuan,
+      kelompok: group.label,
+      laki: data.laki,
+      perempuan: data.perempuan,
+      total: data.laki + data.perempuan,
     };
   });
 
@@ -61,7 +83,7 @@ export default function T2P3({ data }: Props) {
     try {
       const dataUrl = await toPng(chartRef.current);
       const link = document.createElement("a");
-      link.download = "grafik_status_perkawinan_jenis_kelamin.png";
+      link.download = "grafik_kelompok_umur_jenis_kelamin.png";
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -71,9 +93,9 @@ export default function T2P3({ data }: Props) {
 
   const handleDownloadTable = () => {
     const wsData = [
-      ["Status Perkawinan", "Laki-Laki", "Perempuan", "Total"],
-      ...summary.map(({ status, laki, perempuan, total }) => [
-        status,
+      ["Kelompok Umur", "Laki-Laki", "Perempuan", "Total"],
+      ...summary.map(({ kelompok, laki, perempuan, total }) => [
+        kelompok,
         laki,
         perempuan,
         total,
@@ -85,17 +107,17 @@ export default function T2P3({ data }: Props) {
     XLSX.utils.book_append_sheet(wb, ws, "Rekap");
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, "rekap_status_perkawinan_jenis_kelamin.xlsx");
+    saveAs(blob, "rekap_kelompok_umur_jenis_kelamin.xlsx");
   };
 
   return (
     <div>
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+      <div className="flex flex-col gap-6 md:flex-row md:items-start ">
         <Card className="mb-6 mt-8 md:mb-0 md:w-1/2 flex flex-col">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
-              Jumlah Penduduk Menurut Status Perkawinan dan Jenis Kelamin di
-              Desa Kapuak, 2025 (Grafik)
+              Jumlah Penduduk Menurut Kelompok Umur dan Jenis Kelamin di Desa
+              Kapuak, 2025 (Grafik)
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col">
@@ -103,7 +125,7 @@ export default function T2P3({ data }: Props) {
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={summary}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="status" />
+                  <XAxis dataKey="kelompok" />
                   <YAxis allowDecimals={false} />
                   <Tooltip />
                   <Legend />
@@ -123,8 +145,8 @@ export default function T2P3({ data }: Props) {
         <Card className="md:w-1/2 flex flex-col">
           <CardHeader>
             <CardTitle>
-              Jumlah Penduduk Menurut Status Perkawinan dan Jenis Kelamin di
-              Desa Kapuak, 2025 (Tabel)
+              Jumlah Penduduk Menurut Kelompok Umur dan Jenis Kelamin di Desa
+              Kapuak, 2025 (Tabel)
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col">
@@ -136,7 +158,7 @@ export default function T2P3({ data }: Props) {
                       rowSpan={2}
                       className="border px-4 py-2 align-middle bg-gray-50"
                     >
-                      Status Perkawinan
+                      Kelompok Umur
                     </th>
                     <th
                       colSpan={3}
@@ -160,7 +182,7 @@ export default function T2P3({ data }: Props) {
                 <tbody>
                   {summary.map((row, i) => (
                     <tr key={i} className="hover:bg-gray-50">
-                      <td className="border px-4 py-2">{row.status}</td>
+                      <td className="border px-4 py-2">{row.kelompok}</td>
                       <td className="border px-4 py-2 text-center">
                         {row.laki}
                       </td>

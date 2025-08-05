@@ -22,7 +22,7 @@ type Props = {
   data: any; // ganti dengan tipe yang sesuai
 };
 
-export default function T1P5({ data }: Props) {
+export default function T1p5({ data }: Props) {
   const chartRef = useRef<HTMLDivElement>(null);
 
   // Hitung jumlah keluarga per SLS (201_namaRT)
@@ -32,12 +32,25 @@ export default function T1P5({ data }: Props) {
     keluargaPerSLS[sls] = (keluargaPerSLS[sls] || 0) + 1;
   });
 
+  // Format nama SLS sesuai permintaan
+  function formatSLS(sls: string) {
+    if (sls === "99") return "Luar Desa";
+    if (/^\d+$/.test(sls)) return `RT ${sls.padStart(3, "0")}`;
+    if (sls === "Tidak diketahui") return "Tidak diketahui";
+    return sls;
+  }
+
   const tableData = Object.entries(keluargaPerSLS).map(([sls, jumlah]) => ({
     sls,
     jumlah,
   }));
 
   const totalKeluarga = tableData.reduce((sum, row) => sum + row.jumlah, 0);
+
+  // Hitung jumlah keluarga dalam desa (kode selain 99 dan "Tidak diketahui")
+  const jumlahDalamDesa = tableData
+    .filter((row) => row.sls !== "99" && row.sls !== "Tidak diketahui")
+    .reduce((sum, row) => sum + row.jumlah, 0);
 
   const handleDownloadExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(tableData);
@@ -112,14 +125,38 @@ export default function T1P5({ data }: Props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {tableData.map((row, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
-                      <td className="border px-4 py-2">{row.sls}</td>
-                      <td className="border px-4 py-2 text-center font-semibold">
-                        {row.jumlah}
-                      </td>
-                    </tr>
-                  ))}
+                  {/* Baris jumlah dalam desa */}
+                  <tr>
+                    <td className="border px-4 py-2 font-bold bg-gray-100">
+                      Jumlah Dalam Desa
+                    </td>
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                      {jumlahDalamDesa}
+                    </td>
+                  </tr>
+                  {/* Data SLS per baris, hanya selain kode 99 */}
+                  {tableData
+                    .filter((row) => row.sls !== "99")
+                    .map((row, i) => (
+                      <tr key={i} className="hover:bg-gray-50">
+                        <td className="border px-4 py-2">
+                          {formatSLS(row.sls)}
+                        </td>
+                        <td className="border px-4 py-2 text-center font-semibold">
+                          {row.jumlah}
+                        </td>
+                      </tr>
+                    ))}
+                  {/* Baris jumlah luar desa, tampilkan sebelum total */}
+                  <tr>
+                    <td className="border px-4 py-2 font-bold bg-gray-100">
+                      Jumlah Luar Desa
+                    </td>
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                      {tableData.find((row) => row.sls === "99")?.jumlah || 0}
+                    </td>
+                  </tr>
+                  {/* Baris total */}
                   <tr>
                     <td className="border px-4 py-2 font-bold bg-gray-100">
                       Total
