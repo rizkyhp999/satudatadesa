@@ -32,6 +32,20 @@ import T2p4 from "@/components/dashboard/t2p4";
 import T2p5 from "@/components/dashboard/t2p5";
 import T2p6 from "@/components/dashboard/t2p6";
 import T2p7 from "@/components/dashboard/t2p7";
+import T3p1 from "@/components/dashboard/t3p1";
+import T3p2 from "@/components/dashboard/t3p2";
+import T3p3 from "@/components/dashboard/t3p3";
+import T3p4 from "@/components/dashboard/t3p4";
+import T3p5 from "@/components/dashboard/t3p5";
+import T3p6 from "@/components/dashboard/t3p6";
+import T3p7 from "@/components/dashboard/t3p7";
+import T3p8 from "@/components/dashboard/t3p8";
+import T3p9 from "@/components/dashboard/t3p9";
+import T3p10 from "@/components/dashboard/t3p10";
+import T3p11 from "@/components/dashboard/t3p11";
+import T4p1 from "@/components/dashboard/t4p1";
+import T4p2 from "@/components/dashboard/t4p2";
+import T4p3 from "@/components/dashboard/t4p3";
 
 // helper function untuk class merge
 function cn(...classes: (string | boolean | undefined | null)[]) {
@@ -775,7 +789,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P3 Belum
+              T2P3
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p4"
@@ -819,7 +833,161 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P7 Belum
+              T2P7
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p1"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p1"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P1
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p2"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p2"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P2
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p3"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p3"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P3
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p4"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p4"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P4
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p5"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p5"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P5
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p6"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p6"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P6
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p7"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p7"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P7
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p8"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p8"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P8
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p9"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p9"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P9
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p10"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p10"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P10
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t3p11"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t3p11"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T3P11
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t4p1"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t4p1"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T4P1
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t4p2"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t4p2"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T4P2
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t4p3"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t4p3"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T4P3
             </Tabs.Trigger>
           </Tabs.List>
 
@@ -839,6 +1007,52 @@ export default function Page() {
             <T1p7 data={filteredData} />
           </Tabs.Content>
 
+          <Tabs.Content value="t2p7" className="mt-4">
+            <T2p7 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p1" className="mt-4">
+            <T3p1 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p2" className="mt-4">
+            <T3p2 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p3" className="mt-4">
+            <T3p3 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p4" className="mt-4">
+            <T3p4 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p5" className="mt-4">
+            <T3p5 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p6" className="mt-4">
+            <T3p6 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p7" className="mt-4">
+            <T3p7 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p8" className="mt-4">
+            <T3p8 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p9" className="mt-4">
+            <T3p9 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p10" className="mt-4">
+            <T3p10 />
+          </Tabs.Content>
+          <Tabs.Content value="t3p11" className="mt-4">
+            <T3p11 />
+          </Tabs.Content>
+          <Tabs.Content value="t4p1" className="mt-4">
+            <T4p1 />
+          </Tabs.Content>
+          <Tabs.Content value="t4p2" className="mt-4">
+            <T4p2 />
+          </Tabs.Content>
+          <Tabs.Content value="t4p3" className="mt-4">
+            <T4p3 />
+          </Tabs.Content>
+
           <Tabs.Content value="t1p8" className="mt-4">
             <T1p8 data={filteredData} />
           </Tabs.Content>
@@ -855,7 +1069,8 @@ export default function Page() {
             <T2p2 data={filteredData} />
           </Tabs.Content>
           <Tabs.Content value="t2p3" className="mt-4">
-            <T2p3 data={filteredData} />
+            {/* <T2p3 data={filteredData} /> */}
+            <T2p3 />
           </Tabs.Content>
           <Tabs.Content value="t2p4" className="mt-4">
             <T2p4 data={filteredData} />
@@ -867,7 +1082,7 @@ export default function Page() {
             <T2p6 data={filteredData} />
           </Tabs.Content>
           <Tabs.Content value="t2p7" className="mt-4">
-            <T2p7 data={filteredData} />
+            <T2p7 />
           </Tabs.Content>
         </Tabs.Root>
 

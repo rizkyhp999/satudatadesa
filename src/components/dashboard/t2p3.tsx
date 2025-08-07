@@ -1,216 +1,311 @@
 "use client";
 
+import { useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { motion } from "framer-motion";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { toPng } from "html-to-image";
+import { Button } from "@/components/ui/button";
 
-const pendidikanLabels: Record<string, string> = {
-  tidakPunyaIjazah: "Tidak Punya Ijazah SD",
-  tamatSD: "Tamat SD Sederajat",
-  tamatSMP: "Tamat SMP Sederajat",
-  tamatSMA: "Tamat SMA/SMK Sederajat",
-  tamatPT: "Tamat Perguruan Tinggi",
-};
+// Data jumlah
+const jumlahData = [
+  {
+    karakteristik: "Laki-Laki",
+    tidakPunyaIjazahSD: 7,
+    tamatSD: 13,
+    tamatSMP: 9,
+    tamatSMA: 29,
+    tamatPT: 19,
+    jumlah: 77,
+  },
+  {
+    karakteristik: "Perempuan",
+    tidakPunyaIjazahSD: 4,
+    tamatSD: 21,
+    tamatSMP: 12,
+    tamatSMA: 20,
+    tamatPT: 25,
+    jumlah: 82,
+  },
+  {
+    karakteristik: "Desa Kapuak",
+    tidakPunyaIjazahSD: 11,
+    tamatSD: 34,
+    tamatSMP: 21,
+    tamatSMA: 49,
+    tamatPT: 44,
+    jumlah: 159,
+  },
+];
 
-const jenisKelaminLabels: Record<string, string> = {
-  "1": "Laki-Laki",
-  "2": "Perempuan",
-};
+// Data persentase
+const persentaseData = [
+  {
+    karakteristik: "Laki-Laki",
+    tidakPunyaIjazahSD: 4.4,
+    tamatSD: 8.18,
+    tamatSMP: 5.66,
+    tamatSMA: 18.24,
+    tamatPT: 11.95,
+    jumlah: 48.43,
+  },
+  {
+    karakteristik: "Perempuan",
+    tidakPunyaIjazahSD: 2.52,
+    tamatSD: 13.21,
+    tamatSMP: 7.55,
+    tamatSMA: 12.58,
+    tamatPT: 15.72,
+    jumlah: 51.57,
+  },
+  {
+    karakteristik: "Desa Kapuak",
+    tidakPunyaIjazahSD: 6.92,
+    tamatSD: 21.38,
+    tamatSMP: 13.21,
+    tamatSMA: 30.82,
+    tamatPT: 27.67,
+    jumlah: 100.0,
+  },
+];
 
-function getKategoriIjazah(kode: string) {
-  if (["23"].includes(kode)) return "tidakPunyaIjazah";
-  if (["1", "2", "3", "4", "5"].includes(kode)) return "tamatSD";
-  if (["6", "7", "8", "9", "10"].includes(kode)) return "tamatSMP";
-  if (["11", "12", "13", "14", "15", "16", "17"].includes(kode))
-    return "tamatSMA";
-  if (["18", "19", "20", "21", "22"].includes(kode)) return "tamatPT";
-  return undefined;
-}
+// Untuk grafik: per kategori pendidikan, bandingkan laki-laki dan perempuan
+const chartData = [
+  {
+    kategori: "Tidak Punya Ijazah SD",
+    LakiLaki: persentaseData[0].tidakPunyaIjazahSD,
+    Perempuan: persentaseData[1].tidakPunyaIjazahSD,
+  },
+  {
+    kategori: "Tamat SD Sederajat",
+    LakiLaki: persentaseData[0].tamatSD,
+    Perempuan: persentaseData[1].tamatSD,
+  },
+  {
+    kategori: "Tamat SMP Sederajat",
+    LakiLaki: persentaseData[0].tamatSMP,
+    Perempuan: persentaseData[1].tamatSMP,
+  },
+  {
+    kategori: "Tamat SMA/SMK Sederajat",
+    LakiLaki: persentaseData[0].tamatSMA,
+    Perempuan: persentaseData[1].tamatSMA,
+  },
+  {
+    kategori: "Tamat Perguruan Tinggi",
+    LakiLaki: persentaseData[0].tamatPT,
+    Perempuan: persentaseData[1].tamatPT,
+  },
+];
 
-type Props = {
-  data: any;
-};
+export default function T2p3() {
+  const chartRef = useRef<HTMLDivElement>(null);
 
-export default function T2p3({ data }: Props) {
-  if (!data) return <div>Data tidak ditemukan</div>;
-
-  // Filter anggota umur >= 15
-  const filtered = data.anggota.filter((a: any) => {
-    const umur = parseInt(a["310_umur"] || "0", 10);
-    return umur >= 15;
-  });
-
-  // Hitung jumlah per jenis kelamin dan kategori ijazah
-  const counts: Record<string, Record<string, number>> = {
-    "1": {
-      tidakPunyaIjazah: 0,
-      tamatSD: 0,
-      tamatSMP: 0,
-      tamatSMA: 0,
-      tamatPT: 0,
-    },
-    "2": {
-      tidakPunyaIjazah: 0,
-      tamatSD: 0,
-      tamatSMP: 0,
-      tamatSMA: 0,
-      tamatPT: 0,
-    },
-  };
-
-  filtered.forEach((a: any) => {
-    const jk = a["308_jenisKelamin"];
-    const ijazah = a["404_ijazahTertinggi"];
-    const kategori = getKategoriIjazah(ijazah);
-    if ((jk === "1" || jk === "2") && kategori) {
-      counts[jk][kategori] += 1;
-    }
-  });
-
-  // Data untuk tabel
-  const kategoriOrder = [
-    "tidakPunyaIjazah",
-    "tamatSD",
-    "tamatSMP",
-    "tamatSMA",
-    "tamatPT",
-  ];
-  const totalPerBaris = {
-    "1": kategoriOrder.reduce((sum, k) => sum + counts["1"][k], 0),
-    "2": kategoriOrder.reduce((sum, k) => sum + counts["2"][k], 0),
-  };
-  const totalPerKolom: Record<string, number> = {};
-  kategoriOrder.forEach((k) => {
-    totalPerKolom[k] = counts["1"][k] + counts["2"][k];
-  });
-  const grandTotal = totalPerBaris["1"] + totalPerBaris["2"];
-
-  // Persentase
-  const persentase = {
-    "1": kategoriOrder.map((k) =>
-      totalPerBaris["1"] ? (counts["1"][k] / totalPerBaris["1"]) * 100 : 0
-    ),
-    "2": kategoriOrder.map((k) =>
-      totalPerBaris["2"] ? (counts["2"][k] / totalPerBaris["2"]) * 100 : 0
-    ),
-    total: kategoriOrder.map((k) =>
-      grandTotal ? (totalPerKolom[k] / grandTotal) * 100 : 0
-    ),
-  };
-
-  // Download table as Excel
-  const handleDownloadTable = () => {
-    const wsData = [
-      [
-        "Jenis Kelamin",
-        ...kategoriOrder.map((k) => pendidikanLabels[k]),
-        "Jumlah",
-      ],
-      [
-        jenisKelaminLabels["1"],
-        ...kategoriOrder.map((k) => counts["1"][k]),
-        totalPerBaris["1"],
-      ],
-      [
-        jenisKelaminLabels["2"],
-        ...kategoriOrder.map((k) => counts["2"][k]),
-        totalPerBaris["2"],
-      ],
-      ["Total", ...kategoriOrder.map((k) => totalPerKolom[k]), grandTotal],
-      ["%", ...persentase.total.map((p) => p.toFixed(2) + "%"), ""],
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Rekap");
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  const handleDownloadExcel = () => {
+    // Gabungkan jumlah dan persentase
+    const worksheet = XLSX.utils.json_to_sheet([
+      { Tabel: "Jumlah" },
+      ...jumlahData,
+      {},
+      { Tabel: "Persentase" },
+      ...persentaseData,
+    ]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "T2p3");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, "rekap_pendidikan_ijazah_15plus.xlsx");
+    saveAs(blob, "t2p3_pendidikan_ijazah.xlsx");
+  };
+
+  const handleDownloadChart = async () => {
+    if (!chartRef.current) return;
+    try {
+      const dataUrl = await toPng(chartRef.current);
+      const link = document.createElement("a");
+      link.download = "t2p3_grafik_pendidikan.png";
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Gagal mengunduh chart:", err);
+    }
   };
 
   return (
-    <Card className="w-full mt-8">
-      <CardHeader>
-        <CardTitle>
-          Persentase Penduduk Berumur 15 Tahun ke Atas Menurut Jenis Kelamin dan
-          Tingkat Pendidikan Tertinggi yang Ditamatkan (Ijazah/STTB Tertinggi
-          yang Dimiliki) di Desa, 2025
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border border-gray-200">
-            <thead>
-              <tr>
-                <th className="border px-4 py-2 align-middle bg-gray-50">
-                  Jenis Kelamin
-                </th>
-                {kategoriOrder.map((k) => (
-                  <th
-                    key={k}
-                    className="border px-4 py-2 text-center bg-gray-50"
-                  >
-                    {pendidikanLabels[k]}
-                  </th>
-                ))}
-                <th className="border px-4 py-2 text-center bg-gray-50">
-                  Jumlah
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {(["1", "2"] as const).map((jk) => (
-                <tr key={jk} className="hover:bg-gray-50">
-                  <td className="border px-4 py-2">{jenisKelaminLabels[jk]}</td>
-                  {kategoriOrder.map((k, i) => (
-                    <td key={k} className="border px-4 py-2 text-center">
-                      {counts[jk][k]}
-                    </td>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
+      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col border border-gray-200">
+          <CardHeader className="bg-white border-b border-gray-200">
+            <CardTitle className="text-lg font-semibold">
+              Tabel 2.3 Persentase Penduduk Berumur 15 Tahun ke Atas Menurut
+              Jenis Kelamin dan Tingkat Pendidikan Tertinggi yang Ditamatkan
+              (Ijazah/STTB Tertinggi yang Dimiliki) di Desa Kapuak, 2025
+              (Grafik)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col p-4">
+            <div ref={chartRef} className="w-full" style={{ minHeight: 420 }}>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="kategori" />
+                  <YAxis unit="%" />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="LakiLaki" fill="#6366f1" name="Laki-Laki" />
+                  <Bar dataKey="Perempuan" fill="#f472b6" name="Perempuan" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+                Download Grafik
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="md:w-1/2 flex flex-col border border-gray-200">
+          <CardHeader className="bg-white border-b border-gray-200">
+            <CardTitle className="text-lg font-semibold">
+              Tabel 2.3 Persentase Penduduk Berumur 15 Tahun ke Atas Menurut
+              Jenis Kelamin dan Tingkat Pendidikan Tertinggi yang Ditamatkan
+              (Ijazah/STTB Tertinggi yang Dimiliki) di Desa Kapuak, 2025 (Tabel)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 flex flex-col p-4">
+            <div className="overflow-x-auto" style={{ minHeight: 340 }}>
+              {/* Tabel Jumlah */}
+              <div className="font-semibold mb-2">Jumlah</div>
+              <table className="w-full text-sm border border-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="border px-4 py-2">Karakteristik</th>
+                    <th className="border px-4 py-2 text-center">
+                      Tidak Punya Ijazah SD
+                    </th>
+                    <th className="border px-4 py-2 text-center">
+                      Tamat SD Sederajat
+                    </th>
+                    <th className="border px-4 py-2 text-center">
+                      Tamat SMP Sederajat
+                    </th>
+                    <th className="border px-4 py-2 text-center">
+                      Tamat SMA/SMK Sederajat
+                    </th>
+                    <th className="border px-4 py-2 text-center">
+                      Tamat Perguruan Tinggi
+                    </th>
+                    <th className="border px-4 py-2 text-center">Jumlah</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {jumlahData.map((row, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="border px-4 py-2 font-semibold">
+                        {row.karakteristik}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tidakPunyaIjazahSD}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tamatSD}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tamatSMP}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tamatSMA}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tamatPT}
+                      </td>
+                      <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                        {row.jumlah}
+                      </td>
+                    </tr>
                   ))}
-                  <td className="border px-4 py-2 text-center font-semibold">
-                    {totalPerBaris[jk]}
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td className="border px-4 py-2 font-bold bg-gray-100">
-                  Total
-                </td>
-                {kategoriOrder.map((k) => (
-                  <td
-                    key={k}
-                    className="border px-4 py-2 text-center font-bold bg-gray-100"
-                  >
-                    {totalPerKolom[k]}
-                  </td>
-                ))}
-                <td className="border px-4 py-2 text-center font-bold bg-gray-100">
-                  {grandTotal}
-                </td>
-              </tr>
-              <tr>
-                <td className="border px-4 py-2 font-bold bg-gray-100">%</td>
-                {persentase.total.map((p, i) => (
-                  <td
-                    key={i}
-                    className="border px-4 py-2 text-center font-bold bg-gray-100"
-                  >
-                    {p.toFixed(2)}%
-                  </td>
-                ))}
-                <td className="border px-4 py-2 bg-gray-100"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-end mt-2">
-          <Button variant="outline" size="sm" onClick={handleDownloadTable}>
-            <Download className="w-4 h-4 mr-2" />
-            Download Tabel
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+                </tbody>
+              </table>
+            </div>
+            {/* Tabel Persentase */}
+            <div className="overflow-x-auto" style={{ minHeight: 180 }}>
+              <div className="font-semibold mb-2">Persentase (%)</div>
+              <table className="w-full text-sm border border-gray-200">
+                <thead className="bg-gray-50 dark:bg-gray-800">
+                  <tr>
+                    <th className="border px-4 py-2">Karakteristik</th>
+                    <th className="border px-4 py-2 text-center">
+                      Tidak Punya Ijazah SD
+                    </th>
+                    <th className="border px-4 py-2 text-center">
+                      Tamat SD Sederajat
+                    </th>
+                    <th className="border px-4 py-2 text-center">
+                      Tamat SMP Sederajat
+                    </th>
+                    <th className="border px-4 py-2 text-center">
+                      Tamat SMA/SMK Sederajat
+                    </th>
+                    <th className="border px-4 py-2 text-center">
+                      Tamat Perguruan Tinggi
+                    </th>
+                    <th className="border px-4 py-2 text-center">Jumlah</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {persentaseData.map((row, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="border px-4 py-2 font-semibold">
+                        {row.karakteristik}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tidakPunyaIjazahSD.toFixed(2)}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tamatSD.toFixed(2)}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tamatSMP.toFixed(2)}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tamatSMA.toFixed(2)}
+                      </td>
+                      <td className="border px-4 py-2 text-center">
+                        {row.tamatPT.toFixed(2)}
+                      </td>
+                      <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                        {row.jumlah.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-end mt-2">
+              <Button variant="outline" size="sm" onClick={handleDownloadExcel}>
+                Download Excel
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </motion.div>
   );
 }

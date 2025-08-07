@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,6 +10,11 @@ import {
   Legend,
 } from "chart.js";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 ChartJS.register(
   CategoryScale,
@@ -51,6 +56,7 @@ const LAPANGAN_USAHA: Record<string, string> = {
 
 export default function T2P5({ data }: { data?: any }) {
   const anggota = data?.anggota || [];
+  const chartRef = useRef<HTMLDivElement>(null);
 
   const rows = useMemo(() => {
     if (!anggota || anggota.length === 0) return [];
@@ -115,32 +121,73 @@ export default function T2P5({ data }: { data?: any }) {
     },
   };
 
+  // Download chart as PNG
+  const handleDownloadChart = async () => {
+    if (!chartRef.current) return;
+    try {
+      const dataUrl = await toPng(chartRef.current);
+      const link = document.createElement("a");
+      link.download = "grafik_t2p5_lapangan_usaha.png";
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Gagal mengunduh grafik:", err);
+    }
+  };
+
+  // Download table as Excel
+  const handleDownloadTable = () => {
+    const wsData = [
+      ["Lapangan Usaha", "Laki-Laki", "Perempuan", "Total"],
+      ...rows.map((row) => [row.nama, row.laki, row.perempuan, row.total]),
+      [
+        "Total",
+        rows.reduce((a, b) => a + b.laki, 0),
+        rows.reduce((a, b) => a + b.perempuan, 0),
+        rows.reduce((a, b) => a + b.total, 0),
+      ],
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "rekap_lapangan_usaha_berusaha_jenis_kelamin.xlsx");
+  };
+
   return (
     <div className="flex flex-col gap-6 md:flex-row md:items-start">
-      <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col">
-        <CardHeader>
-          <CardTitle>
-            Grafik Jumlah Penduduk Berusaha per Lapangan Usaha
+      <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col border border-gray-200">
+        <CardHeader className="bg-white border-b border-gray-200">
+          <CardTitle className="text-lg font-semibold">
+            Tabel 2.5 Jumlah Penduduk yang Berusaha Menurut Lapangan Usaha dan
+            Jenis Kelamin di Desa Kapuak, 2025 (Grafik)
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col">
-          <div className="w-full" style={{ minHeight: 420 }}>
+        <CardContent className="flex-1 flex flex-col p-4">
+          <div ref={chartRef} className="w-full" style={{ minHeight: 420 }}>
             <Bar data={chartData} options={chartOptions} />
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+              <Download className="w-4 h-4 mr-2" />
+              Download Grafik
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="md:w-1/2 flex flex-col">
-        <CardHeader>
-          <CardTitle>
+      <Card className="md:w-1/2 flex flex-col border border-gray-200">
+        <CardHeader className="bg-white border-b border-gray-200">
+          <CardTitle className="text-lg font-semibold">
             Tabel 2.5 Jumlah Penduduk yang Berusaha Menurut Lapangan Usaha dan
-            Jenis Kelamin di Desa Kapuak, 2025
+            Jenis Kelamin di Desa Kapuak, 2025 (Tabel)
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col">
-          <div className="overflow-x-auto" style={{ minHeight: 420 }}>
-            <table className="w-full text-sm border border-gray-200">
-              <thead>
+        <CardContent className="flex-1 flex flex-col p-4">
+          <div className="overflow-x-auto" style={{ minHeight: 340 }}>
+            <table className="w-full text-sm border border-gray-200 dark:border-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr className="bg-gray-50">
                   <th className="border px-4 py-2">Lapangan Usaha</th>
                   <th className="border px-4 py-2">Laki-Laki</th>
@@ -176,6 +223,12 @@ export default function T2P5({ data }: { data?: any }) {
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadTable}>
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
           </div>
         </CardContent>
       </Card>

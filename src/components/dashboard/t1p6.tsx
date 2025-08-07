@@ -31,14 +31,6 @@ export default function T1p6({ data }: Props) {
     "KTP Luar Kabupaten Tana Tidung": 0,
   };
 
-  // Helper untuk format SLS jika diperlukan di masa depan
-  function formatSLS(sls: string) {
-    if (sls === "99") return "Luar Desa";
-    if (/^\d+$/.test(sls)) return `RT ${sls.padStart(3, "0")}`;
-    if (sls === "Tidak diketahui") return "Tidak diketahui";
-    return sls;
-  }
-
   data.keluarga.forEach((item: any) => {
     const status = item["205_statusKependudukan"];
     switch (status) {
@@ -93,12 +85,19 @@ export default function T1p6({ data }: Props) {
       transition={{ duration: 0.4 }}
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
-        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col">
-          <CardHeader>
-            <CardTitle>Status Kependudukan (Grafik)</CardTitle>
+        {/* Grafik di kiri */}
+        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col border border-gray-200">
+          <CardHeader className="bg-white border-b border-gray-200">
+            <CardTitle className="text-lg font-semibold">
+              Tabel 1.6 Jumlah Keluarga Menurut Status Kependudukan di Desa
+              Kapuak, 2025
+            </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
-            <div ref={chartRef} className="w-full" style={{ minHeight: 420 }}>
+          <CardContent className="flex-1 flex flex-col p-4">
+            <div
+              className="flex justify-center items-center h-full w-full flex-1"
+              style={{ minHeight: 420 }}
+            >
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart data={tableData.slice(0, 3)}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -106,7 +105,7 @@ export default function T1p6({ data }: Props) {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="jumlah" fill="#10b981" name="Jumlah Keluarga" />
+                  <Bar dataKey="jumlah" fill="#2563eb" name="Jumlah Keluarga" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -117,18 +116,23 @@ export default function T1p6({ data }: Props) {
             </div>
           </CardContent>
         </Card>
-
-        <Card className="md:w-1/2 flex flex-col">
-          <CardHeader>
-            <CardTitle>Status Kependudukan (Tabel)</CardTitle>
+        {/* Tabel di kanan */}
+        <Card className="md:w-1/2 flex flex-col border border-gray-200">
+          <CardHeader className="bg-white border-b border-gray-200">
+            <CardTitle className="text-lg font-semibold">
+              Tabel 1.6 Jumlah Keluarga Menurut Status Kependudukan di Desa
+              Kapuak, 2025
+            </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
+          <CardContent className="flex-1 flex flex-col p-4">
             <div className="overflow-x-auto" style={{ minHeight: 420 }}>
               <table className="w-full text-sm border border-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="border px-4 py-2">Status</th>
-                    <th className="border px-4 py-2 text-center">Jumlah</th>
+                    <th className="border px-4 py-2">Status Kependudukan</th>
+                    <th className="border px-4 py-2 text-center">
+                      Jumlah Keluarga
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

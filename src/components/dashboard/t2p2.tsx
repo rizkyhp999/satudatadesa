@@ -146,14 +146,14 @@ export default function T2p2({ data }: Props) {
 
   return (
     <div className="flex flex-col gap-6 md:flex-row md:items-start">
-      <Card className="mb-6 mt-8 md:mb-0 md:w-1/2 flex flex-col">
-        <CardHeader>
+      <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col border border-gray-200">
+        <CardHeader className="bg-white border-b border-gray-200">
           <CardTitle className="text-lg font-semibold">
-            Jumlah Penduduk Umur 7-23 Tahun menurut Jenis Kelamin dan
-            Partisipasi Sekolah (Grafik)
+            Tabel 2.2 Jumlah Penduduk Berumur 7-23 Tahun ke Atas Menurut Jenis
+            Kelamin dan Status Pendidikan di Desa Kapuak, 2025 (Grafik)
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col">
+        <CardContent className="flex-1 flex flex-col p-4">
           <div ref={chartRef} className="w-full" style={{ minHeight: 340 }}>
             <ResponsiveContainer width="100%" height={320}>
               <BarChart data={chartData}>
@@ -175,17 +175,17 @@ export default function T2p2({ data }: Props) {
           </div>
         </CardContent>
       </Card>
-      <Card className="md:w-1/2 flex flex-col">
-        <CardHeader>
-          <CardTitle>
-            Jumlah Penduduk Umur 7-23 Tahun menurut Jenis Kelamin dan
-            Partisipasi Sekolah (Tabel)
+      <Card className="md:w-1/2 flex flex-col border border-gray-200">
+        <CardHeader className="bg-white border-b border-gray-200">
+          <CardTitle className="text-lg font-semibold">
+            Tabel 2.2 Jumlah Penduduk Berumur 7-23 Tahun ke Atas Menurut Jenis
+            Kelamin dan Status Pendidikan di Desa Kapuak, 2025 (Tabel)
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col">
+        <CardContent className="flex-1 flex flex-col p-4">
           <div className="overflow-x-auto" style={{ minHeight: 340 }}>
-            <table className="w-full text-sm border border-gray-200">
-              <thead>
+            <table className="w-full text-sm border border-gray-200 dark:border-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
                   <th className="border px-4 py-2 align-middle bg-gray-50">
                     Jenis Kelamin

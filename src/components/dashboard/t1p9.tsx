@@ -91,14 +91,14 @@ export default function T1p9({ data }: Props) {
   return (
     <div>
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
-        <Card className="mb-6 mt-8 md:mb-0 md:w-1/2 flex flex-col">
-          <CardHeader>
+        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col border border-gray-200">
+          <CardHeader className="bg-white border-b border-gray-200">
             <CardTitle className="text-lg font-semibold">
-              Jumlah Penduduk Menurut Status Perkawinan dan Jenis Kelamin di
-              Desa Kapuak, 2025 (Grafik)
+              Tabel 1.9 Jumlah Penduduk Menurut Status Perkawinan dan Jenis
+              Kelamin di Desa Kapuak, 2025 (Grafik)
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
+          <CardContent className="flex-1 flex flex-col p-4">
             <div ref={chartRef} className="w-full" style={{ minHeight: 340 }}>
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={summary}>
@@ -120,39 +120,39 @@ export default function T1p9({ data }: Props) {
             </div>
           </CardContent>
         </Card>
-        <Card className="md:w-1/2 flex flex-col">
-          <CardHeader>
-            <CardTitle>
-              Jumlah Penduduk Menurut Status Perkawinan dan Jenis Kelamin di
-              Desa Kapuak, 2025 (Tabel)
+        <Card className="md:w-1/2 flex flex-col border border-gray-200">
+          <CardHeader className="bg-white border-b border-gray-200">
+            <CardTitle className="text-lg font-semibold">
+              Tabel 1.9 Jumlah Penduduk Menurut Status Perkawinan dan Jenis
+              Kelamin di Desa Kapuak, 2025 (Tabel)
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
+          <CardContent className="flex-1 flex flex-col p-4">
             <div className="overflow-x-auto" style={{ minHeight: 340 }}>
-              <table className="w-full text-sm border border-gray-200">
-                <thead>
+              <table className="w-full text-sm border border-gray-200 dark:border-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-800">
                   <tr>
                     <th
                       rowSpan={2}
-                      className="border px-4 py-2 align-middle bg-gray-50"
+                      className="border px-4 py-2 align-middle bg-gray-50 dark:bg-gray-800"
                     >
                       Status Perkawinan
                     </th>
                     <th
                       colSpan={3}
-                      className="border px-4 py-2 text-center bg-gray-50"
+                      className="border px-4 py-2 text-center bg-gray-50 dark:bg-gray-800"
                     >
                       Jumlah Penduduk
                     </th>
                   </tr>
                   <tr>
-                    <th className="border px-4 py-2 text-center bg-gray-50">
+                    <th className="border px-4 py-2 text-center bg-gray-50 dark:bg-gray-800">
                       Laki-Laki
                     </th>
-                    <th className="border px-4 py-2 text-center bg-gray-50">
+                    <th className="border px-4 py-2 text-center bg-gray-50 dark:bg-gray-800">
                       Perempuan
                     </th>
-                    <th className="border px-4 py-2 text-center bg-gray-50">
+                    <th className="border px-4 py-2 text-center bg-gray-50 dark:bg-gray-800">
                       Total
                     </th>
                   </tr>
@@ -173,16 +173,16 @@ export default function T1p9({ data }: Props) {
                     </tr>
                   ))}
                   <tr>
-                    <td className="border px-4 py-2 font-bold bg-gray-100">
+                    <td className="border px-4 py-2 font-bold bg-gray-100 dark:bg-gray-800">
                       Total
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
                       {totalLaki}
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
                       {totalPerempuan}
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
                       {totalSemua}
                     </td>
                   </tr>
