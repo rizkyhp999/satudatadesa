@@ -27,6 +27,11 @@ import T1p8 from "@/components/dashboard/t1p8";
 import T1p9 from "@/components/dashboard/t1p9";
 import T2p1 from "@/components/dashboard/t2p1";
 import T2p2 from "@/components/dashboard/t2p2";
+import T2p3 from "@/components/dashboard/t2p3";
+import T2p4 from "@/components/dashboard/t2p4";
+import T2p5 from "@/components/dashboard/t2p5";
+import T2p6 from "@/components/dashboard/t2p6";
+import T2p7 from "@/components/dashboard/t2p7";
 
 // helper function untuk class merge
 function cn(...classes: (string | boolean | undefined | null)[]) {
@@ -761,6 +766,61 @@ export default function Page() {
             >
               T2P2
             </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t2p3"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t2p3"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T2P3 Belum
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t2p4"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t2p4"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T2P4
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t2p5"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t2p5"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T2P5
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t2p6"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t2p6"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T2P6
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="t2p7"
+              className={cn(
+                "px-4 py-2 rounded-md text-sm font-medium",
+                tab === "t2p7"
+                  ? "bg-primary text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              )}
+            >
+              T2P7 Belum
+            </Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="t1p1_4" className="mt-4">
@@ -793,6 +853,21 @@ export default function Page() {
 
           <Tabs.Content value="t2p2" className="mt-4">
             <T2p2 data={filteredData} />
+          </Tabs.Content>
+          <Tabs.Content value="t2p3" className="mt-4">
+            <T2p3 data={filteredData} />
+          </Tabs.Content>
+          <Tabs.Content value="t2p4" className="mt-4">
+            <T2p4 data={filteredData} />
+          </Tabs.Content>
+          <Tabs.Content value="t2p5" className="mt-4">
+            <T2p5 data={filteredData} />
+          </Tabs.Content>
+          <Tabs.Content value="t2p6" className="mt-4">
+            <T2p6 data={filteredData} />
+          </Tabs.Content>
+          <Tabs.Content value="t2p7" className="mt-4">
+            <T2p7 data={filteredData} />
           </Tabs.Content>
         </Tabs.Root>
 
