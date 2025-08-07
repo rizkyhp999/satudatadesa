@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import html2canvas from "html2canvas";
 
 const jumlahData = [
   {
@@ -90,6 +91,33 @@ const pieColors = [
   "#f472b6", // Lainnya
 ];
 
+function downloadChartAsPNG(
+  ref: React.RefObject<HTMLDivElement>,
+  filename: string
+) {
+  if (ref.current) {
+    html2canvas(ref.current).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = filename;
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+}
+
+function downloadTableAsCSV(data: any[], columns: string[], filename: string) {
+  const csvRows = [
+    columns.join(","),
+    ...data.map((row) => columns.map((col) => row[col]).join(",")),
+  ];
+  const csv = csvRows.join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = URL.createObjectURL(blob);
+  link.click();
+}
+
 export default function T3p7() {
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -112,6 +140,14 @@ export default function T3p7() {
             Grafik Persentase Keluarga Menurut Sumber Air Utama untuk
             Mandi/Cuci/dll di Desa Kapuak, 2025 (Pie)
           </CardTitle>
+          <div className="mt-2 flex gap-2">
+            <button
+              className="px-3 py-1 border rounded text-sm bg-blue-500 text-white"
+              onClick={() => downloadChartAsPNG(chartRef, "grafik-t3p7.png")}
+            >
+              Download Grafik
+            </button>
+          </div>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col p-4">
           <div
@@ -150,6 +186,27 @@ export default function T3p7() {
             Sumber Air Utama yang Digunakan Keluarga untuk Mandi/Cuci/dll di
             Desa Kapuak, 2025 (%)
           </CardTitle>
+          <div className="mt-2 flex gap-2">
+            <button
+              className="px-3 py-1 border rounded text-sm bg-green-500 text-white"
+              onClick={() =>
+                downloadTableAsCSV(
+                  persentaseData,
+                  [
+                    "sls",
+                    "airIsiUlang",
+                    "leding",
+                    "sumur",
+                    "lainnya",
+                    "jumlah",
+                  ],
+                  "tabel-t3p7-persentase.csv"
+                )
+              }
+            >
+              Download Tabel
+            </button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto" style={{ minHeight: 320 }}>
@@ -208,6 +265,27 @@ export default function T3p7() {
             Utama yang Digunakan Keluarga untuk Mandi/Cuci/dll di Desa Kapuak,
             2025 (Jumlah)
           </CardTitle>
+          <div className="mt-2 flex gap-2">
+            <button
+              className="px-3 py-1 border rounded text-sm bg-green-500 text-white"
+              onClick={() =>
+                downloadTableAsCSV(
+                  jumlahData,
+                  [
+                    "sls",
+                    "airIsiUlang",
+                    "leding",
+                    "sumur",
+                    "lainnya",
+                    "jumlah",
+                  ],
+                  "tabel-t3p7-jumlah.csv"
+                )
+              }
+            >
+              Download Tabel
+            </button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto" style={{ minHeight: 320 }}>

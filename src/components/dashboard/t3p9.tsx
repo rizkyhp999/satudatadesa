@@ -10,6 +10,11 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const jumlahData = [
   {
@@ -117,6 +122,48 @@ const pieColors = [
 
 export default function T3p9() {
   const chartRef = useRef<HTMLDivElement>(null);
+  const tablePersenRef = useRef<HTMLDivElement>(null);
+  const tableJumlahRef = useRef<HTMLDivElement>(null);
+
+  // Fungsi download chart
+  const handleDownloadChart = async () => {
+    if (!chartRef.current) return;
+    try {
+      const dataUrl = await toPng(chartRef.current);
+      const link = document.createElement("a");
+      link.download = "grafik_t3p9.png";
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Gagal mengunduh grafik:", err);
+    }
+  };
+
+  // Fungsi download tabel persentase
+  const handleDownloadTablePersen = () => {
+    const worksheet = XLSX.utils.json_to_sheet(persentaseData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Persentase");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "tabel_t3p9_persentase.xlsx");
+  };
+
+  // Fungsi download tabel jumlah
+  const handleDownloadTableJumlah = () => {
+    const worksheet = XLSX.utils.json_to_sheet(jumlahData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Jumlah");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "tabel_t3p9_jumlah.xlsx");
+  };
 
   const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
   const pieData = [
@@ -167,6 +214,12 @@ export default function T3p9() {
               </PieChart>
             </ResponsiveContainer>
           </div>
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+              <Download className="w-4 h-4 mr-2" />
+              Download Grafik
+            </Button>
+          </div>
         </CardContent>
       </Card>
       <Card className="mb-6 flex flex-col">
@@ -177,7 +230,11 @@ export default function T3p9() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto" style={{ minHeight: 320 }}>
+          <div
+            className="overflow-x-auto"
+            style={{ minHeight: 320 }}
+            ref={tablePersenRef}
+          >
             <table className="w-full text-sm border border-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -226,6 +283,16 @@ export default function T3p9() {
               </tbody>
             </table>
           </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadTablePersen}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
+          </div>
         </CardContent>
       </Card>
       <Card>
@@ -236,7 +303,11 @@ export default function T3p9() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto" style={{ minHeight: 320 }}>
+          <div
+            className="overflow-x-auto"
+            style={{ minHeight: 320 }}
+            ref={tableJumlahRef}
+          >
             <table className="w-full text-sm border border-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -284,6 +355,16 @@ export default function T3p9() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadTableJumlah}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
           </div>
         </CardContent>
       </Card>

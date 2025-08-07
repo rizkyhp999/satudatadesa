@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import html2canvas from "html2canvas";
 
 const jumlahData = [
   {
@@ -82,8 +83,37 @@ const pieColors = [
   "#f472b6", // Lainnya
 ];
 
+// Fungsi download PNG
+function downloadChartAsPNG(
+  ref: React.RefObject<HTMLDivElement>,
+  filename: string
+) {
+  if (ref.current) {
+    html2canvas(ref.current).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = filename;
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  }
+}
+
+// Fungsi download CSV
+function downloadTableAsCSV(data: any[], columns: string[], filename: string) {
+  const csvRows = [
+    columns.join(","),
+    ...data.map((row) => columns.map((col) => row[col]).join(",")),
+  ];
+  const csv = csvRows.join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = URL.createObjectURL(blob);
+  link.click();
+}
+
 export default function T3p4() {
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<HTMLDivElement>(null); // <-- Explicit type
 
   const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
   const pieData = [
@@ -102,6 +132,14 @@ export default function T3p4() {
             Grafik Persentase Keluarga Menurut Bahan Bangunan Utama Atap Rumah
             Terluas di Desa Kapuak, 2025 (Pie)
           </CardTitle>
+          <div className="mt-2 flex gap-2">
+            <button
+              className="px-3 py-1 border rounded text-sm bg-blue-500 text-white"
+              onClick={() => downloadChartAsPNG(chartRef, "grafik-t3p4.png")}
+            >
+              Download Grafik
+            </button>
+          </div>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col p-4">
           <div
@@ -139,6 +177,20 @@ export default function T3p4() {
             Tabel 3.4 Persentase Keluarga Menurut Satuan Lingkungan Setempat dan
             Bahan Bangunan Utama Atap Rumah Terluas di Desa Kapuak, 2025 (%)
           </CardTitle>
+          <div className="mt-2 flex gap-2">
+            <button
+              className="px-3 py-1 border rounded text-sm bg-green-500 text-white"
+              onClick={() =>
+                downloadTableAsCSV(
+                  persentaseData,
+                  ["sls", "betonGentengSengKayuSirap", "lainnya", "jumlah"],
+                  "tabel-t3p4-persentase.csv"
+                )
+              }
+            >
+              Download Tabel
+            </button>
+          </div>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col">
           <div className="overflow-x-auto" style={{ minHeight: 420 }}>
@@ -188,6 +240,20 @@ export default function T3p4() {
             Tabel 3.4 Keluarga Menurut Satuan Lingkungan Setempat dan Bahan
             Bangunan Utama Atap Rumah Terluas di Desa Kapuak, 2025 (Jumlah)
           </CardTitle>
+          <div className="mt-2 flex gap-2">
+            <button
+              className="px-3 py-1 border rounded text-sm bg-green-500 text-white"
+              onClick={() =>
+                downloadTableAsCSV(
+                  jumlahData,
+                  ["sls", "betonGentengSengKayuSirap", "lainnya", "jumlah"],
+                  "tabel-t3p4-jumlah.csv"
+                )
+              }
+            >
+              Download Tabel
+            </button>
+          </div>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col">
           <div className="overflow-x-auto" style={{ minHeight: 420 }}>

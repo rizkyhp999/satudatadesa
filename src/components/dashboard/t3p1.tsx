@@ -139,6 +139,36 @@ export default function T3p1() {
     }
   };
 
+  // Download table as Excel
+  const handleDownloadTable = () => {
+    const wsData = [
+      [
+        "Satuan Lingkungan Setempat",
+        "Milik Sendiri",
+        "Kontrak/Sewa",
+        "Bebas Sewa",
+        "Rumah Dinas",
+        "Lainnya",
+        "Jumlah",
+      ],
+      ...jumlahData.map((row) => [
+        row.sls,
+        row.milikSendiri,
+        row.kontrakSewa,
+        row.bebasSewa,
+        row.rumahDinas,
+        row.lainnya,
+        row.jumlah,
+      ]),
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "rekap_kepemilikan_bangunan_2025.xlsx");
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* Grafik Pie persentase kepemilikan bangunan */}
@@ -302,6 +332,12 @@ export default function T3p1() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadTable}>
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
           </div>
         </CardContent>
       </Card>

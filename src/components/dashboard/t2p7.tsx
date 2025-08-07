@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ResponsiveContainer,
@@ -11,6 +12,11 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 // Data Tabel 2.7
 const tableData = [
@@ -67,6 +73,52 @@ const tableData = [
 ];
 
 export default function T2p7() {
+  const chartRef = React.useRef<HTMLDivElement>(null);
+
+  // Download chart as PNG
+  const handleDownloadChart = async () => {
+    if (!chartRef.current) return;
+    try {
+      const dataUrl = await toPng(chartRef.current);
+      const link = document.createElement("a");
+      link.download = "grafik_t2p7_jaminan_kesehatan.png";
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Gagal mengunduh grafik:", err);
+    }
+  };
+
+  // Download table as Excel
+  const handleDownloadTable = () => {
+    const wsData = [
+      [
+        "Satuan Lingkungan Setempat",
+        "Tidak Memiliki",
+        "PBI JKN",
+        "JKN Mandiri",
+        "JKN Pemberi Kerja",
+        "Jamkes lainnya",
+        "Total",
+      ],
+      ...tableData.map((row) => [
+        row.sls,
+        row.tidakMemiliki,
+        row.pbiJkn,
+        row.jknMandiri,
+        row.jknPemberiKerja,
+        row.jamkesLainnya,
+        row.total,
+      ]),
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "rekap_jaminan_kesehatan_2025.xlsx");
+  };
+
   return (
     <div className="flex flex-col gap-6 md:flex-row md:items-start">
       <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col border border-gray-200">
@@ -77,7 +129,7 @@ export default function T2p7() {
           </CardTitle>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col p-4">
-          <div className="w-full" style={{ minHeight: 420 }}>
+          <div className="w-full" style={{ minHeight: 420 }} ref={chartRef}>
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={tableData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -104,6 +156,12 @@ export default function T2p7() {
                 />
               </BarChart>
             </ResponsiveContainer>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+              <Download className="w-4 h-4 mr-2" />
+              Download Grafik
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -163,6 +221,12 @@ export default function T2p7() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadTable}>
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
           </div>
         </CardContent>
       </Card>
