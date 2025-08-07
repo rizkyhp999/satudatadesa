@@ -119,7 +119,9 @@ function downloadTableAsCSV(data: any[], columns: string[], filename: string) {
 }
 
 export default function T3p7() {
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<HTMLDivElement>(
+    null
+  ) as React.RefObject<HTMLDivElement>;
 
   const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
   const pieData = [

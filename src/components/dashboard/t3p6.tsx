@@ -92,7 +92,7 @@ const pieColors = [
 ];
 
 function downloadChartAsPNG(
-  ref: React.RefObject<HTMLDivElement>,
+  ref: React.RefObject<HTMLDivElement | null>,
   filename: string
 ) {
   if (ref.current) {

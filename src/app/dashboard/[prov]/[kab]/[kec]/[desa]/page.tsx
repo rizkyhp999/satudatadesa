@@ -701,7 +701,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T1P1.1-1.4
+              Perangkat
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t1p5"
@@ -712,7 +712,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T1P5
+              Keluarga SLS
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t1p6"
@@ -723,7 +723,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T1P6
+              Status Keluarga
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t1p7"
@@ -734,7 +734,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T1P7
+              Penduduk SLS
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t1p8"
@@ -745,7 +745,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T1P8
+              Umur & Gender
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t1p9"
@@ -756,7 +756,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T1P9
+              Perkawinan
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p1"
@@ -767,7 +767,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P1
+              Pendidikan 5+
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p2"
@@ -778,7 +778,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P2
+              Pendidikan 7-23
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p3"
@@ -789,7 +789,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P3
+              Ijazah
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p4"
@@ -800,7 +800,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P4
+              Kerja
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p5"
@@ -811,7 +811,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P5
+              Usaha
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p6"
@@ -822,7 +822,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P6
+              Pertanian
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t2p7"
@@ -833,7 +833,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T2P7
+              Jaminan Kesehatan
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p1"
@@ -844,7 +844,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P1
+              Kepemilikan Rumah
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p2"
@@ -855,7 +855,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P2
+              Lantai
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p3"
@@ -866,7 +866,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P3
+              Dinding
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p4"
@@ -877,7 +877,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P4
+              Atap
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p5"
@@ -888,7 +888,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P5
+              Fasilitas BAB
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p6"
@@ -899,7 +899,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P6
+              Air Minum
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p7"
@@ -910,7 +910,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P7
+              Air Mandi
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p8"
@@ -921,7 +921,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P8
+              Penerangan
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p9"
@@ -932,7 +932,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P9
+              Energi Masak
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p10"
@@ -943,7 +943,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P10
+              Kloset
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t3p11"
@@ -954,7 +954,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T3P11
+              Pembuangan Tinja
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t4p1"
@@ -965,7 +965,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T4P1
+              Bantuan
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t4p2"
@@ -976,7 +976,7 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T4P2
+              Bantuan Tani
             </Tabs.Trigger>
             <Tabs.Trigger
               value="t4p3"
@@ -987,102 +987,198 @@ export default function Page() {
                   : "bg-white text-gray-700 hover:bg-gray-100"
               )}
             >
-              T4P3
+              Keberlanjutan
             </Tabs.Trigger>
           </Tabs.List>
 
           <Tabs.Content value="t1p1_4" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 1.1-1.4: Perangkat, SLS, Organisasi, Batas Wilayah
+            </div>
             <T1p1_4 />
           </Tabs.Content>
 
           <Tabs.Content value="t1p5" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 1.5: Keluarga SLS
+            </div>
             <T1p5 data={filteredData} />
           </Tabs.Content>
 
           <Tabs.Content value="t1p6" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 1.6: Status Keluarga
+            </div>
             <T1p6 data={filteredData} />
           </Tabs.Content>
 
           <Tabs.Content value="t1p7" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 1.7: Penduduk SLS & Gender
+            </div>
             <T1p7 data={filteredData} />
           </Tabs.Content>
 
-          <Tabs.Content value="t2p7" className="mt-4">
-            <T2p7 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p1" className="mt-4">
-            <T3p1 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p2" className="mt-4">
-            <T3p2 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p3" className="mt-4">
-            <T3p3 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p4" className="mt-4">
-            <T3p4 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p5" className="mt-4">
-            <T3p5 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p6" className="mt-4">
-            <T3p6 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p7" className="mt-4">
-            <T3p7 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p8" className="mt-4">
-            <T3p8 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p9" className="mt-4">
-            <T3p9 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p10" className="mt-4">
-            <T3p10 />
-          </Tabs.Content>
-          <Tabs.Content value="t3p11" className="mt-4">
-            <T3p11 />
-          </Tabs.Content>
-          <Tabs.Content value="t4p1" className="mt-4">
-            <T4p1 />
-          </Tabs.Content>
-          <Tabs.Content value="t4p2" className="mt-4">
-            <T4p2 />
-          </Tabs.Content>
-          <Tabs.Content value="t4p3" className="mt-4">
-            <T4p3 />
-          </Tabs.Content>
-
           <Tabs.Content value="t1p8" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 1.8: Umur & Gender
+            </div>
             <T1p8 data={filteredData} />
           </Tabs.Content>
 
           <Tabs.Content value="t1p9" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 1.9: Perkawinan
+            </div>
             <T1p9 data={filteredData} />
           </Tabs.Content>
 
           <Tabs.Content value="t2p1" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 2.1: Pendidikan 5+
+            </div>
             <T2p1 data={filteredData} />
           </Tabs.Content>
 
           <Tabs.Content value="t2p2" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 2.2: Pendidikan 7-23
+            </div>
             <T2p2 data={filteredData} />
           </Tabs.Content>
+
           <Tabs.Content value="t2p3" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 2.3: Ijazah Tertinggi
+            </div>
             {/* <T2p3 data={filteredData} /> */}
             <T2p3 />
           </Tabs.Content>
+
           <Tabs.Content value="t2p4" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 2.4: Kerja
+            </div>
             <T2p4 data={filteredData} />
           </Tabs.Content>
+
           <Tabs.Content value="t2p5" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 2.5: Usaha
+            </div>
             <T2p5 data={filteredData} />
           </Tabs.Content>
+
           <Tabs.Content value="t2p6" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 2.6: Pertanian
+            </div>
             <T2p6 data={filteredData} />
           </Tabs.Content>
+
           <Tabs.Content value="t2p7" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 2.7: Jaminan Kesehatan
+            </div>
             <T2p7 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p1" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.1: Kepemilikan Rumah
+            </div>
+            <T3p1 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p2" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.2: Lantai Rumah
+            </div>
+            <T3p2 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p3" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.3: Dinding Rumah
+            </div>
+            <T3p3 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p4" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.4: Atap Rumah
+            </div>
+            <T3p4 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p5" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.5: Fasilitas BAB
+            </div>
+            <T3p5 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p6" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.6: Air Minum
+            </div>
+            <T3p6 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p7" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.7: Air Mandi
+            </div>
+            <T3p7 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p8" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.8: Penerangan
+            </div>
+            <T3p8 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p9" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.9: Energi Masak
+            </div>
+            <T3p9 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p10" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.10: Kloset
+            </div>
+            <T3p10 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t3p11" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 3.11: Pembuangan Tinja
+            </div>
+            <T3p11 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t4p1" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 4.1: Bantuan
+            </div>
+            <T4p1 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t4p2" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 4.2: Bantuan Tani
+            </div>
+            <T4p2 />
+          </Tabs.Content>
+
+          <Tabs.Content value="t4p3" className="mt-4">
+            <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+              Tabel 4.3: Keberlanjutan Bantuan
+            </div>
+            <T4p3 />
           </Tabs.Content>
         </Tabs.Root>
 

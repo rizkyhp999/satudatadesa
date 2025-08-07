@@ -85,7 +85,7 @@ const pieColors = [
 
 // Fungsi download PNG
 function downloadChartAsPNG(
-  ref: React.RefObject<HTMLDivElement>,
+  ref: React.RefObject<HTMLDivElement | null>,
   filename: string
 ) {
   if (ref.current) {
@@ -113,7 +113,7 @@ function downloadTableAsCSV(data: any[], columns: string[], filename: string) {
 }
 
 export default function T3p4() {
-  const chartRef = useRef<HTMLDivElement>(null); // <-- Explicit type
+  const chartRef = useRef<HTMLDivElement | null>(null); // <-- Explicit type
 
   const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
   const pieData = [
