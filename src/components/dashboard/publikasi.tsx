@@ -21,7 +21,7 @@ export function Publikasi() {
         <CardContent className="flex flex-col items-center">
           <div className="w-full flex justify-center">
             <iframe
-              src="/publikasi/DDA_BAB1.pdf"
+              src="/publikasi/Publikasi_Desa_Kapuak.pdf"
               title="Publikasi DDA BAB 1"
               className="rounded-md w-full max-w-2xl h-[400px] md:h-[600px] border border-gray-200 bg-white"
             />
