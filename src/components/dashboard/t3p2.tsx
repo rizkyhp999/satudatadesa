@@ -10,6 +10,9 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
@@ -153,39 +156,81 @@ export default function T3p2() {
     { name: "Lainnya", value: desaData?.lainnya ?? 0 },
   ];
 
-  // Download table as Excel
-  const handleDownloadTable = () => {
-    const wsData = [
-      [
-        "Satuan Lingkungan Setempat",
-        "Marmer/Granit",
-        "Keramik",
-        "Parket/Vinil/Karpet",
-        "Ubin/Tegel/Teraso",
-        "Kayu/Papan",
-        "Semen/Bata Merah",
-        "Lainnya",
-        "Jumlah",
-      ],
-      ...jumlahData.map((row) => [
-        row.sls,
-        row.marmerGranit,
-        row.keramik,
-        row.parketVinilKarpet,
-        row.ubinTegelTeraso,
-        row.kayuPapan,
-        row.sememBataMerah,
-        row.lainnya,
-        row.jumlah,
-      ]),
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+  // Download grafik Pie
+  const handleDownloadChart = async () => {
+    if (!chartRef.current) return;
+    try {
+      const dataUrl = await toPng(chartRef.current);
+      const link = document.createElement("a");
+      link.download = "piechart_t3p2.png";
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Gagal mengunduh grafik:", err);
+    }
+  };
+
+  // Refactor: Download table as Excel, menerima data dan nama file
+  const handleDownloadExcel = (tableData: any[], filename: string) => {
+    const ws = XLSX.utils.aoa_to_sheet(tableData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Rekap");
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, "rekap_lantai_rumah_2025.xlsx");
+    saveAs(blob, filename);
   };
+
+  // Data header dan body untuk tabel persentase
+  const persentaseTableData = [
+    [
+      "Satuan Lingkungan Setempat",
+      "Marmer/Granit",
+      "Keramik",
+      "Parket/Vinil/Karpet",
+      "Ubin/Tegel/Teraso",
+      "Kayu/Papan",
+      "Semen/Bata Merah",
+      "Lainnya",
+      "Jumlah",
+    ],
+    ...persentaseData.map((row) => [
+      row.sls,
+      row.marmerGranit,
+      row.keramik,
+      row.parketVinilKarpet,
+      row.ubinTegelTeraso,
+      row.kayuPapan,
+      row.sememBataMerah,
+      row.lainnya,
+      row.jumlah,
+    ]),
+  ];
+
+  // Data header dan body untuk tabel jumlah
+  const jumlahTableData = [
+    [
+      "Satuan Lingkungan Setempat",
+      "Marmer/Granit",
+      "Keramik",
+      "Parket/Vinil/Karpet",
+      "Ubin/Tegel/Teraso",
+      "Kayu/Papan",
+      "Semen/Bata Merah",
+      "Lainnya",
+      "Jumlah",
+    ],
+    ...jumlahData.map((row) => [
+      row.sls,
+      row.marmerGranit,
+      row.keramik,
+      row.parketVinilKarpet,
+      row.ubinTegelTeraso,
+      row.kayuPapan,
+      row.sememBataMerah,
+      row.lainnya,
+      row.jumlah,
+    ]),
+  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -223,6 +268,12 @@ export default function T3p2() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+              <Download className="w-4 h-4 mr-2" />
+              Download Grafik
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -290,6 +341,21 @@ export default function T3p2() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleDownloadExcel(
+                  persentaseTableData,
+                  "rekap_persentase_lantai_rumah_2025.xlsx"
+                )
+              }
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -359,26 +425,19 @@ export default function T3p2() {
             </table>
           </div>
           <div className="flex justify-end mt-2">
-            <button
-              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              onClick={handleDownloadTable}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleDownloadExcel(
+                  jumlahTableData,
+                  "rekap_lantai_rumah_2025.xlsx"
+                )
+              }
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v8m4-4H8"
-                />
-              </svg>
+              <Download className="w-4 h-4 mr-2" />
               Download Tabel
-            </button>
+            </Button>
           </div>
         </CardContent>
       </Card>

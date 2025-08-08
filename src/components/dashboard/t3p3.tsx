@@ -14,6 +14,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
 
 const jumlahData = [
   {
@@ -125,33 +126,69 @@ export default function T3p3() {
     { name: "Lainnya", value: desaData?.lainnya ?? 0 },
   ];
 
-  // Download table as Excel
-  const handleDownloadTable = () => {
-    const wsData = [
-      [
-        "Satuan Lingkungan Setempat",
-        "Tembok",
-        "Plesteran anyaman bambu/Kawat",
-        "Kayu/Papan/Batang kayu",
-        "Lainnya",
-        "Jumlah",
-      ],
-      ...jumlahData.map((row) => [
-        row.sls,
-        row.tembok,
-        row.plesteranBambuKawat,
-        row.kayuPapanBatangKayu,
-        row.lainnya,
-        row.jumlah,
-      ]),
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+  // Download grafik Pie
+  const handleDownloadChart = async () => {
+    if (!chartRef.current) return;
+    try {
+      const dataUrl = await toPng(chartRef.current);
+      const link = document.createElement("a");
+      link.download = "piechart_t3p3.png";
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Gagal mengunduh grafik:", err);
+    }
+  };
+
+  // Refactor: Download table as Excel, menerima data dan nama file
+  const handleDownloadExcel = (tableData: any[], filename: string) => {
+    const ws = XLSX.utils.aoa_to_sheet(tableData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Rekap");
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, "rekap_dinding_rumah_2025.xlsx");
+    saveAs(blob, filename);
   };
+
+  // Data header dan body untuk tabel persentase
+  const persentaseTableData = [
+    [
+      "Satuan Lingkungan Setempat",
+      "Tembok",
+      "Plesteran anyaman bambu/Kawat",
+      "Kayu/Papan/Batang kayu",
+      "Lainnya",
+      "Jumlah",
+    ],
+    ...persentaseData.map((row) => [
+      row.sls,
+      row.tembok,
+      row.plesteranBambuKawat,
+      row.kayuPapanBatangKayu,
+      row.lainnya,
+      row.jumlah,
+    ]),
+  ];
+
+  // Data header dan body untuk tabel jumlah
+  const jumlahTableData = [
+    [
+      "Satuan Lingkungan Setempat",
+      "Tembok",
+      "Plesteran anyaman bambu/Kawat",
+      "Kayu/Papan/Batang kayu",
+      "Lainnya",
+      "Jumlah",
+    ],
+    ...jumlahData.map((row) => [
+      row.sls,
+      row.tembok,
+      row.plesteranBambuKawat,
+      row.kayuPapanBatangKayu,
+      row.lainnya,
+      row.jumlah,
+    ]),
+  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -189,6 +226,12 @@ export default function T3p3() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={handleDownloadChart}>
+              <Download className="w-4 h-4 mr-2" />
+              Download Grafik
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -246,6 +289,21 @@ export default function T3p3() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleDownloadExcel(
+                  persentaseTableData,
+                  "rekap_persentase_dinding_rumah_2025.xlsx"
+                )
+              }
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -305,7 +363,16 @@ export default function T3p3() {
             </table>
           </div>
           <div className="flex justify-end mt-2">
-            <Button variant="outline" size="sm" onClick={handleDownloadTable}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleDownloadExcel(
+                  jumlahTableData,
+                  "rekap_dinding_rumah_2025.xlsx"
+                )
+              }
+            >
               <Download className="w-4 h-4 mr-2" />
               Download Tabel
             </Button>

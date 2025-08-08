@@ -10,7 +10,11 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import html2canvas from "html2canvas";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const jumlahData = [
   {
@@ -91,37 +95,72 @@ const pieColors = [
   "#f472b6", // Lainnya
 ];
 
-function downloadChartAsPNG(
-  ref: React.RefObject<HTMLDivElement>,
+// Fungsi download PNG dengan html-to-image
+function handleDownloadChart(
+  ref: React.RefObject<HTMLDivElement | null>,
   filename: string
 ) {
-  if (ref.current) {
-    html2canvas(ref.current).then((canvas) => {
-      const link = document.createElement("a");
-      link.download = filename;
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  }
+  if (!ref.current) return;
+  toPng(ref.current).then((dataUrl) => {
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = dataUrl;
+    link.click();
+  });
 }
 
-function downloadTableAsCSV(data: any[], columns: string[], filename: string) {
-  const csvRows = [
-    columns.join(","),
-    ...data.map((row) => columns.map((col) => row[col]).join(",")),
-  ];
-  const csv = csvRows.join("\n");
-  const blob = new Blob([csv], { type: "text/csv" });
-  const link = document.createElement("a");
-  link.download = filename;
-  link.href = URL.createObjectURL(blob);
-  link.click();
+// Fungsi download Excel
+function handleDownloadExcel(tableData: any[], filename: string) {
+  const ws = XLSX.utils.aoa_to_sheet(tableData);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+  const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+  saveAs(blob, filename);
 }
+
+// Data header dan body untuk tabel persentase
+const persentaseTableData = [
+  [
+    "Satuan Lingkungan Setempat",
+    "Air Isi Ulang",
+    "Leding",
+    "Sumur Bor/Pompa/Sumur Terlindung/Mata Air Terlindung",
+    "Lainnya",
+    "Jumlah",
+  ],
+  ...persentaseData.map((row) => [
+    row.sls,
+    row.airIsiUlang,
+    row.leding,
+    row.sumur,
+    row.lainnya,
+    row.jumlah,
+  ]),
+];
+
+// Data header dan body untuk tabel jumlah
+const jumlahTableData = [
+  [
+    "Satuan Lingkungan Setempat",
+    "Air Isi Ulang",
+    "Leding",
+    "Sumur Bor/Pompa/Sumur Terlindung/Mata Air Terlindung",
+    "Lainnya",
+    "Jumlah",
+  ],
+  ...jumlahData.map((row) => [
+    row.sls,
+    row.airIsiUlang,
+    row.leding,
+    row.sumur,
+    row.lainnya,
+    row.jumlah,
+  ]),
+];
 
 export default function T3p7() {
-  const chartRef = useRef<HTMLDivElement>(
-    null
-  ) as React.RefObject<HTMLDivElement>;
+  const chartRef = useRef<HTMLDivElement>(null);
 
   const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
   const pieData = [
@@ -142,14 +181,6 @@ export default function T3p7() {
             Grafik Persentase Keluarga Menurut Sumber Air Utama untuk
             Mandi/Cuci/dll di Desa Kapuak, 2025 (Pie)
           </CardTitle>
-          <div className="mt-2 flex gap-2">
-            <button
-              className="px-3 py-1 border rounded text-sm bg-blue-500 text-white"
-              onClick={() => downloadChartAsPNG(chartRef, "grafik-t3p7.png")}
-            >
-              Download Grafik
-            </button>
-          </div>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col p-4">
           <div
@@ -179,6 +210,16 @@ export default function T3p7() {
               </PieChart>
             </ResponsiveContainer>
           </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleDownloadChart(chartRef, "grafik_t3p7.png")}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Grafik
+            </Button>
+          </div>
         </CardContent>
       </Card>
       <Card className="mb-6 flex flex-col">
@@ -188,27 +229,6 @@ export default function T3p7() {
             Sumber Air Utama yang Digunakan Keluarga untuk Mandi/Cuci/dll di
             Desa Kapuak, 2025 (%)
           </CardTitle>
-          <div className="mt-2 flex gap-2">
-            <button
-              className="px-3 py-1 border rounded text-sm bg-green-500 text-white"
-              onClick={() =>
-                downloadTableAsCSV(
-                  persentaseData,
-                  [
-                    "sls",
-                    "airIsiUlang",
-                    "leding",
-                    "sumur",
-                    "lainnya",
-                    "jumlah",
-                  ],
-                  "tabel-t3p7-persentase.csv"
-                )
-              }
-            >
-              Download Tabel
-            </button>
-          </div>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto" style={{ minHeight: 320 }}>
@@ -258,6 +278,21 @@ export default function T3p7() {
               </tbody>
             </table>
           </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleDownloadExcel(
+                  persentaseTableData,
+                  "rekap_persentase_air_mandi_2025.xlsx"
+                )
+              }
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
+          </div>
         </CardContent>
       </Card>
       <Card>
@@ -267,27 +302,6 @@ export default function T3p7() {
             Utama yang Digunakan Keluarga untuk Mandi/Cuci/dll di Desa Kapuak,
             2025 (Jumlah)
           </CardTitle>
-          <div className="mt-2 flex gap-2">
-            <button
-              className="px-3 py-1 border rounded text-sm bg-green-500 text-white"
-              onClick={() =>
-                downloadTableAsCSV(
-                  jumlahData,
-                  [
-                    "sls",
-                    "airIsiUlang",
-                    "leding",
-                    "sumur",
-                    "lainnya",
-                    "jumlah",
-                  ],
-                  "tabel-t3p7-jumlah.csv"
-                )
-              }
-            >
-              Download Tabel
-            </button>
-          </div>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto" style={{ minHeight: 320 }}>
@@ -336,6 +350,21 @@ export default function T3p7() {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-end mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleDownloadExcel(
+                  jumlahTableData,
+                  "rekap_air_mandi_2025.xlsx"
+                )
+              }
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
           </div>
         </CardContent>
       </Card>

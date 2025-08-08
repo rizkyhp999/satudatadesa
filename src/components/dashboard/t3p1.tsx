@@ -139,35 +139,59 @@ export default function T3p1() {
     }
   };
 
-  // Download table as Excel
-  const handleDownloadTable = () => {
-    const wsData = [
-      [
-        "Satuan Lingkungan Setempat",
-        "Milik Sendiri",
-        "Kontrak/Sewa",
-        "Bebas Sewa",
-        "Rumah Dinas",
-        "Lainnya",
-        "Jumlah",
-      ],
-      ...jumlahData.map((row) => [
-        row.sls,
-        row.milikSendiri,
-        row.kontrakSewa,
-        row.bebasSewa,
-        row.rumahDinas,
-        row.lainnya,
-        row.jumlah,
-      ]),
-    ];
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+  // Refactor: Download table as Excel, menerima data dan nama file
+  const handleDownloadExcel = (tableData: any[], filename: string) => {
+    const ws = XLSX.utils.aoa_to_sheet(tableData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Rekap");
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, "rekap_kepemilikan_bangunan_2025.xlsx");
+    saveAs(blob, filename);
   };
+
+  // Data header dan body untuk tabel persentase
+  const persentaseTableData = [
+    [
+      "Satuan Lingkungan Setempat",
+      "Milik Sendiri",
+      "Kontrak/Sewa",
+      "Bebas Sewa",
+      "Rumah Dinas",
+      "Lainnya",
+      "Jumlah",
+    ],
+    ...persentaseData.map((row) => [
+      row.sls,
+      row.milikSendiri,
+      row.kontrakSewa,
+      row.bebasSewa,
+      row.rumahDinas,
+      row.lainnya,
+      row.jumlah,
+    ]),
+  ];
+
+  // Data header dan body untuk tabel jumlah
+  const jumlahTableData = [
+    [
+      "Satuan Lingkungan Setempat",
+      "Milik Sendiri",
+      "Kontrak/Sewa",
+      "Bebas Sewa",
+      "Rumah Dinas",
+      "Lainnya",
+      "Jumlah",
+    ],
+    ...jumlahData.map((row) => [
+      row.sls,
+      row.milikSendiri,
+      row.kontrakSewa,
+      row.bebasSewa,
+      row.rumahDinas,
+      row.lainnya,
+      row.jumlah,
+    ]),
+  ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -273,6 +297,22 @@ export default function T3p1() {
               </tbody>
             </table>
           </div>
+          {/* Tambahkan tombol download Excel di tabel persentase */}
+          <div className="flex justify-end mt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleDownloadExcel(
+                  persentaseTableData,
+                  "rekap_persentase_kepemilikan_bangunan_2025.xlsx"
+                )
+              }
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Download Tabel
+            </Button>
+          </div>
         </CardContent>
       </Card>
       <Card className="flex flex-col">
@@ -334,7 +374,16 @@ export default function T3p1() {
             </table>
           </div>
           <div className="flex justify-end mt-2">
-            <Button variant="outline" size="sm" onClick={handleDownloadTable}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleDownloadExcel(
+                  jumlahTableData,
+                  "rekap_kepemilikan_bangunan_2025.xlsx"
+                )
+              }
+            >
               <Download className="w-4 h-4 mr-2" />
               Download Tabel
             </Button>
