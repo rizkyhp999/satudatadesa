@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Home, UserCheck, Briefcase } from "lucide-react";
-import { motion } from "framer-motion";
 import type { SurveiData } from "@/hooks/use-survei-data";
 
 interface SummaryStatsProps {
@@ -56,30 +55,19 @@ export function SummaryStats({ data }: SummaryStatsProps) {
   ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full"
-    >
+    <div className="w-full">
       <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4">
         <CardHeader className="pb-2">
-          <CardTitle
-            className="text-xl
-           font-bold text-gray-900"
-          >
+          <CardTitle className="text-xl font-bold text-gray-900">
             Ringkasan Data Survei
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-            {stats.map((stat, index) => (
-              <motion.div
+            {stats.map((stat) => (
+              <div
                 key={stat.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex flex-col items-center"
+                className="flex flex-col items-center bg-white rounded-lg p-2 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
               >
                 <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-50 mb-2">
                   <stat.icon className={`h-6 w-6 ${stat.color}`} />
@@ -90,11 +78,11 @@ export function SummaryStats({ data }: SummaryStatsProps) {
                 <div className="text-xl font-bold text-gray-900">
                   {stat.value.toLocaleString()}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </CardContent>
       </Card>
-    </motion.div>
+    </div>
   );
 }
