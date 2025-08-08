@@ -143,17 +143,18 @@ const jumlahTableData = [
 export default function T3p5() {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
+  // PieChart data: gunakan baris "Total" dari persentaseData
+  const totalPersentaseData = persentaseData.find((row) => row.sls === "Total");
   const pieData = [
     {
       name: "Ada, digunakan anggota keluarga",
-      value: desaData?.adaAnggota ?? 0,
+      value: totalPersentaseData?.adaAnggota ?? 0,
     },
     {
       name: "Ada, digunakan bersama anggota keluarga tertentu",
-      value: desaData?.adaBersama ?? 0,
+      value: totalPersentaseData?.adaBersama ?? 0,
     },
-    { name: "Lainnya", value: desaData?.lainnya ?? 0 },
+    { name: "Lainnya", value: totalPersentaseData?.lainnya ?? 0 },
   ];
 
   return (
@@ -180,8 +181,8 @@ export default function T3p5() {
                   cx="50%"
                   cy="50%"
                   outerRadius={120}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                  label={({ name, value }) =>
+                    `${name}: ${Number(value).toFixed(2)}%`
                   }
                 >
                   {pieData.map((entry, idx) => (

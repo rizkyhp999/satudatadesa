@@ -112,18 +112,19 @@ const pieColors = [
 export default function T3p3() {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
+  // PieChart data: gunakan baris "Total" dari persentaseData
+  const totalPersentaseData = persentaseData.find((row) => row.sls === "Total");
   const pieData = [
-    { name: "Tembok", value: desaData?.tembok ?? 0 },
+    { name: "Tembok", value: totalPersentaseData?.tembok ?? 0 },
     {
       name: "Plesteran anyaman bambu/Kawat",
-      value: desaData?.plesteranBambuKawat ?? 0,
+      value: totalPersentaseData?.plesteranBambuKawat ?? 0,
     },
     {
       name: "Kayu/Papan/Batang kayu",
-      value: desaData?.kayuPapanBatangKayu ?? 0,
+      value: totalPersentaseData?.kayuPapanBatangKayu ?? 0,
     },
-    { name: "Lainnya", value: desaData?.lainnya ?? 0 },
+    { name: "Lainnya", value: totalPersentaseData?.lainnya ?? 0 },
   ];
 
   // Download grafik Pie
@@ -214,8 +215,8 @@ export default function T3p3() {
                   cx="50%"
                   cy="50%"
                   outerRadius={120}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                  label={({ name, value }) =>
+                    `${name}: ${Number(value).toFixed(2)}%`
                   }
                 >
                   {pieData.map((entry, idx) => (

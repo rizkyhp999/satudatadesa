@@ -46,6 +46,8 @@ import T3p11 from "@/components/dashboard/t3p11";
 import T4p1 from "@/components/dashboard/t4p1";
 import T4p2 from "@/components/dashboard/t4p2";
 import T4p3 from "@/components/dashboard/t4p3";
+import Infografik from "@/components/dashboard/infografik";
+import Publikasi from "@/components/dashboard/publikasi";
 
 // helper function untuk class merge
 function cn(...classes: (string | boolean | undefined | null)[]) {
@@ -1038,63 +1040,54 @@ export default function Page() {
                 Keberlanjutan
               </Tabs.Trigger>
             </Tabs.List>
-
             <Tabs.Content value="t1p1_4" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 1.1-1.4: Perangkat, SLS, Organisasi, Batas Wilayah
               </div>
               <T1p1_4 />
             </Tabs.Content>
-
             <Tabs.Content value="t1p5" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 1.5: Keluarga SLS
               </div>
               <T1p5 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t1p6" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 1.6: Status Keluarga
               </div>
               <T1p6 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t1p7" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 1.7: Penduduk SLS & Gender
               </div>
               <T1p7 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t1p8" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 1.8: Umur & Gender
               </div>
               <T1p8 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t1p9" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 1.9: Perkawinan
               </div>
               <T1p9 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t2p1" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 2.1: Pendidikan 5+
               </div>
               <T2p1 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t2p2" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 2.2: Pendidikan 7-23
               </div>
               <T2p2 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t2p3" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 2.3: Ijazah Tertinggi
@@ -1102,119 +1095,102 @@ export default function Page() {
               {/* <T2p3 data={filteredData} /> */}
               <T2p3 />
             </Tabs.Content>
-
             <Tabs.Content value="t2p4" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 2.4: Kerja
               </div>
               <T2p4 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t2p5" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 2.5: Usaha
               </div>
               <T2p5 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t2p6" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 2.6: Pertanian
               </div>
               <T2p6 data={filteredData} />
             </Tabs.Content>
-
             <Tabs.Content value="t2p7" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 2.7: Jaminan Kesehatan
               </div>
               <T2p7 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p1" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.1: Kepemilikan Rumah
               </div>
               <T3p1 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p2" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.2: Lantai Rumah
               </div>
               <T3p2 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p3" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.3: Dinding Rumah
               </div>
               <T3p3 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p4" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.4: Atap Rumah
               </div>
               <T3p4 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p5" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.5: Fasilitas BAB
               </div>
               <T3p5 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p6" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.6: Air Minum
               </div>
               <T3p6 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p7" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.7: Air Mandi
               </div>
               <T3p7 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p8" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.8: Penerangan
               </div>
               <T3p8 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p9" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.9: Energi Masak
               </div>
               <T3p9 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p10" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.10: Kloset
               </div>
               <T3p10 />
             </Tabs.Content>
-
             <Tabs.Content value="t3p11" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 3.11: Pembuangan Tinja
               </div>
               <T3p11 />
             </Tabs.Content>
-
             <Tabs.Content value="t4p1" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 4.1: Bantuan
               </div>
               <T4p1 />
             </Tabs.Content>
-
             <Tabs.Content value="t4p2" className="mt-4">
               <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                 Tabel 4.2: Bantuan Tani
@@ -1229,6 +1205,16 @@ export default function Page() {
               <T4p3 />
             </Tabs.Content>
           </Tabs.Root>
+
+          {/* Infografik & Publikasi Section */}
+          <div className="w-full flex flex-col md:flex-row gap-8 items-start justify-center mb-8">
+            <div className="flex-1">
+              <Infografik />
+            </div>
+            <div className="flex-1">
+              <Publikasi />
+            </div>
+          </div>
 
           {/* Footer */}
           <motion.div

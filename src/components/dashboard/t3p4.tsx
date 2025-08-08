@@ -148,13 +148,14 @@ export default function T3p4() {
     null
   ) as React.RefObject<HTMLDivElement>;
 
-  const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
+  // PieChart data: gunakan baris "Total" dari persentaseData
+  const totalPersentaseData = persentaseData.find((row) => row.sls === "Total");
   const pieData = [
     {
       name: "Beton/Genteng/Seng/Kayu/Sirap",
-      value: desaData?.betonGentengSengKayuSirap ?? 0,
+      value: totalPersentaseData?.betonGentengSengKayuSirap ?? 0,
     },
-    { name: "Lainnya", value: desaData?.lainnya ?? 0 },
+    { name: "Lainnya", value: totalPersentaseData?.lainnya ?? 0 },
   ];
 
   return (
@@ -181,8 +182,8 @@ export default function T3p4() {
                   cx="50%"
                   cy="50%"
                   outerRadius={120}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                  label={({ name, value }) =>
+                    `${name}: ${Number(value).toFixed(2)}%`
                   }
                 >
                   {pieData.map((entry, idx) => (

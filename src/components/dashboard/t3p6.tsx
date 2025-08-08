@@ -162,18 +162,19 @@ const jumlahTableData = [
 export default function T3p6() {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
+  // PieChart data: gunakan baris "Total" dari persentaseData
+  const totalPersentaseData = persentaseData.find((row) => row.sls === "Total");
   const pieData = [
     {
       name: "Air Kemasan Bermerk/Air Isi Ulang",
-      value: desaData?.airKemasan ?? 0,
+      value: totalPersentaseData?.airKemasan ?? 0,
     },
-    { name: "Leding", value: desaData?.leding ?? 0 },
+    { name: "Leding", value: totalPersentaseData?.leding ?? 0 },
     {
       name: "Sumur Bor/Pompa/Sumur Terlindung/Mata Air Terlindung",
-      value: desaData?.sumur ?? 0,
+      value: totalPersentaseData?.sumur ?? 0,
     },
-    { name: "Lainnya", value: desaData?.lainnya ?? 0 },
+    { name: "Lainnya", value: totalPersentaseData?.lainnya ?? 0 },
   ];
 
   return (
@@ -200,8 +201,8 @@ export default function T3p6() {
                   cx="50%"
                   cy="50%"
                   outerRadius={120}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                  label={({ name, value }) =>
+                    `${name}: ${Number(value).toFixed(2)}%`
                   }
                 >
                   {pieData.map((entry, idx) => (

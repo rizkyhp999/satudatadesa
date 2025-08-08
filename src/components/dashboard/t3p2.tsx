@@ -145,15 +145,25 @@ const pieColors = [
 export default function T3p2() {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
+  // PieChart data: gunakan baris "Total" dari persentaseData
+  const totalPersentaseData = persentaseData.find((row) => row.sls === "Total");
   const pieData = [
-    { name: "Marmer/Granit", value: desaData?.marmerGranit ?? 0 },
-    { name: "Keramik", value: desaData?.keramik ?? 0 },
-    { name: "Parket/Vinil/Karpet", value: desaData?.parketVinilKarpet ?? 0 },
-    { name: "Ubin/Tegel/Teraso", value: desaData?.ubinTegelTeraso ?? 0 },
-    { name: "Kayu/Papan", value: desaData?.kayuPapan ?? 0 },
-    { name: "Semen/Bata Merah", value: desaData?.sememBataMerah ?? 0 },
-    { name: "Lainnya", value: desaData?.lainnya ?? 0 },
+    { name: "Marmer/Granit", value: totalPersentaseData?.marmerGranit ?? 0 },
+    { name: "Keramik", value: totalPersentaseData?.keramik ?? 0 },
+    {
+      name: "Parket/Vinil/Karpet",
+      value: totalPersentaseData?.parketVinilKarpet ?? 0,
+    },
+    {
+      name: "Ubin/Tegel/Teraso",
+      value: totalPersentaseData?.ubinTegelTeraso ?? 0,
+    },
+    { name: "Kayu/Papan", value: totalPersentaseData?.kayuPapan ?? 0 },
+    {
+      name: "Semen/Bata Merah",
+      value: totalPersentaseData?.sememBataMerah ?? 0,
+    },
+    { name: "Lainnya", value: totalPersentaseData?.lainnya ?? 0 },
   ];
 
   // Download grafik Pie
@@ -256,8 +266,8 @@ export default function T3p2() {
                   cx="50%"
                   cy="50%"
                   outerRadius={120}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                  label={({ name, value }) =>
+                    `${name}: ${Number(value).toFixed(2)}%`
                   }
                 >
                   {pieData.map((entry, idx) => (

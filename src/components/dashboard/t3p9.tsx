@@ -165,16 +165,17 @@ export default function T3p9() {
     saveAs(blob, "tabel_t3p9_jumlah.xlsx");
   };
 
-  const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
+  // PieChart data: gunakan baris "Total" dari persentaseData
+  const totalPersentaseData = persentaseData.find((row) => row.sls === "Total");
   const pieData = [
-    { name: "Gas elpigi 5,5 kg", value: desaData?.gas55 ?? 0 },
-    { name: "Gas elpigi 12 kg", value: desaData?.gas12 ?? 0 },
-    { name: "Gas elpigi 3 kg", value: desaData?.gas3 ?? 0 },
+    { name: "Gas elpigi 5,5 kg", value: totalPersentaseData?.gas55 ?? 0 },
+    { name: "Gas elpigi 12 kg", value: totalPersentaseData?.gas12 ?? 0 },
+    { name: "Gas elpigi 3 kg", value: totalPersentaseData?.gas3 ?? 0 },
     {
       name: "Minyak tanah/Briket/Arang/Kayu bakar",
-      value: desaData?.minyakKayu ?? 0,
+      value: totalPersentaseData?.minyakKayu ?? 0,
     },
-    { name: "Lainnya", value: desaData?.lainnya ?? 0 },
+    { name: "Lainnya", value: totalPersentaseData?.lainnya ?? 0 },
   ];
 
   return (
@@ -201,8 +202,8 @@ export default function T3p9() {
                   cx="50%"
                   cy="50%"
                   outerRadius={120}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                  label={({ name, value }) =>
+                    `${name}: ${Number(value).toFixed(2)}%`
                   }
                 >
                   {pieData.map((entry, idx) => (

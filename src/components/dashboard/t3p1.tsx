@@ -115,14 +115,14 @@ const persentaseData = [
 export default function T3p1() {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  // PieChart data: gunakan persentaseData untuk "Desa Kapuak"
-  const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
+  // PieChart data: gunakan baris "Total" dari persentaseData
+  const totalPersentaseData = persentaseData.find((row) => row.sls === "Total");
   const pieData = [
-    { name: "Milik Sendiri", value: desaData?.milikSendiri ?? 0 },
-    { name: "Kontrak/Sewa", value: desaData?.kontrakSewa ?? 0 },
-    { name: "Bebas Sewa", value: desaData?.bebasSewa ?? 0 },
-    { name: "Rumah Dinas", value: desaData?.rumahDinas ?? 0 },
-    { name: "Lainnya", value: desaData?.lainnya ?? 0 },
+    { name: "Milik Sendiri", value: totalPersentaseData?.milikSendiri ?? 0 },
+    { name: "Kontrak/Sewa", value: totalPersentaseData?.kontrakSewa ?? 0 },
+    { name: "Bebas Sewa", value: totalPersentaseData?.bebasSewa ?? 0 },
+    { name: "Rumah Dinas", value: totalPersentaseData?.rumahDinas ?? 0 },
+    { name: "Lainnya", value: totalPersentaseData?.lainnya ?? 0 },
   ];
   const pieColors = ["#2563eb", "#fbbf24", "#10b981", "#a78bfa", "#f472b6"];
 
@@ -218,8 +218,8 @@ export default function T3p1() {
                   cx="50%"
                   cy="50%"
                   outerRadius={120}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                  label={({ name, value }) =>
+                    `${name}: ${Number(value).toFixed(2)}%`
                   }
                 >
                   {pieData.map((entry, idx) => (

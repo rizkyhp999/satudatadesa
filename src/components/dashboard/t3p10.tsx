@@ -79,10 +79,11 @@ export default function T3p10() {
     saveAs(blob, "tabel_t3p10_jumlah.xlsx");
   };
 
-  const desaData = persentaseData.find((row) => row.sls === "Desa Kapuak");
+  // PieChart data: gunakan baris "Total" dari persentaseData
+  const totalPersentaseData = persentaseData.find((row) => row.sls === "Total");
   const pieData = [
-    { name: "Leher Angsa", value: desaData?.leherAngsa ?? 0 },
-    { name: "Lainnya", value: desaData?.lainnya ?? 0 },
+    { name: "Leher Angsa", value: totalPersentaseData?.leherAngsa ?? 0 },
+    { name: "Lainnya", value: totalPersentaseData?.lainnya ?? 0 },
   ];
 
   return (
@@ -109,8 +110,8 @@ export default function T3p10() {
                   cx="50%"
                   cy="50%"
                   outerRadius={120}
-                  label={({ name, percent }) =>
-                    `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                  label={({ name, value }) =>
+                    `${name}: ${Number(value).toFixed(2)}%`
                   }
                 >
                   {pieData.map((entry, idx) => (
