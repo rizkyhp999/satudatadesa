@@ -536,9 +536,9 @@ export default function Page() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="mt-8"
+        className="mt-8 mb-4"
       >
-        <Card className="border border-gray-200 bg-white rounded-xl px-6 py-6 max-w-6xl mx-auto">
+        <Card className="border border-gray-200 bg-white rounded-xl px-6 py-6 max-w-4xl mx-auto">
           <h2 className="text-xl font-bold text-gray-900 mb-6">
             Filter Wilayah
           </h2>
@@ -696,8 +696,6 @@ export default function Page() {
           </div>
         </Card>
       </motion.section>
-      {/* Jarak antar segmen */}
-      <div className="my-10" />
 
       {/* Main Dashboard Content */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-2 md:px-6 py-6">
@@ -706,7 +704,7 @@ export default function Page() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-10"
+          className="mb-5"
         >
           <SummaryStats data={filteredData} />
         </motion.section>

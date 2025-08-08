@@ -64,7 +64,10 @@ export function SummaryStats({ data }: SummaryStatsProps) {
     >
       <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-bold text-gray-900">
+          <CardTitle
+            className="text-xl
+           font-bold text-gray-900"
+          >
             Ringkasan Data Survei
           </CardTitle>
         </CardHeader>
