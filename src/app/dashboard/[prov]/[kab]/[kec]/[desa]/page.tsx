@@ -3,7 +3,16 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Loader2, Download, Sun, Moon } from "lucide-react";
+import {
+  Loader2,
+  Sun,
+  Moon,
+  Home,
+  BarChart2,
+  FileText,
+  Users,
+  ChevronDown,
+} from "lucide-react";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -14,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Card } from "@/components/ui/card";
 
 import useSurveiData from "@/hooks/use-survei-data";
 import { SummaryStats } from "@/components/dashboard/summary-stats";
@@ -193,6 +203,7 @@ export default function Page() {
   });
   const [tab, setTab] = useState("t1p1_4");
   const [dark, setDark] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Toggle dark mode pada <html>
   function toggleDark() {
@@ -471,53 +482,71 @@ export default function Page() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8 relative"
-        >
-          {/* Tombol darkmode kanan atas */}
-          <button
-            onClick={toggleDark}
-            className="absolute right-0 top-0 p-2 rounded-full bg-white dark:bg-gray-800 border shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            aria-label="Toggle dark mode"
-            type="button"
-          >
-            {dark ? (
-              <Sun className="w-5 h-5 text-yellow-500" />
-            ) : (
-              <Moon className="w-5 h-5 text-gray-700" />
-            )}
-          </button>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Dashboard Analisis Data Survei
-            {desaNama && (
-              <span className="block text-2xl font-semibold text-blue-700 dark:text-blue-400 mt-2">
-                Desa {desaNama}
-              </span>
-            )}
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
-            Visualisasi Data Demografis dan Sosial Ekonomi
-          </p>
-        </motion.div>
+  // Tab utama yang selalu tampil
+  const MAIN_TABS = [
+    { value: "t1p1_4", label: "Perangkat" },
+    { value: "t1p5", label: "Keluarga SLS" },
+    { value: "t1p6", label: "Status Keluarga" },
+    { value: "t1p7", label: "Penduduk SLS" },
+    { value: "t1p8", label: "Umur & Gender" },
+    { value: "t1p9", label: "Perkawinan" },
+    { value: "t2p1", label: "Pendidikan 5+" },
+    { value: "t2p2", label: "Pendidikan 7-23" },
+  ];
 
-        {/* Pemilihan Wilayah */}
-        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 mb-8">
-          <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
-            Pilih Wilayah
-          </h3>
-          <div className="flex flex-wrap justify-center items-center gap-4">
-            {/* Provinsi */}
+  // Tab lain yang masuk dropdown
+  const OTHER_TABS = [
+    { value: "t2p3", label: "Ijazah" },
+    { value: "t2p4", label: "Kerja" },
+    { value: "t2p5", label: "Usaha" },
+    { value: "t2p6", label: "Pertanian" },
+    { value: "t2p7", label: "Jaminan Kesehatan" },
+    { value: "t3p1", label: "Kepemilikan Rumah" },
+    { value: "t3p2", label: "Lantai" },
+    { value: "t3p3", label: "Dinding" },
+    { value: "t3p4", label: "Atap" },
+    { value: "t3p5", label: "Fasilitas BAB" },
+    { value: "t3p6", label: "Air Minum" },
+    { value: "t3p7", label: "Air Mandi" },
+    { value: "t3p8", label: "Penerangan" },
+    { value: "t3p9", label: "Energi Masak" },
+    { value: "t3p10", label: "Kloset" },
+    { value: "t3p11", label: "Pembuangan Tinja" },
+    { value: "t4p1", label: "Bantuan" },
+    { value: "t4p2", label: "Bantuan Tani" },
+    { value: "t4p3", label: "Keberlanjutan" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Judul di tengah */}
+      <div className="w-full flex flex-col items-center mt-8 mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 text-center">
+          Dashboard Survei Desa
+        </h1>
+        <div className="text-sm text-gray-500 font-medium mt-2 text-center">
+          {desaNama
+            ? `Wilayah: ${desaNama}, ${kecamatanNama}, ${kabupatenNama}, ${provinsiNama}`
+            : "Pilih wilayah untuk melihat data"}
+        </div>
+      </div>
+
+      {/* Filter Wilayah */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="mt-8"
+      >
+        <Card className="border border-gray-200 bg-white rounded-xl px-6 py-6 max-w-6xl mx-auto">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">
+            Filter Wilayah
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
             <div>
               <Label
                 htmlFor="provinsi"
-                className="text-gray-700 dark:text-white mb-2 block"
+                className="mb-2 block text-gray-700 font-medium"
               >
                 Provinsi
               </Label>
@@ -536,28 +565,23 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="provinsi"
-                  className="w-40 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
+                  className="w-full border-gray-200 text-gray-900 bg-white"
                 >
                   <SelectValue placeholder="Pilih Provinsi" />
                 </SelectTrigger>
                 <SelectContent>
                   {PROVINSI.map((p) => (
-                    <SelectItem
-                      key={p.kode}
-                      value={p.kode}
-                      className="text-black dark:text-white"
-                    >
+                    <SelectItem key={p.kode} value={p.kode}>
                       {p.kode} - {p.nama}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            {/* Kabupaten */}
             <div>
               <Label
                 htmlFor="kabupaten"
-                className="text-gray-700 dark:text-white mb-2 block"
+                className="mb-2 block text-gray-700 font-medium"
               >
                 Kabupaten
               </Label>
@@ -575,28 +599,23 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="kabupaten"
-                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
+                  className="w-full border-gray-200 text-gray-900 bg-white"
                 >
                   <SelectValue placeholder="Pilih Kabupaten" />
                 </SelectTrigger>
                 <SelectContent>
                   {KABUPATEN.map((k) => (
-                    <SelectItem
-                      key={k.kode}
-                      value={k.kode}
-                      className="text-black dark:text-white"
-                    >
+                    <SelectItem key={k.kode} value={k.kode}>
                       {k.kode} - {k.nama}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            {/* Kecamatan */}
             <div>
               <Label
                 htmlFor="kecamatan"
-                className="text-gray-700 dark:text-white mb-2 block"
+                className="mb-2 block text-gray-700 font-medium"
               >
                 Kecamatan
               </Label>
@@ -612,28 +631,23 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="kecamatan"
-                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
+                  className="w-full border-gray-200 text-gray-900 bg-white"
                 >
                   <SelectValue placeholder="Pilih Kecamatan" />
                 </SelectTrigger>
                 <SelectContent>
                   {KECAMATAN_LIST.map((k) => (
-                    <SelectItem
-                      key={k.kode}
-                      value={k.kode}
-                      className="text-black dark:text-white"
-                    >
+                    <SelectItem key={k.kode} value={k.kode}>
                       [{k.kode}] {k.nama}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            {/* Desa */}
             <div>
               <Label
                 htmlFor="desa"
-                className="text-gray-700 dark:text-white mb-2 block"
+                className="mb-2 block text-gray-700 font-medium"
               >
                 Desa
               </Label>
@@ -649,27 +663,22 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="desa"
-                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
+                  className="w-full border-gray-200 text-gray-900 bg-white"
                 >
                   <SelectValue placeholder="Pilih Desa" />
                 </SelectTrigger>
                 <SelectContent>
                   {desaOptions.map((d) => (
-                    <SelectItem
-                      key={d.desaKode}
-                      value={d.desaKode}
-                      className="text-black dark:text-white"
-                    >
+                    <SelectItem key={d.desaKode} value={d.desaKode}>
                       [{d.desaKode}] {d.desaNama}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
-            {/* Tombol navigasi */}
-            <div className="flex items-center">
+            <div className="flex items-end h-full">
               <Button
-                className="ml-2 mt-6 bg-black dark:bg-white text-white dark:text-black border border-neutral-300 dark:border-neutral-700 cursor-pointer"
+                className="w-full bg-blue-600 text-white font-semibold"
                 disabled={
                   !(
                     wilayah.kode_provinsi &&
@@ -685,90 +694,67 @@ export default function Page() {
               </Button>
             </div>
           </div>
-        </div>
+        </Card>
+      </motion.section>
+      {/* Jarak antar segmen */}
+      <div className="my-10" />
 
+      {/* Main Dashboard Content */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-2 md:px-6 py-6">
         {/* Summary Stats */}
-        <motion.div
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
+          transition={{ duration: 0.4 }}
+          className="mb-10"
         >
-          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
-            <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
-              Ringkasan Data Survei
-            </h3>
-            <SummaryStats data={filteredData} />
-          </div>
-        </motion.div>
-        {/* Separator */}
-        <div className="my-8">
-          <div className="w-full flex justify-center">
-            <div className="w-2/3">
-              <div className="h-px bg-gray-200 dark:bg-gray-700" />
-            </div>
-          </div>
-        </div>
+          <SummaryStats data={filteredData} />
+        </motion.section>
+        {/* Jarak antar segmen */}
+        <div className="my-10" />
 
-        {/* Diagram Pie Charts Side by Side */}
-        <motion.div
+        {/* Diagram Section */}
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
+          transition={{ duration: 0.4 }}
+          className="mb-10"
         >
-          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
-            <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+          <Card className="border border-gray-200 bg-white rounded-xl px-6 py-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">
               Diagram Demografi & Sosial Ekonomi
-            </h3>
-            <div className="flex flex-col lg:flex-row gap-8 items-stretch">
-              <motion.div
-                whileHover={{
-                  scale: 1.03,
-                  boxShadow: "0 4px 32px rgba(0,0,0,0.08)",
-                }}
-                className="flex-1"
-              >
-                <Diagram data={filteredData} />
-              </motion.div>
-              <motion.div
-                whileHover={{
-                  scale: 1.03,
-                  boxShadow: "0 4px 32px rgba(0,0,0,0.08)",
-                }}
-                className="flex-1"
-              >
-                <Diagram2 data={filteredData} />
-              </motion.div>
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <Diagram data={filteredData} />
+              <Diagram2 data={filteredData} />
             </div>
-          </div>
-        </motion.div>
-        {/* Separator */}
-        <div className="my-8">
-          <div className="w-full flex justify-center">
-            <div className="w-2/3">
-              <div className="h-px bg-gray-200 dark:bg-gray-700" />
-            </div>
-          </div>
-        </div>
+          </Card>
+        </motion.section>
+        {/* Jarak antar segmen */}
+        <div className="my-10" />
 
         {/* Tabs Section */}
-        <motion.div
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
+          transition={{ duration: 0.4 }}
+          className="mb-10"
         >
-          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
-            <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+          <Card className="border border-gray-200 bg-white rounded-xl px-6 py-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-2">
               Detail Data Survei
-            </h3>
+            </h2>
             <Tabs.Root
               value={tab}
               onValueChange={setTab}
-              className="mt-6 w-full"
+              className="mt-2 w-full"
             >
-              <Tabs.List className="flex flex-wrap gap-2 border-b pb-2 mb-4">
+              <Tabs.List
+                className="
+                  grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6
+                  gap-2 border-b pb-2 mb-10 overflow-x-auto 
+                "
+              >
                 <Tabs.Trigger
                   value="t1p1_4"
                   className={cn(
@@ -1067,7 +1053,7 @@ export default function Page() {
                   Keberlanjutan
                 </Tabs.Trigger>
               </Tabs.List>
-              <Tabs.Content value="t1p1_4" className="mt-4">
+              <Tabs.Content value="t1p1_4" className="mt-10">
                 <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
                   Tabel 1.1-1.4: Perangkat, SLS, Organisasi, Batas Wilayah
                 </div>
@@ -1232,42 +1218,33 @@ export default function Page() {
                 <T4p3 />
               </Tabs.Content>
             </Tabs.Root>
-          </div>
-        </motion.div>
+          </Card>
+        </motion.section>
+        {/* Jarak antar segmen */}
+        <div className="my-10" />
 
         {/* Infografik & Publikasi Section */}
-        <div className="w-full flex flex-col md:flex-row gap-8 items-start justify-center mb-8 mt-12">
-          <div className="flex-1">
-            <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
-              <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
-                Infografis
-              </h3>
-              <Infografik />
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
-              <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
-                Publikasi
-              </h3>
-              <Publikasi />
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-center mt-12 py-8 border-t border-gray-200 dark:border-gray-700"
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-10"
         >
-          <p className="text-gray-500 dark:text-gray-400">
-            Dashboard ini menampilkan {filteredData.keluarga.length} keluarga
-            dan {filteredData.anggota.length} penduduk
-          </p>
-        </motion.div>
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Infografik />
+
+            <Publikasi />
+          </div>
+        </motion.section>
+      </main>
+
+      {/* Footer */}
+      <footer className="w-full border-t border-gray-200 bg-white text-center py-6 mt-auto">
+        <p className="text-gray-500 text-sm">
+          Dashboard ini menampilkan {filteredData.keluarga.length} keluarga dan{" "}
+          {filteredData.anggota.length} penduduk
+        </p>
+      </footer>
     </div>
   );
 }

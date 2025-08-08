@@ -7,6 +7,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import type { SurveiData } from "@/hooks/use-survei-data";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -20,10 +21,10 @@ const programMap: Record<string, string> = {
 
 const colors = [
   "#2563eb", // blue
+  "#64748b", // slate
   "#16a34a", // green
-  "#f59e42", // orange
   "#e11d48", // pink
-  "#a21caf", // purple
+  "#f59e42", // orange
 ];
 
 interface Diagram2Props {
@@ -85,110 +86,133 @@ export default function Diagram2({ data }: Diagram2Props) {
   }
 
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle>
-          Program apa yang perlu dilaksanakan untuk mendukung pertanian di Desa?
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {/* Baris pertama: Pie chart + legend */}
-        <div className="flex flex-col md:flex-row gap-8 items-center md:items-start mb-6">
-          <div className="flex flex-row gap-6 items-center">
-            <div className="w-56 h-56">
-              <Pie
-                data={dataChart}
-                options={{ plugins: { legend: { display: false } } }}
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="h-full"
+    >
+      <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 h-full">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-bold text-gray-900">
+            Program Pendukung Pertanian
+          </CardTitle>
+          <div className="text-sm text-gray-500 font-medium">
+            Akumulasi seluruh keluarga
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* Pie chart + legend */}
+          <div className="flex flex-col md:flex-row gap-8 items-center md:items-start mb-6">
+            <div className="flex flex-row gap-6 items-center">
+              <div className="w-48 h-48 flex items-center justify-center">
+                <Pie
+                  data={dataChart}
+                  options={{
+                    plugins: { legend: { display: false } },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                  }}
+                />
+              </div>
+              <ul className="space-y-3">
+                {labels.map((k, i) => (
+                  <li
+                    key={k}
+                    className="flex items-center gap-3 text-gray-700 font-medium"
+                  >
+                    <span
+                      className="inline-block w-4 h-4 rounded-full border border-gray-200"
+                      style={{ background: colors[i] }}
+                    />
+                    <span>{programMap[k]}</span>
+                    <span className="ml-2 text-xs text-gray-400">
+                      ({programCounts[k] || 0})
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          {/* Tabel alasan lainnya */}
+          <div>
+            <div className="mb-3 flex flex-col md:flex-row items-center justify-between gap-2">
+              <span className="font-semibold text-gray-900">
+                Alasan Lainnya
+              </span>
+              <Input
+                placeholder="Cari alasan..."
+                value={search}
+                onChange={handleSearch}
+                className="w-48"
               />
             </div>
-            <ul className="space-y-2">
-              {labels.map((k, i) => (
-                <li key={k} className="flex items-center gap-2">
-                  <span
-                    className="inline-block w-4 h-4 rounded-full"
-                    style={{ background: colors[i] }}
-                  />
-                  <span>{programMap[k]}</span>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    ({programCounts[k] || 0})
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        {/* Baris kedua: Tabel alasan lainnya */}
-        <div>
-          <div className="mb-2 flex items-center justify-between">
-            <span className="font-semibold">Alasan Lainnya</span>
-            <Input
-              placeholder="Cari alasan..."
-              value={search}
-              onChange={handleSearch}
-              className="w-48"
-            />
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm border">
-              <thead>
-                <tr className="bg-gray-100 dark:bg-gray-800">
-                  <th className="px-2 py-1 border">No</th>
-                  <th className="px-2 py-1 border">Alasan</th>
-                </tr>
-              </thead>
-              <tbody>
-                {alasanPage.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={2}
-                      className="text-center py-2 text-muted-foreground"
-                    >
-                      Tidak ada data
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm border border-gray-200 rounded-lg">
+                <thead>
+                  <tr className="bg-gray-50">
+                    <th className="px-2 py-2 border text-left font-semibold text-gray-700">
+                      No
+                    </th>
+                    <th className="px-2 py-2 border text-left font-semibold text-gray-700">
+                      Alasan
+                    </th>
                   </tr>
-                ) : (
-                  alasanPage.map((a, i) => (
-                    <tr key={i}>
-                      <td className="px-2 py-1 border text-center">
-                        {(page - 1) * perPage + i + 1}
+                </thead>
+                <tbody>
+                  {alasanPage.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={2}
+                        className="text-center py-2 text-gray-400"
+                      >
+                        Tidak ada data
                       </td>
-                      <td className="px-2 py-1 border">{a.alasan}</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-          {/* Pagination */}
-          <div className="flex justify-between items-center mt-2">
-            <span className="text-xs text-muted-foreground">
-              Menampilkan {alasanPage.length} dari {alasanFiltered.length}{" "}
-              alasan
-            </span>
-            <div className="flex gap-1">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
-              >
-                Prev
-              </Button>
-              <span className="px-2 text-xs">
-                {page} / {totalPage || 1}
+                  ) : (
+                    alasanPage.map((a, i) => (
+                      <tr key={i}>
+                        <td className="px-2 py-2 border text-center">
+                          {(page - 1) * perPage + i + 1}
+                        </td>
+                        <td className="px-2 py-2 border">{a.alasan}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+            {/* Pagination */}
+            <div className="flex justify-between items-center mt-3">
+              <span className="text-xs text-gray-400">
+                Menampilkan {alasanPage.length} dari {alasanFiltered.length}{" "}
+                alasan
               </span>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setPage((p) => Math.min(totalPage, p + 1))}
-                disabled={page === totalPage || totalPage === 0}
-              >
-                Next
-              </Button>
+              <div className="flex gap-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                >
+                  Prev
+                </Button>
+                <span className="px-2 text-xs">
+                  {page} / {totalPage || 1}
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPage((p) => Math.min(totalPage, p + 1))}
+                  disabled={page === totalPage || totalPage === 0}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import type { SurveiData } from "@/hooks/use-survei-data";
+import { motion } from "framer-motion";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -19,12 +20,12 @@ const alasanMap: Record<string, string> = {
 
 const colors = [
   "#2563eb", // blue
+  "#64748b", // slate
   "#16a34a", // green
-  "#f59e42", // orange
   "#e11d48", // pink
+  "#f59e42", // orange
   "#a21caf", // purple
   "#facc15", // yellow
-  "#64748b", // slate
 ];
 
 interface DiagramProps {
@@ -60,35 +61,54 @@ function Diagram({ data }: DiagramProps) {
   };
 
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle>Alasan Tidak Lanjut Program (Akumulasi)</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col md:flex-row items-center gap-6">
-        <div className="w-56 h-56">
-          <Pie
-            data={dataChart}
-            options={{ plugins: { legend: { display: false } } }}
-          />
-        </div>
-        <div>
-          <ul className="space-y-2">
-            {labels.map((k, i) => (
-              <li key={k} className="flex items-center gap-2">
-                <span
-                  className="inline-block w-4 h-4 rounded-full"
-                  style={{ background: colors[i] }}
-                />
-                <span>{alasanMap[k]}</span>
-                <span className="ml-2 text-sm text-muted-foreground">
-                  ({alasanCounts[k] || 0})
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </CardContent>
-    </Card>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="h-full"
+    >
+      <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 h-full">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-bold text-gray-900">
+            Alasan Tidak Lanjut Program
+          </CardTitle>
+          <div className="text-sm text-gray-500 font-medium">
+            Akumulasi seluruh keluarga
+          </div>
+        </CardHeader>
+        <CardContent className="flex flex-col md:flex-row items-center gap-8 pt-2">
+          <div className="w-48 h-48 flex items-center justify-center">
+            <Pie
+              data={dataChart}
+              options={{
+                plugins: { legend: { display: false } },
+                responsive: true,
+                maintainAspectRatio: false,
+              }}
+            />
+          </div>
+          <div className="w-full">
+            <ul className="space-y-3">
+              {labels.map((k, i) => (
+                <li
+                  key={k}
+                  className="flex items-center gap-3 text-gray-700 font-medium"
+                >
+                  <span
+                    className="inline-block w-4 h-4 rounded-full border border-gray-200"
+                    style={{ background: colors[i] }}
+                  />
+                  <span>{alasanMap[k]}</span>
+                  <span className="ml-2 text-xs text-gray-400">
+                    ({alasanCounts[k] || 0})
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
 

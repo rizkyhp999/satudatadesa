@@ -17,6 +17,7 @@ import {
 import { toPng } from "html-to-image";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { motion } from "framer-motion";
 
 type Props = {
   data: any;
@@ -111,17 +112,21 @@ export default function T1p8({ data }: Props) {
   };
 
   return (
-    <div>
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Grafik di kiri */}
-        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col border border-gray-200">
-          <CardHeader className="bg-white border-b border-gray-200">
-            <CardTitle className="text-lg font-semibold">
+        <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 flex flex-col">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-gray-900">
               Tabel 1.8 Jumlah Penduduk Menurut Kelompok Umur dan Jenis Kelamin
               di Desa Kapuak, 2025 (Grafik)
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col p-4">
+          <CardContent className="flex-1 flex flex-col">
             <div ref={chartRef} className="w-full" style={{ minHeight: 340 }}>
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={summary}>
@@ -144,49 +149,46 @@ export default function T1p8({ data }: Props) {
           </CardContent>
         </Card>
         {/* Tabel di kanan */}
-        <Card className="md:w-1/2 flex flex-col border border-gray-200">
-          <CardHeader className="bg-white border-b border-gray-200">
-            <CardTitle className="text-lg font-semibold">
+        <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 flex flex-col">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-gray-900">
               Tabel 1.8 Jumlah Penduduk Menurut Kelompok Umur dan Jenis Kelamin
               di Desa Kapuak, 2025 (Tabel)
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col p-4">
+          <CardContent className="flex-1 flex flex-col">
             <div className="overflow-x-auto" style={{ minHeight: 340 }}>
-              <table className="w-full text-sm border border-gray-200 dark:border-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-800">
+              <table className="w-full text-sm border border-gray-200 rounded">
+                <thead className="bg-gray-50">
                   <tr>
                     <th
                       rowSpan={2}
-                      className="border px-4 py-2 align-middle bg-gray-50 dark:bg-gray-800"
+                      className="border px-4 py-2 align-middle font-semibold text-gray-700 bg-gray-50"
                     >
                       Kelompok Umur
                     </th>
                     <th
                       colSpan={3}
-                      className="border px-4 py-2 text-center bg-gray-50 dark:bg-gray-800"
+                      className="border px-4 py-2 text-center font-semibold text-gray-700 bg-gray-50"
                     >
                       Jumlah Penduduk
                     </th>
                   </tr>
                   <tr>
-                    <th className="border px-4 py-2 text-center bg-gray-50 dark:bg-gray-800">
+                    <th className="border px-4 py-2 text-center font-semibold text-gray-700 bg-gray-50">
                       Laki-Laki
                     </th>
-                    <th className="border px-4 py-2 text-center bg-gray-50 dark:bg-gray-800">
+                    <th className="border px-4 py-2 text-center font-semibold text-gray-700 bg-gray-50">
                       Perempuan
                     </th>
-                    <th className="border px-4 py-2 text-center bg-gray-50 dark:bg-gray-800">
+                    <th className="border px-4 py-2 text-center font-semibold text-gray-700 bg-gray-50">
                       Total
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {summary.map((row, i) => (
-                    <tr
-                      key={i}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-900"
-                    >
+                    <tr key={i} className="hover:bg-gray-50">
                       <td className="border px-4 py-2">{row.kelompok}</td>
                       <td className="border px-4 py-2 text-center">
                         {row.laki}
@@ -200,16 +202,16 @@ export default function T1p8({ data }: Props) {
                     </tr>
                   ))}
                   <tr>
-                    <td className="border px-4 py-2 font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 font-bold bg-gray-100">
                       Total
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {totalLaki}
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {totalPerempuan}
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {totalSemua}
                     </td>
                   </tr>
@@ -225,6 +227,6 @@ export default function T1p8({ data }: Props) {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </motion.div>
   );
 }

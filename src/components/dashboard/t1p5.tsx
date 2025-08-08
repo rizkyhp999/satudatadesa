@@ -79,21 +79,22 @@ export default function T1p5({ data }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Grafik di kiri */}
-        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col">
+        <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 flex flex-col">
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="text-lg font-bold text-gray-900">
               Tabel 1.5 Jumlah Keluarga Menurut Satuan Lingkungan Setempat (SLS)
-              di Desa Kapuak, 2025
+              di Desa Kapuak, 2025 (Grafik)
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col">
             <div
+              ref={chartRef}
               className="flex justify-center items-center h-full w-full flex-1"
               style={{ minHeight: 420 }}
             >
@@ -116,26 +117,27 @@ export default function T1p5({ data }: Props) {
           </CardContent>
         </Card>
         {/* Tabel di kanan */}
-        <Card className="md:w-1/2 flex flex-col">
+        <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 flex flex-col">
           <CardHeader>
-            <CardTitle>
+            <CardTitle className="text-lg font-bold text-gray-900">
               Tabel 1.5 Jumlah Keluarga Menurut Satuan Lingkungan Setempat (SLS)
-              di Desa Kapuak, 2025
+              di Desa Kapuak, 2025 (Tabel)
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col">
             <div className="overflow-x-auto" style={{ minHeight: 420 }}>
-              <table className="w-full text-sm border border-gray-200">
+              <table className="w-full text-sm border border-gray-200 rounded">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="border px-4 py-2">SLS</th>
-                    <th className="border px-4 py-2 text-center">
+                    <th className="border px-4 py-2 font-semibold text-gray-700">
+                      SLS
+                    </th>
+                    <th className="border px-4 py-2 text-center font-semibold text-gray-700">
                       Jumlah Keluarga
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Baris jumlah dalam desa */}
                   <tr>
                     <td className="border px-4 py-2 font-bold bg-gray-100">
                       Jumlah Dalam Desa
@@ -144,7 +146,6 @@ export default function T1p5({ data }: Props) {
                       {jumlahDalamDesa}
                     </td>
                   </tr>
-                  {/* Data SLS per baris, hanya selain kode 99 */}
                   {tableData
                     .filter((row) => row.sls !== "99")
                     .map((row, i) => (
@@ -157,7 +158,6 @@ export default function T1p5({ data }: Props) {
                         </td>
                       </tr>
                     ))}
-                  {/* Baris jumlah luar desa, tampilkan sebelum total */}
                   <tr>
                     <td className="border px-4 py-2 font-bold bg-gray-100">
                       Jumlah Luar Desa
@@ -166,7 +166,6 @@ export default function T1p5({ data }: Props) {
                       {tableData.find((row) => row.sls === "99")?.jumlah || 0}
                     </td>
                   </tr>
-                  {/* Baris total */}
                   <tr>
                     <td className="border px-4 py-2 font-bold bg-gray-100">
                       Total

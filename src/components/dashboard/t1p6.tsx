@@ -80,21 +80,22 @@ export default function T1p6({ data }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Grafik di kiri */}
-        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col border border-gray-200">
-          <CardHeader className="bg-white border-b border-gray-200">
-            <CardTitle className="text-lg font-semibold">
+        <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 flex flex-col">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-gray-900">
               Tabel 1.6 Jumlah Keluarga Menurut Status Kependudukan di Desa
-              Kapuak, 2025
+              Kapuak, 2025 (Grafik)
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col p-4">
+          <CardContent className="flex-1 flex flex-col">
             <div
+              ref={chartRef}
               className="flex justify-center items-center h-full w-full flex-1"
               style={{ minHeight: 420 }}
             >
@@ -117,20 +118,22 @@ export default function T1p6({ data }: Props) {
           </CardContent>
         </Card>
         {/* Tabel di kanan */}
-        <Card className="md:w-1/2 flex flex-col border border-gray-200">
-          <CardHeader className="bg-white border-b border-gray-200">
-            <CardTitle className="text-lg font-semibold">
+        <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 flex flex-col">
+          <CardHeader>
+            <CardTitle className="text-lg font-bold text-gray-900">
               Tabel 1.6 Jumlah Keluarga Menurut Status Kependudukan di Desa
-              Kapuak, 2025
+              Kapuak, 2025 (Tabel)
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col p-4">
+          <CardContent className="flex-1 flex flex-col">
             <div className="overflow-x-auto" style={{ minHeight: 420 }}>
-              <table className="w-full text-sm border border-gray-200">
+              <table className="w-full text-sm border border-gray-200 rounded">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="border px-4 py-2">Status Kependudukan</th>
-                    <th className="border px-4 py-2 text-center">
+                    <th className="border px-4 py-2 font-semibold text-gray-700">
+                      Status Kependudukan
+                    </th>
+                    <th className="border px-4 py-2 text-center font-semibold text-gray-700">
                       Jumlah Keluarga
                     </th>
                   </tr>

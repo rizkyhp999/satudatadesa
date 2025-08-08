@@ -25,6 +25,7 @@ import {
 import { toPng } from "html-to-image";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { motion } from "framer-motion";
 
 type Props = {
   data: any;
@@ -107,11 +108,15 @@ export default function T1p7({ data }: Props) {
   };
 
   return (
-    <div>
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
-        <Card className="mb-6 md:mb-0 md:w-1/2 flex flex-col">
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 flex flex-col">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">
+            <CardTitle className="text-lg font-bold text-gray-900">
               Rekap Jenis Kelamin per RT (Grafik)
             </CardTitle>
           </CardHeader>
@@ -137,53 +142,56 @@ export default function T1p7({ data }: Props) {
             </div>
           </CardContent>
         </Card>
-        <Card className="md:w-1/2 flex flex-col">
+        <Card className="border border-gray-200 bg-white rounded-xl px-4 py-4 flex flex-col">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold">
+            <CardTitle className="text-lg font-bold text-gray-900">
               Rekap Jenis Kelamin per RT (Tabel)
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col">
             <div className="overflow-x-auto" style={{ minHeight: 340 }}>
-              <table className="w-full text-sm border border-gray-200 dark:border-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-800">
+              <table className="w-full text-sm border border-gray-200 rounded">
+                <thead className="bg-gray-50">
                   <tr>
-                    <th className="border px-4 py-2">SLS</th>
-                    <th className="border px-4 py-2 text-center">Laki-Laki</th>
-                    <th className="border px-4 py-2 text-center">Perempuan</th>
-                    <th className="border px-4 py-2 text-center">Total</th>
+                    <th className="border px-4 py-2 font-semibold text-gray-700">
+                      SLS
+                    </th>
+                    <th className="border px-4 py-2 text-center font-semibold text-gray-700">
+                      Laki-Laki
+                    </th>
+                    <th className="border px-4 py-2 text-center font-semibold text-gray-700">
+                      Perempuan
+                    </th>
+                    <th className="border px-4 py-2 text-center font-semibold text-gray-700">
+                      Total
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Baris jumlah dalam desa */}
                   <tr>
-                    <td className="border px-4 py-2 font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 font-bold bg-gray-100">
                       Jumlah Dalam Desa
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {summary
                         .filter((item: any) => item.rt !== "99")
                         .reduce((sum, item) => sum + item.laki, 0)}
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {summary
                         .filter((item: any) => item.rt !== "99")
                         .reduce((sum, item) => sum + item.perempuan, 0)}
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {summary
                         .filter((item: any) => item.rt !== "99")
                         .reduce((sum, item) => sum + item.total, 0)}
                     </td>
                   </tr>
-                  {/* Data SLS per baris, hanya selain kode 99 */}
                   {summary
                     .filter((item: any) => item.rt !== "99")
                     .map((item: any, idx: number) => (
-                      <tr
-                        key={idx}
-                        className="hover:bg-gray-50 dark:hover:bg-gray-900"
-                      >
+                      <tr key={idx} className="hover:bg-gray-50">
                         <td className="border px-4 py-2">
                           {formatSLS(item.rt)}
                         </td>
@@ -198,38 +206,36 @@ export default function T1p7({ data }: Props) {
                         </td>
                       </tr>
                     ))}
-                  {/* Baris luar desa (kode 99), jika ada */}
                   {summary.some((item: any) => item.rt === "99") && (
-                    <tr className="hover:bg-gray-50 dark:hover:bg-gray-900">
-                      <td className="border px-4 py-2 font-bold bg-gray-100 dark:bg-gray-800">
+                    <tr>
+                      <td className="border px-4 py-2 font-bold bg-gray-100">
                         Luar Desa
                       </td>
-                      <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                      <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                         {summary.find((item: any) => item.rt === "99")?.laki ||
                           0}
                       </td>
-                      <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                      <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                         {summary.find((item: any) => item.rt === "99")
                           ?.perempuan || 0}
                       </td>
-                      <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                      <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                         {summary.find((item: any) => item.rt === "99")?.total ||
                           0}
                       </td>
                     </tr>
                   )}
-                  {/* Baris total */}
                   <tr>
-                    <td className="border px-4 py-2 font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 font-bold bg-gray-100">
                       TOTAL
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {totalLaki}
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {totalPerempuan}
                     </td>
-                    <td className="border px-4 py-2 text-center font-bold bg-gray-100 dark:bg-gray-800">
+                    <td className="border px-4 py-2 text-center font-bold bg-gray-100">
                       {totalSemua}
                     </td>
                   </tr>
@@ -245,6 +251,6 @@ export default function T1p7({ data }: Props) {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </motion.div>
   );
 }
