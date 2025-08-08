@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Download, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const INFOGRAFIS = [
   { src: "/infografis/1.jpg", alt: "Infografik 1" },
@@ -10,17 +12,29 @@ const INFOGRAFIS = [
 
 export function Infografik() {
   const [index, setIndex] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  function handleClick(e: React.MouseEvent<HTMLImageElement>) {
+  function handleImgClick(e: React.MouseEvent<HTMLImageElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    if (x < rect.width / 2) {
+    if (x < rect.width / 3) {
       // klik kiri
       setIndex((i) => (i === 0 ? INFOGRAFIS.length - 1 : i - 1));
-    } else {
+    } else if (x > (rect.width * 2) / 3) {
       // klik kanan
       setIndex((i) => (i === INFOGRAFIS.length - 1 ? 0 : i + 1));
+    } else {
+      // klik tengah
+      setModalOpen(true);
     }
+  }
+
+  function handleDownload(idx: number) {
+    const current = INFOGRAFIS[idx];
+    const link = document.createElement("a");
+    link.href = current.src;
+    link.download = current.alt;
+    link.click();
   }
 
   return (
@@ -30,15 +44,13 @@ export function Infografik() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full flex flex-col items-center"
       >
-        <h2 className="text-xl font-bold text-center mb-6 text-gray-800 dark:text-white">
-          Infografis
-        </h2>
+        <h2 className="text-xl font-bold text-center mb-6 text-gray-800 dark:text-white"></h2>
         <div className="w-full flex justify-center">
           <img
             src={INFOGRAFIS[index].src}
             alt={INFOGRAFIS[index].alt}
-            className="rounded-md object-contain w-full max-w-2xl h-auto max-h-[400px] cursor-pointer select-none"
-            onClick={handleClick}
+            className="rounded-md object-contain w-full max-w-2xl h-[600px] cursor-pointer select-none border border-gray-200 dark:border-gray-700 bg-white"
+            onClick={handleImgClick}
             draggable={false}
           />
         </div>
@@ -46,6 +58,51 @@ export function Infografik() {
           {index + 1} / {INFOGRAFIS.length}
         </div>
       </motion.div>
+      {/* Modal */}
+      <AnimatePresence>
+        {modalOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setModalOpen(false)}
+          >
+            <motion.div
+              className="relative bg-white dark:bg-neutral-900 rounded-lg shadow-xl p-4"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2"
+                onClick={() => setModalOpen(false)}
+              >
+                <X className="w-5 h-5" />
+              </Button>
+              <img
+                src={INFOGRAFIS[index].src}
+                alt={INFOGRAFIS[index].alt}
+                className="max-w-[80vw] max-h-[80vh] rounded-md object-contain h-auto"
+              />
+              <div className="flex justify-center gap-2 mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDownload(index)}
+                  className="flex items-center gap-1"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -8,9 +8,7 @@ export function Publikasi() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full flex flex-col items-center"
       >
-        <h2 className="text-xl font-bold text-center mb-6 text-gray-800 dark:text-white">
-          Publikasi
-        </h2>
+        <h2 className="text-xl font-bold text-center mb-6 text-gray-800 dark:text-white"></h2>
         <div className="w-full flex justify-center">
           <iframe
             src="/publikasi/DDA_BAB1.pdf"

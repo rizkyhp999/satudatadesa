@@ -306,7 +306,7 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="provinsi"
-                  className="w-40 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                  className="w-40 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
                 >
                   <SelectValue placeholder="Pilih Provinsi" />
                 </SelectTrigger>
@@ -345,7 +345,7 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="kabupaten"
-                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
                 >
                   <SelectValue placeholder="Pilih Kabupaten" />
                 </SelectTrigger>
@@ -382,7 +382,7 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="kecamatan"
-                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
                 >
                   <SelectValue placeholder="Pilih Kecamatan" />
                 </SelectTrigger>
@@ -416,7 +416,7 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="desa"
-                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
                 >
                   <SelectValue placeholder="Pilih Desa" />
                 </SelectTrigger>
@@ -436,9 +436,9 @@ export default function Page() {
               </Select>
             </div>
             {/* Tombol navigasi */}
-            <div className="w-full sm:w-auto flex items-end self-end sm:self-auto">
+            <div className="w-full sm:w-auto flex items-center">
               <Button
-                className="ml-0 sm:ml-2 mt-6 bg-black dark:bg-white text-white dark:text-black border border-neutral-300 dark:border-neutral-700 cursor-pointer w-full sm:w-auto"
+                className="ml-2 mt-6 bg-black dark:bg-white text-white dark:text-black border border-neutral-300 dark:border-neutral-700 cursor-pointer w-full sm:w-auto"
                 disabled={
                   !(
                     wilayah.kode_provinsi &&
@@ -505,13 +505,19 @@ export default function Page() {
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Visualisasi Data Demografis dan Sosial Ekonomi
           </p>
-          {/* Pilih Wilayah */}
-          <div className="mt-6 flex flex-wrap justify-center gap-4">
+        </motion.div>
+
+        {/* Pemilihan Wilayah */}
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 mb-8">
+          <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+            Pilih Wilayah
+          </h3>
+          <div className="flex flex-wrap justify-center items-center gap-4">
             {/* Provinsi */}
             <div>
               <Label
                 htmlFor="provinsi"
-                className="text-gray-700 dark:text-white"
+                className="text-gray-700 dark:text-white mb-2 block"
               >
                 Provinsi
               </Label>
@@ -530,7 +536,7 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="provinsi"
-                  className="w-40 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                  className="w-40 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
                 >
                   <SelectValue placeholder="Pilih Provinsi" />
                 </SelectTrigger>
@@ -551,7 +557,7 @@ export default function Page() {
             <div>
               <Label
                 htmlFor="kabupaten"
-                className="text-gray-700 dark:text-white"
+                className="text-gray-700 dark:text-white mb-2 block"
               >
                 Kabupaten
               </Label>
@@ -569,7 +575,7 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="kabupaten"
-                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
                 >
                   <SelectValue placeholder="Pilih Kabupaten" />
                 </SelectTrigger>
@@ -590,7 +596,7 @@ export default function Page() {
             <div>
               <Label
                 htmlFor="kecamatan"
-                className="text-gray-700 dark:text-white"
+                className="text-gray-700 dark:text-white mb-2 block"
               >
                 Kecamatan
               </Label>
@@ -606,7 +612,7 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="kecamatan"
-                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
                 >
                   <SelectValue placeholder="Pilih Kecamatan" />
                 </SelectTrigger>
@@ -625,7 +631,10 @@ export default function Page() {
             </div>
             {/* Desa */}
             <div>
-              <Label htmlFor="desa" className="text-gray-700 dark:text-white">
+              <Label
+                htmlFor="desa"
+                className="text-gray-700 dark:text-white mb-2 block"
+              >
                 Desa
               </Label>
               <Select
@@ -640,7 +649,7 @@ export default function Page() {
               >
                 <SelectTrigger
                   id="desa"
-                  className="w-52 bg-neutral-100 dark:bg-neutral-900 border-neutral-300 dark:border-neutral-700 text-black dark:text-white"
+                  className="w-52 border-neutral-300 dark:border-neutral-700 text-black dark:text-white bg-white dark:bg-white"
                 >
                   <SelectValue placeholder="Pilih Desa" />
                 </SelectTrigger>
@@ -658,7 +667,7 @@ export default function Page() {
               </Select>
             </div>
             {/* Tombol navigasi */}
-            <div className="flex items-end">
+            <div className="flex items-center">
               <Button
                 className="ml-2 mt-6 bg-black dark:bg-white text-white dark:text-black border border-neutral-300 dark:border-neutral-700 cursor-pointer"
                 disabled={
@@ -676,15 +685,21 @@ export default function Page() {
               </Button>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Summary Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="mb-8"
         >
-          <SummaryStats data={filteredData} />
+          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+              Ringkasan Data Survei
+            </h3>
+            <SummaryStats data={filteredData} />
+          </div>
         </motion.div>
         {/* Separator */}
         <div className="my-8">
@@ -700,26 +715,33 @@ export default function Page() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8 flex flex-col lg:flex-row gap-8 items-stretch"
+          className="mb-8"
         >
-          <motion.div
-            whileHover={{
-              scale: 1.03,
-              boxShadow: "0 4px 32px rgba(0,0,0,0.08)",
-            }}
-            className="flex-1"
-          >
-            <Diagram data={filteredData} />
-          </motion.div>
-          <motion.div
-            whileHover={{
-              scale: 1.03,
-              boxShadow: "0 4px 32px rgba(0,0,0,0.08)",
-            }}
-            className="flex-1"
-          >
-            <Diagram2 data={filteredData} />
-          </motion.div>
+          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+              Diagram Demografi & Sosial Ekonomi
+            </h3>
+            <div className="flex flex-col lg:flex-row gap-8 items-stretch">
+              <motion.div
+                whileHover={{
+                  scale: 1.03,
+                  boxShadow: "0 4px 32px rgba(0,0,0,0.08)",
+                }}
+                className="flex-1"
+              >
+                <Diagram data={filteredData} />
+              </motion.div>
+              <motion.div
+                whileHover={{
+                  scale: 1.03,
+                  boxShadow: "0 4px 32px rgba(0,0,0,0.08)",
+                }}
+                className="flex-1"
+              >
+                <Diagram2 data={filteredData} />
+              </motion.div>
+            </div>
+          </div>
         </motion.div>
         {/* Separator */}
         <div className="my-8">
@@ -735,499 +757,515 @@ export default function Page() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
+          className="mb-8"
         >
-          <Tabs.Root
-            value={tab}
-            onValueChange={setTab}
-            className="mt-10 w-full"
-          >
-            <Tabs.List className="flex flex-wrap gap-2 border-b pb-2">
-              <Tabs.Trigger
-                value="t1p1_4"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t1p1_4"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Perangkat
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t1p5"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t1p5"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Keluarga SLS
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t1p6"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t1p6"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Status Keluarga
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t1p7"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t1p7"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Penduduk SLS
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t1p8"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t1p8"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Umur & Gender
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t1p9"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t1p9"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Perkawinan
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t2p1"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t2p1"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Pendidikan 5+
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t2p2"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t2p2"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Pendidikan 7-23
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t2p3"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t2p3"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Ijazah
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t2p4"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t2p4"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Kerja
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t2p5"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t2p5"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Usaha
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t2p6"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t2p6"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Pertanian
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t2p7"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t2p7"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Jaminan Kesehatan
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p1"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p1"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Kepemilikan Rumah
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p2"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p2"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Lantai
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p3"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p3"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Dinding
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p4"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p4"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Atap
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p5"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p5"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Fasilitas BAB
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p6"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p6"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Air Minum
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p7"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p7"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Air Mandi
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p8"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p8"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Penerangan
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p9"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p9"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Energi Masak
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p10"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p10"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Kloset
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t3p11"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t3p11"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Pembuangan Tinja
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t4p1"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t4p1"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Bantuan
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t4p2"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t4p2"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Bantuan Tani
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="t4p3"
-                className={cn(
-                  "px-4 py-2 rounded-md text-sm font-medium",
-                  tab === "t4p3"
-                    ? "bg-primary text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                )}
-              >
-                Keberlanjutan
-              </Tabs.Trigger>
-            </Tabs.List>
-            <Tabs.Content value="t1p1_4" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 1.1-1.4: Perangkat, SLS, Organisasi, Batas Wilayah
-              </div>
-              <T1p1_4 />
-            </Tabs.Content>
-            <Tabs.Content value="t1p5" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 1.5: Keluarga SLS
-              </div>
-              <T1p5 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t1p6" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 1.6: Status Keluarga
-              </div>
-              <T1p6 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t1p7" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 1.7: Penduduk SLS & Gender
-              </div>
-              <T1p7 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t1p8" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 1.8: Umur & Gender
-              </div>
-              <T1p8 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t1p9" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 1.9: Perkawinan
-              </div>
-              <T1p9 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t2p1" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 2.1: Pendidikan 5+
-              </div>
-              <T2p1 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t2p2" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 2.2: Pendidikan 7-23
-              </div>
-              <T2p2 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t2p3" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 2.3: Ijazah Tertinggi
-              </div>
-              {/* <T2p3 data={filteredData} /> */}
-              <T2p3 />
-            </Tabs.Content>
-            <Tabs.Content value="t2p4" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 2.4: Kerja
-              </div>
-              <T2p4 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t2p5" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 2.5: Usaha
-              </div>
-              <T2p5 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t2p6" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 2.6: Pertanian
-              </div>
-              <T2p6 data={filteredData} />
-            </Tabs.Content>
-            <Tabs.Content value="t2p7" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 2.7: Jaminan Kesehatan
-              </div>
-              <T2p7 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p1" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.1: Kepemilikan Rumah
-              </div>
-              <T3p1 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p2" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.2: Lantai Rumah
-              </div>
-              <T3p2 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p3" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.3: Dinding Rumah
-              </div>
-              <T3p3 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p4" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.4: Atap Rumah
-              </div>
-              <T3p4 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p5" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.5: Fasilitas BAB
-              </div>
-              <T3p5 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p6" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.6: Air Minum
-              </div>
-              <T3p6 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p7" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.7: Air Mandi
-              </div>
-              <T3p7 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p8" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.8: Penerangan
-              </div>
-              <T3p8 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p9" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.9: Energi Masak
-              </div>
-              <T3p9 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p10" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.10: Kloset
-              </div>
-              <T3p10 />
-            </Tabs.Content>
-            <Tabs.Content value="t3p11" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 3.11: Pembuangan Tinja
-              </div>
-              <T3p11 />
-            </Tabs.Content>
-            <Tabs.Content value="t4p1" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 4.1: Bantuan
-              </div>
-              <T4p1 />
-            </Tabs.Content>
-            <Tabs.Content value="t4p2" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 4.2: Bantuan Tani
-              </div>
-              <T4p2 />
-            </Tabs.Content>
+          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+              Detail Data Survei
+            </h3>
+            <Tabs.Root
+              value={tab}
+              onValueChange={setTab}
+              className="mt-6 w-full"
+            >
+              <Tabs.List className="flex flex-wrap gap-2 border-b pb-2 mb-4">
+                <Tabs.Trigger
+                  value="t1p1_4"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t1p1_4"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Perangkat
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t1p5"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t1p5"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Keluarga SLS
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t1p6"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t1p6"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Status Keluarga
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t1p7"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t1p7"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Penduduk SLS
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t1p8"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t1p8"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Umur & Gender
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t1p9"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t1p9"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Perkawinan
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t2p1"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t2p1"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Pendidikan 5+
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t2p2"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t2p2"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Pendidikan 7-23
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t2p3"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t2p3"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Ijazah
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t2p4"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t2p4"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Kerja
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t2p5"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t2p5"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Usaha
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t2p6"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t2p6"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Pertanian
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t2p7"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t2p7"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Jaminan Kesehatan
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p1"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p1"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Kepemilikan Rumah
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p2"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p2"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Lantai
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p3"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p3"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Dinding
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p4"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p4"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Atap
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p5"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p5"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Fasilitas BAB
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p6"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p6"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Air Minum
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p7"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p7"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Air Mandi
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p8"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p8"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Penerangan
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p9"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p9"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Energi Masak
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p10"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p10"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Kloset
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t3p11"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t3p11"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Pembuangan Tinja
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t4p1"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t4p1"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Bantuan
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t4p2"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t4p2"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Bantuan Tani
+                </Tabs.Trigger>
+                <Tabs.Trigger
+                  value="t4p3"
+                  className={cn(
+                    "px-4 py-2 rounded-md text-sm font-medium",
+                    tab === "t4p3"
+                      ? "bg-primary text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  )}
+                >
+                  Keberlanjutan
+                </Tabs.Trigger>
+              </Tabs.List>
+              <Tabs.Content value="t1p1_4" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 1.1-1.4: Perangkat, SLS, Organisasi, Batas Wilayah
+                </div>
+                <T1p1_4 />
+              </Tabs.Content>
+              <Tabs.Content value="t1p5" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 1.5: Keluarga SLS
+                </div>
+                <T1p5 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t1p6" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 1.6: Status Keluarga
+                </div>
+                <T1p6 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t1p7" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 1.7: Penduduk SLS & Gender
+                </div>
+                <T1p7 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t1p8" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 1.8: Umur & Gender
+                </div>
+                <T1p8 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t1p9" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 1.9: Perkawinan
+                </div>
+                <T1p9 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t2p1" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 2.1: Pendidikan 5+
+                </div>
+                <T2p1 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t2p2" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 2.2: Pendidikan 7-23
+                </div>
+                <T2p2 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t2p3" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 2.3: Ijazah Tertinggi
+                </div>
+                {/* <T2p3 data={filteredData} /> */}
+                <T2p3 />
+              </Tabs.Content>
+              <Tabs.Content value="t2p4" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 2.4: Kerja
+                </div>
+                <T2p4 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t2p5" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 2.5: Usaha
+                </div>
+                <T2p5 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t2p6" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 2.6: Pertanian
+                </div>
+                <T2p6 data={filteredData} />
+              </Tabs.Content>
+              <Tabs.Content value="t2p7" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 2.7: Jaminan Kesehatan
+                </div>
+                <T2p7 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p1" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.1: Kepemilikan Rumah
+                </div>
+                <T3p1 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p2" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.2: Lantai Rumah
+                </div>
+                <T3p2 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p3" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.3: Dinding Rumah
+                </div>
+                <T3p3 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p4" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.4: Atap Rumah
+                </div>
+                <T3p4 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p5" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.5: Fasilitas BAB
+                </div>
+                <T3p5 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p6" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.6: Air Minum
+                </div>
+                <T3p6 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p7" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.7: Air Mandi
+                </div>
+                <T3p7 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p8" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.8: Penerangan
+                </div>
+                <T3p8 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p9" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.9: Energi Masak
+                </div>
+                <T3p9 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p10" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.10: Kloset
+                </div>
+                <T3p10 />
+              </Tabs.Content>
+              <Tabs.Content value="t3p11" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 3.11: Pembuangan Tinja
+                </div>
+                <T3p11 />
+              </Tabs.Content>
+              <Tabs.Content value="t4p1" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 4.1: Bantuan
+                </div>
+                <T4p1 />
+              </Tabs.Content>
+              <Tabs.Content value="t4p2" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 4.2: Bantuan Tani
+                </div>
+                <T4p2 />
+              </Tabs.Content>
 
-            <Tabs.Content value="t4p3" className="mt-4">
-              <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
-                Tabel 4.3: Keberlanjutan Bantuan
-              </div>
-              <T4p3 />
-            </Tabs.Content>
-          </Tabs.Root>
+              <Tabs.Content value="t4p3" className="mt-4">
+                <div className="mb-2 text-xs text-gray-500 dark:text-gray-400">
+                  Tabel 4.3: Keberlanjutan Bantuan
+                </div>
+                <T4p3 />
+              </Tabs.Content>
+            </Tabs.Root>
+          </div>
+        </motion.div>
 
-          {/* Infografik & Publikasi Section */}
-          <div className="w-full flex flex-col md:flex-row gap-8 items-start justify-center mb-8">
-            <div className="flex-1">
+        {/* Infografik & Publikasi Section */}
+        <div className="w-full flex flex-col md:flex-row gap-8 items-start justify-center mb-8 mt-12">
+          <div className="flex-1">
+            <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
+              <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+                Infografis
+              </h3>
               <Infografik />
             </div>
-            <div className="flex-1">
+          </div>
+          <div className="flex-1">
+            <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6">
+              <h3 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">
+                Publikasi
+              </h3>
               <Publikasi />
             </div>
           </div>
+        </div>
 
-          {/* Footer */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-            className="text-center mt-12 py-8 border-t border-gray-200 dark:border-gray-700"
-          >
-            <p className="text-gray-500 dark:text-gray-400">
-              Dashboard ini menampilkan {filteredData.keluarga.length} keluarga
-              dan {filteredData.anggota.length} penduduk
-            </p>
-          </motion.div>
+        {/* Footer */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="text-center mt-12 py-8 border-t border-gray-200 dark:border-gray-700"
+        >
+          <p className="text-gray-500 dark:text-gray-400">
+            Dashboard ini menampilkan {filteredData.keluarga.length} keluarga
+            dan {filteredData.anggota.length} penduduk
+          </p>
         </motion.div>
       </div>
     </div>
